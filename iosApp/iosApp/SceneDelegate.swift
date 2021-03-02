@@ -24,11 +24,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = UIHostingController(rootView: LoadingYourTags())
             self.window = window
-            mainRouter.start { [weak self] viewState, _ in
-                if let viewState = viewState {
-                    self?.display(viewState)
-                }
-            }
+            let api = PocketApi()
+            let userStore = UserDefaultsStore()
+            let model = MainScreenViewModel(pocketApi: api, tagsRepository: TagsFromArticlesRepository(pocketApi: api, userStore: userStore), userStore: userStore)
+            let viewController = UIHostingController(rootView: HomeView(viewModel: ObservableHomeViewModel(homeViewModel: model)))
+            window.rootViewController = viewController
             window.makeKeyAndVisible()
         }
     }
@@ -38,10 +38,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     private func display(_ viewState: MainViewState) {
-        let viewController = UIHostingController(rootView: HomeView(homeState: viewState) {
-            print("refresh o'clock")
-        })
-        window?.rootViewController = viewController
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

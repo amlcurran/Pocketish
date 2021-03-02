@@ -38,10 +38,16 @@ extension EdgeInsets {
 
 }
 
+enum AsyncResult<T: Equatable> {
+    case idle
+    case loading
+    case failure(Error)
+    case data(T)
+}
+
 struct HomeView: View {
 
-    let homeState: MainViewState
-    let onRefreshClick: () -> Void
+    @ObservedObject var viewModel: ObservableHomeViewModel
 
     @State var foo: Bool = false
 
@@ -63,30 +69,36 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             VStack {
-                List {
-                    Section(header: HorizontalArticles(articles: homeState.latestUntagged)
-                                .listRowInsets(EdgeInsets())) {
-                        ForEach(homeState.tags, content: item)
-                        NavigationLink(destination: AddTagView()) {
-                            HStack {
-                                Image(systemName: "plus.circle")
-                                    .renderingMode(.template)
-                                Text("Add new tag")
-                            }
-                        }
-                    }
-                    .background(Color(UIColor.systemBackground))
-                }.listStyle(PlainListStyle())
+                viewForState(viewModel.state)
             }
             .navigationBarTitle("Tags")
             .toolbar {
-                Button(action: onRefreshClick) {
+                Button(action: {
+                    viewModel.forceRefresh()
+                }) {
                     Image(systemName: "arrow.clockwise")
                 }
             }
             .font(.system(.body, design: .rounded))
+        }.onAppear { viewModel.appeared() }
+    }
+
+    private func viewForState(_ state: AsyncResult<MainViewState>) -> some View {
+        switch state {
+        case .loading, .idle, .failure:
+            return AnyView(ProgressView())
+        case .data(let state):
+            return AnyView(loadedView(forState: state))
         }
     }
+
+    private func loadedView(forState state: MainViewState) -> some View {
+        VStack {
+            HorizontalArticles(articles: state.latestUntagged)
+                ForEach(state.tags, content: item)
+        }.listStyle(PlainListStyle())
+    }
+
 }
 
 struct ArticlesByTag: View {
@@ -111,22 +123,25 @@ extension Article: Identifiable {
 
 struct TagsView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(homeState: MainViewState(
-                    tags:  [
-                        Tag(id: "any", name: "Recipes", numberOfArticles: 4),
-                        Tag(id: "any1", name: "Long reads", numberOfArticles: 20),
-                        Tag(id: "any2", name: "Health", numberOfArticles: 1)
-                    ],
-                    latestUntagged: [
-                        Article(id: "abcd",
-                                title: "An article",
-                                tags: nil,
-                                url: "https://www.google.com", images: [:]),
+        VStack {
 
-                        Article(id: "abcde",
-                                title: "Another article",
-                                tags: nil,
-                                url: "https://www.google.com", images: [:])
-                    ]), onRefreshClick: { })
+        }
+//        HomeView(homeState: MainViewState(
+//                    tags:  [
+//                        Tag(id: "any", name: "Recipes", numberOfArticles: 4),
+//                        Tag(id: "any1", name: "Long reads", numberOfArticles: 20),
+//                        Tag(id: "any2", name: "Health", numberOfArticles: 1)
+//                    ],
+//                    latestUntagged: [
+//                        Article(id: "abcd",
+//                                title: "An article",
+//                                tags: nil,
+//                                url: "https://www.google.com", images: [:]),
+//
+//                        Article(id: "abcde",
+//                                title: "Another article",
+//                                tags: nil,
+//                                url: "https://www.google.com", images: [:])
+//                    ]), onRefreshClick: { })
     }
 }
