@@ -26,6 +26,10 @@ class MainScreenViewModel(
         return MainViewState(tags, latestUntagged)
     }
 
+    suspend fun addTagToArticle(tag: String, articleId: String): Boolean {
+        return pocketApi.add(tagId = tag, articleId = articleId, userStore["access_token"]!!) ?: false
+    }
+
 }
 
 data class Tag(

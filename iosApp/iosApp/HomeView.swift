@@ -60,10 +60,20 @@ struct HomeView: View {
                 Text("\(tag.numberOfArticles)")
                     .foregroundColor(.secondary)
             }
-            .onDrop(of: ["public.text"], isTargeted: $foo, perform: { provider -> Bool in
-                false
-            })
         }
+            .frame(minHeight: 44)
+            .onDrop(of: ["public.text"], isTargeted: $foo) { (providers: [NSItemProvider]) -> Bool in
+                providers.forEach {
+                    $0.loadItem(forTypeIdentifier: "public.text") { coding, error in
+                        if let data = coding as? Data, let string = String(data: data, encoding: .utf8) {
+                            DispatchQueue.main.async {
+                                viewModel.add(tag, toArticleWithId: string)
+                            }
+                        }
+                    }
+                }
+                return true
+            }
     }
 
     var body: some View {
@@ -94,8 +104,12 @@ struct HomeView: View {
 
     private func loadedView(forState state: MainViewState) -> some View {
         VStack {
-            HorizontalArticles(articles: state.latestUntagged)
-                ForEach(state.tags, content: item)
+            ScrollView(.vertical) {
+                HorizontalArticles(articles: state.latestUntagged)
+                ForEach(state.tags) { (tag: Tag) in
+                    item(from: tag)
+                }
+            }
         }.listStyle(PlainListStyle())
     }
 

@@ -8,6 +8,8 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.json.Json
 
 class PocketApi {
 
@@ -80,6 +82,14 @@ class PocketApi {
             url.parameters["detailType"] = "complete"
         }.list.values.toList()
     }
+
+    suspend fun add(tagId: String, articleId: String, accessToken: String): Boolean? {
+        return httpClient.post<ActionsResponse>("https://getpocket.com/v3/send") {
+            url.parameters["consumer_key"] = consumerKey
+            url.parameters["access_token"] = accessToken
+            url.parameters["actions"] = """[{ "action": "tags_add", "item_id": "$articleId", "tags": "$tagId" }]"""
+        }.action_results.firstOrNull()
+    }
 }
 
 @Serializable
@@ -88,7 +98,24 @@ data class ArticleListResponse(
 )
 
 @Serializable
-data class Article(@SerialName("resolved_id") val id: String,
+data class Actions(
+    val actions: List<AddTagAction>
+)
+
+@Serializable
+data class AddTagAction(
+    val item_id: String,
+    val tags: String,
+    val action: String = "tags_add"
+)
+
+@Serializable
+data class ActionsResponse(
+    val action_results: List<Boolean>
+)
+
+@Serializable
+data class Article(@SerialName("item_id") val id: String,
                    @SerialName("resolved_title") val title: String,
                    @SerialName("tags") val tags: Map<String, TagResponse>? = emptyMap(),
                    @SerialName("resolved_url" ) val url: String,

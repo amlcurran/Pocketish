@@ -33,4 +33,16 @@ class ObservableHomeViewModel: ObservableObject {
         }
     }
 
+    func add(_ tag: Tag, toArticleWithId articleId: String) {
+        homeViewModel.addTagToArticle(tag: tag.id, articleId: articleId) { [self] result, error in
+            if let error = error {
+                print(error)
+            } else {
+                if let result = result, result == KotlinBoolean(bool: true),
+                   case AsyncResult<MainViewState>.data(let current) = state {
+                    state = .data(current.doCopy(tags: current.tags, latestUntagged: current.latestUntagged.filter { $0.id != articleId }))
+                }
+            }
+        }
+    }
 }

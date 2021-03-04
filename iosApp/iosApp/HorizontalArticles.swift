@@ -9,6 +9,18 @@
 import SwiftUI
 import shared
 
+extension Optional {
+
+    func getOrThrow() throws -> Wrapped {
+        if let self = self {
+            return self
+        } else {
+            throw NSError(domain: "getOrThrow", code: 0)
+        }
+    }
+
+}
+
 struct HorizontalArticles: View {
 
     let articles: [Article]
@@ -25,7 +37,8 @@ struct HorizontalArticles: View {
                         .cornerRadius(12)
                         .shadow(radius: 3)
                         .padding(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
-                }
+                        .onDrag { NSItemProvider(object: article.id as NSString) }
+                }.animation(.easeInOut(duration: 0.2))
             }
             .padding(.foo([.bottom]))
         }.labelStyle(DefaultLabelStyle())
