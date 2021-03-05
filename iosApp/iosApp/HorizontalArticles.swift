@@ -24,6 +24,7 @@ extension Optional {
 struct HorizontalArticles: View {
 
     let articles: [Article]
+    let onEndClicked: () -> Void
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -39,6 +40,10 @@ struct HorizontalArticles: View {
                         .padding(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
                         .onDrag { NSItemProvider(object: article.id as NSString) }
                 }.animation(.easeInOut(duration: 0.2))
+                Image(systemName: "chevron.forward.circle.fill")
+                    .font(.system(size: 42))
+                    .padding()
+                    .onTapGesture { onEndClicked() }
             }
             .padding(.foo([.bottom]))
         }.labelStyle(DefaultLabelStyle())
@@ -56,6 +61,8 @@ struct HorizontalArticles_Previews: PreviewProvider {
                     title: "Another article",
                     tags: nil,
                     url: "https://www.google.com", images: [:])
-        ])
+        ]) {
+            //
+        }
     }
 }

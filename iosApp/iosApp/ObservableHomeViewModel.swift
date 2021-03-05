@@ -47,6 +47,10 @@ class ObservableHomeViewModel: ObservableObject {
             }
         }
     }
+
+    func loadMoreUntagged() {
+        print("No-op for now!")
+    }
 }
 
 extension MainViewState {

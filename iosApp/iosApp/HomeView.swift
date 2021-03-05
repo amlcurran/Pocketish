@@ -103,7 +103,9 @@ struct HomeView: View {
     private func loadedView(forState state: MainViewState) -> some View {
         VStack {
             ScrollView(.vertical) {
-                HorizontalArticles(articles: state.latestUntagged)
+                HorizontalArticles(articles: state.latestUntagged) {
+                    viewModel.loadMoreUntagged()
+                }
                 ForEach(state.tags) { (tag: Tag) in
                     item(from: tag)
                     if tag.id != state.tags.last?.id {
