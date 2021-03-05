@@ -52,14 +52,6 @@ struct HomeView: View {
     private let dragOverFeedback = UISelectionFeedbackGenerator()
     private let selectedFeedback = UINotificationFeedbackGenerator()
 
-    @State var foo: Bool = false {
-        didSet {
-            if foo {
-                dragOverFeedback.selectionChanged()
-            }
-        }
-    }
-
     private func item(from tag: Tag) -> some View {
         NavigationLink(destination: ArticlesByTag(tag: tag)) {
             HStack {
@@ -73,18 +65,13 @@ struct HomeView: View {
             }.padding(.horizontal)
         }
             .frame(minHeight: 36)
-            .onDrop(of: ["public.text"], isTargeted: $foo) { (providers: [NSItemProvider]) -> Bool in
-                providers.first?.loadItem(forTypeIdentifier: "public.text") { coding, error in
-                    if let data = coding as? Data, let string = String(data: data, encoding: .utf8) {
-                        DispatchQueue.main.async {
-                            viewModel.add(tag, toArticleWithId: string) {
-                                selectedFeedback.notificationOccurred(.success)
-                            }
-                        }
-                    }
+            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, startedDrop: {
+                dragOverFeedback.selectionChanged()
+            }, droppedArticle: { articleId in
+                viewModel.add(tag, toArticleWithId: articleId) {
+                    selectedFeedback.notificationOccurred(.success)
                 }
-                return true
-            }
+            }))
     }
 
     var body: some View {
@@ -172,4 +159,34 @@ struct TagsView_Previews: PreviewProvider {
 //                                url: "https://www.google.com", images: [:])
 //                    ]), onRefreshClick: { })
     }
+}
+
+class ArticleDropDelegate: DropDelegate {
+
+    private let tag: Tag
+    private let startedDrop: () -> Void
+    private let droppedArticle: (String) -> Void
+
+    init(tag: Tag, startedDrop: @escaping () -> (), droppedArticle: @escaping (String) -> ()) {
+        self.tag = tag
+        self.startedDrop = startedDrop
+        self.droppedArticle = droppedArticle
+    }
+
+    func dropEntered(info: DropInfo) {
+        startedDrop()
+    }
+
+    func performDrop(info: DropInfo) -> Bool {
+        info.itemProviders(for: ["public.text"]).first?.loadItem(forTypeIdentifier: "public.text") { coding, error in
+            if let data = coding as? Data, let string = String(data: data, encoding: .utf8) {
+                DispatchQueue.main.async {
+                    self.droppedArticle(string)
+                }
+            }
+        }
+        return true
+    }
+
+
 }
