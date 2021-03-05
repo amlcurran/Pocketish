@@ -25,8 +25,6 @@ class PocketApi {
         }
     }
 
-    private val consumerKey = "63449-1c93538d5080dc7b7e4a859a"
-
     suspend fun requestAccess(redirectUrl: Url): String {
         val response = httpClient.post<RequestResponse>("https://getpocket.com/v3/oauth/request") {
             contentType(ContentType.Application.Json)
