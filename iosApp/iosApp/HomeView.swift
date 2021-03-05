@@ -48,31 +48,10 @@ enum AsyncResult<T: Equatable> {
 struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
+    @State var isDraggingArticle: Bool
 
     private let dragOverFeedback = UISelectionFeedbackGenerator()
     private let selectedFeedback = UINotificationFeedbackGenerator()
-
-    private func item(from tag: Tag) -> some View {
-        NavigationLink(destination: ArticlesByTag(tag: tag)) {
-            HStack {
-                Text(tag.name)
-                    .foregroundColor(.primary)
-                Spacer()
-                Text("\(tag.numberOfArticles)")
-                    .foregroundColor(.secondary)
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.secondary)
-            }.padding(.horizontal)
-        }
-            .frame(minHeight: 36)
-            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, startedDrop: {
-                dragOverFeedback.selectionChanged()
-            }, droppedArticle: { articleId in
-                viewModel.add(tag, toArticleWithId: articleId) {
-                    selectedFeedback.notificationOccurred(.success)
-                }
-            }))
-    }
 
     var body: some View {
         NavigationView {
@@ -108,12 +87,29 @@ struct HomeView: View {
                 }
                 ForEach(state.tags) { (tag: Tag) in
                     item(from: tag)
-                    if tag.id != state.tags.last?.id {
-                        Divider()
-                    }
+                    Divider()
                 }
+                ListItem(leftText: "Add new tag",
+                    rightText: "",
+                    leftColor: .accentColor,
+                    rightImage: Image(systemName: "plus.circle"))
             }
         }.listStyle(PlainListStyle())
+    }
+
+    private func item(from tag: Tag) -> some View {
+        NavigationLink(destination: ArticlesByTag(tag: tag)) {
+            ListItem(leftText: tag.name,
+                rightText: "\(tag.numberOfArticles)",
+                rightImage: Image(systemName: "chevron.right"))
+        }
+            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, startedDrop: {
+                dragOverFeedback.selectionChanged()
+            }, droppedArticle: { articleId in
+                viewModel.add(tag, toArticleWithId: articleId) {
+                    selectedFeedback.notificationOccurred(.success)
+                }
+            }))
     }
 
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		698534C8A80B996A2FCD677C /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698536EAD9E56774FB6E729E /* ListItem.swift */; };
 		69853ACCAF167B28C9468ECB /* ObservableHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */; };
 		7555FF7F242A565900829871 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF7E242A565900829871 /* AppDelegate.swift */; };
 		7555FF81242A565900829871 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF80242A565900829871 /* SceneDelegate.swift */; };
@@ -48,6 +49,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		698536EAD9E56774FB6E729E /* ListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservableHomeViewModel.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* Pocketish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pocketish.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF7E242A565900829871 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				862F91E525EAB6850016D473 /* RemoteImage.swift */,
 				862F91ED25EAFB510016D473 /* ArticleView.swift */,
 				69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */,
+				698536EAD9E56774FB6E729E /* ListItem.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				7555FF83242A565900829871 /* LoadingYourTags.swift in Sources */,
 				862F91CF25E5A3CF0016D473 /* HomeView.swift in Sources */,
 				69853ACCAF167B28C9468ECB /* ObservableHomeViewModel.swift in Sources */,
+				698534C8A80B996A2FCD677C /* ListItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
