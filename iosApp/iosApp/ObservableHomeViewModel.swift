@@ -33,16 +33,26 @@ class ObservableHomeViewModel: ObservableObject {
         }
     }
 
-    func add(_ tag: Tag, toArticleWithId articleId: String) {
+    func add(_ tag: Tag, toArticleWithId articleId: String, onFinished: @escaping () -> Void) {
         homeViewModel.addTagToArticle(tag: tag.id, articleId: articleId) { [self] result, error in
             if let error = error {
                 print(error)
             } else {
-                if let result = result, result == KotlinBoolean(bool: true),
-                   case AsyncResult<MainViewState>.data(let current) = state {
-                    state = .data(current.doCopy(tags: current.tags, latestUntagged: current.latestUntagged.filter { $0.id != articleId }))
+                if let result = result, result == KotlinBoolean(bool: true) {
+                    if case AsyncResult<MainViewState>.data(let current) = state {
+                        state = .data(current.tagging(articleId, with: tag))
+                    }
+                    onFinished()
                 }
             }
         }
     }
+}
+
+extension MainViewState {
+
+    func tagging(_ articleId: String, with tag: Tag) -> MainViewState {
+        doCopy(tags: tags, latestUntagged: latestUntagged.filter { $0.id != articleId })
+    }
+
 }

@@ -49,7 +49,16 @@ struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
 
-    @State var foo: Bool = false
+    private let dragOverFeedback = UISelectionFeedbackGenerator()
+    private let selectedFeedback = UINotificationFeedbackGenerator()
+
+    @State var foo: Bool = false {
+        didSet {
+            if foo {
+                dragOverFeedback.selectionChanged()
+            }
+        }
+    }
 
     private func item(from tag: Tag) -> some View {
         NavigationLink(destination: ArticlesByTag(tag: tag)) {
@@ -59,15 +68,17 @@ struct HomeView: View {
                 Spacer()
                 Text("\(tag.numberOfArticles)")
                     .foregroundColor(.secondary)
-            }
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.secondary)
+            }.padding(.horizontal)
         }
-            .frame(minHeight: 44)
+            .frame(minHeight: 36)
             .onDrop(of: ["public.text"], isTargeted: $foo) { (providers: [NSItemProvider]) -> Bool in
-                providers.forEach {
-                    $0.loadItem(forTypeIdentifier: "public.text") { coding, error in
-                        if let data = coding as? Data, let string = String(data: data, encoding: .utf8) {
-                            DispatchQueue.main.async {
-                                viewModel.add(tag, toArticleWithId: string)
+                providers.first?.loadItem(forTypeIdentifier: "public.text") { coding, error in
+                    if let data = coding as? Data, let string = String(data: data, encoding: .utf8) {
+                        DispatchQueue.main.async {
+                            viewModel.add(tag, toArticleWithId: string) {
+                                selectedFeedback.notificationOccurred(.success)
                             }
                         }
                     }
@@ -108,6 +119,9 @@ struct HomeView: View {
                 HorizontalArticles(articles: state.latestUntagged)
                 ForEach(state.tags) { (tag: Tag) in
                     item(from: tag)
+                    if tag.id != state.tags.last?.id {
+                        Divider()
+                    }
                 }
             }
         }.listStyle(PlainListStyle())
