@@ -56,7 +56,6 @@ struct HomeView: View {
     @State var showingArticle: Bool = false
     @StateObject var foo = Foo()
 
-    private let dragOverFeedback = UISelectionFeedbackGenerator()
     private let selectedFeedback = UINotificationFeedbackGenerator()
 
     var body: some View {
@@ -93,7 +92,7 @@ struct HomeView: View {
     }
 
     private func loadedView(forState state: MainViewState) -> some View {
-        VStack {
+        ZStack(alignment: .bottom) {
             ScrollView(.vertical) {
                 HorizontalArticles(articles: state.latestUntagged, isDragging: $isDraggingArticle) {
                     viewModel.loadMoreUntagged()
@@ -114,6 +113,16 @@ struct HomeView: View {
                         rightImage: Image(systemName: "plus.circle"))
                 }
             }
+            Hidden(when: isDraggingArticle) {
+                AnyView(Button("Foo") {
+                    print("Clicked")
+                }
+                    .buttonStyle(RoundedButtonStyle())
+                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate { articleId in
+                        print("I'll add a new thing here")
+                    })
+                )
+            }
         }.listStyle(PlainListStyle())
     }
 
@@ -123,13 +132,11 @@ struct HomeView: View {
                 rightText: "\(tag.numberOfArticles)",
                 rightImage: Image(systemName: "chevron.right"))
         }
-            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, startedDrop: {
-                dragOverFeedback.selectionChanged()
-            }, droppedArticle: { articleId in
+            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate { articleId in
                 viewModel.add(tag, toArticleWithId: articleId) {
                     selectedFeedback.notificationOccurred(.success)
                 }
-            }))
+            })
     }
 
 }
@@ -181,18 +188,15 @@ struct TagsView_Previews: PreviewProvider {
 
 class ArticleDropDelegate: DropDelegate {
 
-    private let tag: Tag
-    private let startedDrop: () -> Void
     private let droppedArticle: (String) -> Void
+    private let dragOverFeedback = UISelectionFeedbackGenerator()
 
-    init(tag: Tag, startedDrop: @escaping () -> (), droppedArticle: @escaping (String) -> ()) {
-        self.tag = tag
-        self.startedDrop = startedDrop
+    init(droppedArticle: @escaping (String) -> ()) {
         self.droppedArticle = droppedArticle
     }
 
     func dropEntered(info: DropInfo) {
-        startedDrop()
+        dragOverFeedback.selectionChanged()
     }
 
     func performDrop(info: DropInfo) -> Bool {
@@ -204,6 +208,45 @@ class ArticleDropDelegate: DropDelegate {
             }
         }
         return true
+    }
+
+}
+
+class RoundedButtonStyle: ButtonStyle {
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .makeTheButton(withColor: configuration.isPressed ? .accentColor : .green)
+            .animation(.easeInOut(duration: 0.1))
+    }
+
+}
+
+private extension View {
+
+    func makeTheButton(withColor color: Color) -> some View {
+        padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+            .frame(minWidth: 180)
+            .foregroundColor(Color.white)
+            .background(RoundedRectangle(cornerRadius: 24)
+                .foregroundColor(color))
+    }
+
+}
+
+struct Hidden: View {
+
+    @State var when: Bool
+    let content: () -> AnyView
+
+    var body: some View {
+        if when {
+            print("XXX Hiding")
+            return AnyView(content().hidden())
+        } else {
+            print("XXX Shown")
+            return AnyView(content())
+        }
     }
 
 }

@@ -13,9 +13,8 @@ class MainScreenViewModel(
 
     suspend fun getTagsState(ignoreCache: Boolean): MainViewState {
         val tags = tagsRepository.allTags(ignoreCache = ignoreCache)
-            .map { it to pocketApi.getArticlesWithTag(it, userStore["access_token"]!!) }
-            .map { (tag, articles) ->
-                Tag(tag, tag, articles.size)
+            .map { tag ->
+                Tag(tag, tag, 0)
             }
         val latestUntagged = pocketApi.getArticlesWithTag(
             "_untagged_",
