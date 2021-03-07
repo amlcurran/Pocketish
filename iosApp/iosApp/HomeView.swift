@@ -48,14 +48,6 @@ struct HomeView: View {
 
 }
 
-extension Tag: Identifiable {
-
-}
-
-extension Article: Identifiable {
-
-}
-
 struct TagsView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {

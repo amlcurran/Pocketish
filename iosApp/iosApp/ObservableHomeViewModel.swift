@@ -2,6 +2,14 @@ import Foundation
 import shared
 import SwiftUI
 
+extension Tag: Identifiable {
+
+}
+
+extension Article: Identifiable {
+
+}
+
 class ObservableHomeViewModel: ObservableObject {
     private let homeViewModel: MainScreenViewModel
 
