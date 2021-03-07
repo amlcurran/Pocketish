@@ -26,9 +26,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             self.window = window
             let api = PocketApi()
             let userStore = UserDefaultsStore()
-            let model = MainScreenViewModel(pocketApi: api, tagsRepository: TagsFromArticlesRepository(pocketApi: api, userStore: userStore), userStore: userStore)
-            let viewController = UIHostingController(rootView: HomeView(viewModel: ObservableHomeViewModel(homeViewModel: model)))
-            window.rootViewController = viewController
+            let repository = TagsFromArticlesRepository(pocketApi: api, userStore: userStore)
+            let model = MainScreenViewModel(pocketApi: api, tagsRepository: repository, userStore: userStore)
+            mainRouter.start { (viewState, error) in
+                if viewState != nil {
+                    let viewModel = ObservableHomeViewModel(homeViewModel: model)
+                    let viewController = UIHostingController(rootView: HomeView(viewModel: viewModel))
+                    window.rootViewController = viewController
+                }
+            }
             window.makeKeyAndVisible()
         }
     }
@@ -41,8 +47,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        for url in URLContexts {
-            print(url.url.absoluteString)
+        for url in URLContexts where url.url.absoluteString == "pocketish:authorize" {
             mainRouter.continueLoggingIn { [weak self] viewState, _ in
                 if let viewState = viewState {
                     self?.display(viewState)

@@ -45,10 +45,16 @@ enum AsyncResult<T: Equatable> {
     case data(T)
 }
 
+class Foo: ObservableObject {
+    @Published var article: Article?
+}
+
 struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
-    @State var isDraggingArticle: Bool
+    @State var isDraggingArticle: Bool = false
+    @State var showingArticle: Bool = false
+    @StateObject var foo = Foo()
 
     private let dragOverFeedback = UISelectionFeedbackGenerator()
     private let selectedFeedback = UINotificationFeedbackGenerator()
@@ -68,6 +74,13 @@ struct HomeView: View {
             }
             .font(.system(.body, design: .rounded))
         }.onAppear { viewModel.appeared() }
+        .sheet(isPresented: $showingArticle) {
+            if let article = self.foo.article {
+                SafariView(url: URL(string: article.url)!)
+            } else {
+                fatalError("No article to show")
+            }
+        }
     }
 
     private func viewForState(_ state: AsyncResult<MainViewState>) -> some View {
@@ -82,22 +95,29 @@ struct HomeView: View {
     private func loadedView(forState state: MainViewState) -> some View {
         VStack {
             ScrollView(.vertical) {
-                HorizontalArticles(articles: state.latestUntagged) {
+                HorizontalArticles(articles: state.latestUntagged, isDragging: $isDraggingArticle) {
                     viewModel.loadMoreUntagged()
+                } onArticleClicked: { article in
+                    foo.article = article
+                    showingArticle = true
                 }
                 ForEach(state.tags) { (tag: Tag) in
-                    item(from: tag)
-                    Divider()
+                    tagListItem(from: tag)
+                    if isDraggingArticle || tag.id != state.tags.last?.id {
+                        Divider()
+                    }
                 }
-                ListItem(leftText: "Add new tag",
-                    rightText: "",
-                    leftColor: .accentColor,
-                    rightImage: Image(systemName: "plus.circle"))
+                if isDraggingArticle {
+                    ListItem(leftText: "Add new tag",
+                        rightText: "",
+                        leftColor: .accentColor,
+                        rightImage: Image(systemName: "plus.circle"))
+                }
             }
         }.listStyle(PlainListStyle())
     }
 
-    private func item(from tag: Tag) -> some View {
+    private func tagListItem(from tag: Tag) -> some View {
         NavigationLink(destination: ArticlesByTag(tag: tag)) {
             ListItem(leftText: tag.name,
                 rightText: "\(tag.numberOfArticles)",
@@ -185,6 +205,5 @@ class ArticleDropDelegate: DropDelegate {
         }
         return true
     }
-
 
 }

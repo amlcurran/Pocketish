@@ -24,7 +24,9 @@ extension Optional {
 struct HorizontalArticles: View {
 
     let articles: [Article]
+    @Binding var isDragging: Bool
     let onEndClicked: () -> Void
+    let onArticleClicked: (Article) -> Void
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -39,6 +41,7 @@ struct HorizontalArticles: View {
                         .shadow(radius: 3)
                         .padding(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
                         .onDrag { NSItemProvider(object: article.id as NSString) }
+                        .onTapGesture { onArticleClicked(article) }
                 }.animation(.easeInOut(duration: 0.2))
                 Image(systemName: "chevron.forward.circle.fill")
                     .font(.system(size: 42))
@@ -50,19 +53,20 @@ struct HorizontalArticles: View {
     }
 }
 
-struct HorizontalArticles_Previews: PreviewProvider {
-    static var previews: some View {
-        HorizontalArticles(articles: [
-            Article(id: "abcd",
-                    title: "An article",
-                    tags: nil,
-                    url: "https://www.google.com", images: [:]),
-            Article(id: "abcde",
-                    title: "Another article",
-                    tags: nil,
-                    url: "https://www.google.com", images: [:])
-        ]) {
-            //
-        }
-    }
-}
+//struct HorizontalArticles_Previews: PreviewProvider {
+//
+//    static var previews: some View {
+//        HorizontalArticles(articles: [
+//            Article(id: "abcd",
+//                    title: "An article",
+//                    tags: nil,
+//                    url: "https://www.google.com", images: [:]),
+//            Article(id: "abcde",
+//                    title: "Another article",
+//                    tags: nil,
+//                    url: "https://www.google.com", images: [:])
+//        ], isDragging: false) {
+//            //
+//        }
+//    }
+//}
