@@ -9,35 +9,6 @@
 import SwiftUI
 import shared
 
-struct Padding {
-    let value: CGFloat
-
-    static let half = Padding(value: 4)
-    static let full = Padding(value: 12)
-    static let large = Padding(value: 12)
-}
-
-extension EdgeInsets {
-
-    static func foo(_ set: [NSDirectionalRectEdge]) -> EdgeInsets {
-        var insets = EdgeInsets()
-        if set.contains(.leading) {
-            insets.leading = Padding.full.value
-        }
-        if set.contains(.top) {
-            insets.top = Padding.full.value
-        }
-        if set.contains(.trailing) {
-            insets.trailing = Padding.full.value
-        }
-        if set.contains(.bottom) {
-            insets.bottom = Padding.full.value
-        }
-        return insets
-    }
-
-}
-
 enum AsyncResult<T: Equatable> {
     case idle
     case loading
@@ -108,67 +79,4 @@ struct TagsView_Previews: PreviewProvider {
 //                                url: "https://www.google.com", images: [:])
 //                    ]), onRefreshClick: { })
     }
-}
-
-class ArticleDropDelegate: DropDelegate {
-
-    private let droppedArticle: (String) -> Void
-    private let dragOverFeedback = UISelectionFeedbackGenerator()
-
-    init(droppedArticle: @escaping (String) -> ()) {
-        self.droppedArticle = droppedArticle
-    }
-
-    func dropEntered(info: DropInfo) {
-        dragOverFeedback.selectionChanged()
-    }
-
-    func performDrop(info: DropInfo) -> Bool {
-        info.itemProviders(for: ["public.text"]).first?.loadItem(forTypeIdentifier: "public.text") { coding, error in
-            if let data = coding as? Data, let string = String(data: data, encoding: .utf8) {
-                DispatchQueue.main.async {
-                    self.droppedArticle(string)
-                }
-            }
-        }
-        return true
-    }
-
-}
-
-class RoundedButtonStyle: ButtonStyle {
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .makeTheButton(withColor: configuration.isPressed ? .accentColor : .green)
-            .animation(.easeInOut(duration: 0.1))
-    }
-
-}
-
-private extension View {
-
-    func makeTheButton(withColor color: Color) -> some View {
-        padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-            .frame(minWidth: 180)
-            .foregroundColor(Color.white)
-            .background(RoundedRectangle(cornerRadius: 24)
-                .foregroundColor(color))
-    }
-
-}
-
-struct Hidden: View {
-
-    @State var when: Bool
-    let content: () -> AnyView
-
-    var body: some View {
-        if when {
-            AnyView(content().hidden())
-        } else {
-            AnyView(content())
-        }
-    }
-
 }

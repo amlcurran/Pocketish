@@ -7,9 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6985309CFEC141E59423ACA8 /* ArticleDropDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69853836C4982856BE6A0087 /* ArticleDropDelegate.swift */; };
 		6985315602CEB5D1C654D9A4 /* ArticlesByTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69853325535EE959E3808D3F /* ArticlesByTag.swift */; };
 		69853467274186629E65BA8C /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69853E917989FBEB29EF13AA /* SafariView.swift */; };
 		698534C8A80B996A2FCD677C /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698536EAD9E56774FB6E729E /* ListItem.swift */; };
+		69853A387256351AFCEE6BE0 /* Hidden.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698530C85B4B94F8B3535304 /* Hidden.swift */; };
+		69853A620FBD03E0A149AA3C /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698537109B08963DCF159C1F /* RoundedButtonStyle.swift */; };
+		69853A7623CD5C2E44CE8866 /* EdgeInsets+Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69853126574A0E46ACD0C96C /* EdgeInsets+Api.swift */; };
 		69853ACCAF167B28C9468ECB /* ObservableHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */; };
 		69853EA7C1C77F4C49B8C767 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69853DD7F8B6E82E68B20FA9 /* MainView.swift */; };
 		7555FF7F242A565900829871 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF7E242A565900829871 /* AppDelegate.swift */; };
@@ -52,8 +56,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		698530C85B4B94F8B3535304 /* Hidden.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hidden.swift; sourceTree = "<group>"; };
+		69853126574A0E46ACD0C96C /* EdgeInsets+Api.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EdgeInsets+Api.swift"; sourceTree = "<group>"; };
 		69853325535EE959E3808D3F /* ArticlesByTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticlesByTag.swift; sourceTree = "<group>"; };
 		698536EAD9E56774FB6E729E /* ListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
+		698537109B08963DCF159C1F /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
+		69853836C4982856BE6A0087 /* ArticleDropDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleDropDelegate.swift; sourceTree = "<group>"; };
 		69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservableHomeViewModel.swift; sourceTree = "<group>"; };
 		69853DD7F8B6E82E68B20FA9 /* MainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		69853E917989FBEB29EF13AA /* SafariView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
@@ -135,6 +143,10 @@
 				69853E917989FBEB29EF13AA /* SafariView.swift */,
 				69853325535EE959E3808D3F /* ArticlesByTag.swift */,
 				69853DD7F8B6E82E68B20FA9 /* MainView.swift */,
+				69853126574A0E46ACD0C96C /* EdgeInsets+Api.swift */,
+				69853836C4982856BE6A0087 /* ArticleDropDelegate.swift */,
+				698530C85B4B94F8B3535304 /* Hidden.swift */,
+				698537109B08963DCF159C1F /* RoundedButtonStyle.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -287,6 +299,10 @@
 				69853467274186629E65BA8C /* SafariView.swift in Sources */,
 				6985315602CEB5D1C654D9A4 /* ArticlesByTag.swift in Sources */,
 				69853EA7C1C77F4C49B8C767 /* MainView.swift in Sources */,
+				69853A7623CD5C2E44CE8866 /* EdgeInsets+Api.swift in Sources */,
+				6985309CFEC141E59423ACA8 /* ArticleDropDelegate.swift in Sources */,
+				69853A387256351AFCEE6BE0 /* Hidden.swift in Sources */,
+				69853A620FBD03E0A149AA3C /* RoundedButtonStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
