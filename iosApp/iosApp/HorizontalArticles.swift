@@ -24,7 +24,6 @@ extension Optional {
 struct HorizontalArticles: View {
 
     let articles: [Article]
-    @Binding var isDragging: Bool
     let onEndClicked: () -> Void
     let onArticleClicked: (Article) -> Void
 

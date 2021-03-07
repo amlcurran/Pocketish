@@ -8,9 +8,8 @@ class Foo: ObservableObject {
 struct MainView: View {
 
     let state: MainViewState
-    @State var isDraggingArticle: Bool = false
-    @StateObject var viewModel: ObservableHomeViewModel
     @State var showingArticle: Bool = false
+    @StateObject var viewModel: ObservableHomeViewModel
     @StateObject var foo = Foo()
 
     private let selectedFeedback = UINotificationFeedbackGenerator()
@@ -18,7 +17,7 @@ struct MainView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             ScrollView(.vertical) {
-                HorizontalArticles(articles: state.latestUntagged, isDragging: $isDraggingArticle) {
+                HorizontalArticles(articles: state.latestUntagged) {
                     viewModel.loadMoreUntagged()
                 } onArticleClicked: { article in
                     foo.article = article
@@ -26,27 +25,18 @@ struct MainView: View {
                 }
                 ForEach(state.tags) { (tag: Tag) in
                     tagListItem(from: tag)
-                    if isDraggingArticle || tag.id != state.tags.last?.id {
+                    if tag.id != state.tags.last?.id {
                         Divider()
                     }
                 }
-                if isDraggingArticle {
-                    ListItem(leftText: "Add new tag",
-                        rightText: "",
-                        leftColor: .accentColor,
-                        rightImage: Image(systemName: "plus.circle"))
-                }
             }
-            Hidden(when: isDraggingArticle) {
-                AnyView(Button("Foo") {
+            Button("Foo") {
                     print("Clicked")
                 }
                     .buttonStyle(RoundedButtonStyle())
                     .onDrop(of: ["public.text"], delegate: ArticleDropDelegate { articleId in
                         print("I'll add a new thing here")
                     })
-                )
-            }
         }.listStyle(PlainListStyle())
             .sheet(isPresented: $showingArticle) {
                 if let article = foo.article {

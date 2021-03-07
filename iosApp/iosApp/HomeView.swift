@@ -27,14 +27,22 @@ struct HomeView: View {
             }
             .navigationBarTitle("Tags")
             .toolbar {
-                Button(action: {
-                    viewModel.forceRefresh()
-                }) {
-                    Image(systemName: "arrow.clockwise")
-                }
+                reloadButton()
             }
             .font(.system(.body, design: .rounded))
         }.onAppear { viewModel.appeared() }
+    }
+
+    private func reloadButton() -> some View {
+        Button(action: {
+            viewModel.forceRefresh()
+        }) {
+            if viewModel.reloading {
+                ProgressView()
+            } else {
+                Image(systemName: "arrow.clockwise")
+            }
+        }
     }
 
     private func viewForState(_ state: AsyncResult<MainViewState>) -> some View {

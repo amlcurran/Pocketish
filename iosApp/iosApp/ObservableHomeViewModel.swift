@@ -14,6 +14,7 @@ class ObservableHomeViewModel: ObservableObject {
     private let homeViewModel: MainScreenViewModel
 
     @Published var state: AsyncResult<MainViewState> = .loading
+    @Published var reloading: Bool = false
 
     init(homeViewModel: MainScreenViewModel) {
         self.homeViewModel = homeViewModel
@@ -31,7 +32,9 @@ class ObservableHomeViewModel: ObservableObject {
     }
 
     func forceRefresh() {
+        reloading = true
         homeViewModel.getTagsState(ignoreCache: true) { state, error in
+            self.reloading = false
             if let state = state {
                 self.state = .data(state)
             }
