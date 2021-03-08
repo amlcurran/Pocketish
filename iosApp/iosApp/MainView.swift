@@ -9,6 +9,8 @@ struct MainView: View {
 
     let state: MainViewState
     @State var showingArticle: Bool = false
+    @State var addingNewTag: Bool = false
+    @State var enteredNewDrop: Bool = false
     @StateObject var viewModel: ObservableHomeViewModel
     @StateObject var foo = Foo()
 
@@ -31,19 +33,27 @@ struct MainView: View {
                 }
             }
             Button("Foo") {
-                    print("Clicked")
-                }
-                    .buttonStyle(RoundedButtonStyle())
-                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate { articleId in
-                        print("I'll add a new thing here")
-                    })
-        }.listStyle(PlainListStyle())
+                print("Clicked")
+            }
+            .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
+            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
+                enteredNewDrop = entered
+            }, droppedArticle: { articleId in
+                addingNewTag = true
+            }))
+        }
+            .listStyle(PlainListStyle())
             .sheet(isPresented: $showingArticle) {
                 if let article = foo.article {
                     SafariView(url: URL(string: article.url)!)
                 } else {
                     fatalError("No article to show")
                 }
+            }
+            .alert(isPresented: $addingNewTag) {
+                Alert(title: Text("Hello"),
+                      message: Text("You should add your tag"),
+                      dismissButton: .default(Text("OK")))
             }
     }
 

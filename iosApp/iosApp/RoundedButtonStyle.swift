@@ -1,10 +1,12 @@
 import SwiftUI
 
-class RoundedButtonStyle: ButtonStyle {
+struct RoundedButtonStyle: ButtonStyle {
+
+    @Binding var entered: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .makeTheButton(withColor: configuration.isPressed ? .accentColor : .green)
+            .makeTheButton(withColor: entered ? .accentColor : .green)
             .animation(.easeInOut(duration: 0.1))
     }
 
