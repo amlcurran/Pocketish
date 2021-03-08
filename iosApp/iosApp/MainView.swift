@@ -10,6 +10,7 @@ struct MainView: View {
     let state: MainViewState
     @State var showingArticle: Bool = false
     @State var addingNewTag: Bool = false
+    @State var addingNewTagToArticle: String?
     @State var enteredNewDrop: Bool = false
     @StateObject var viewModel: ObservableHomeViewModel
     @StateObject var foo = Foo()
@@ -39,6 +40,7 @@ struct MainView: View {
             .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
                 enteredNewDrop = entered
             }, droppedArticle: { articleId in
+                addingNewTagToArticle = articleId
                 addingNewTag = true
             }))
         }
@@ -50,10 +52,13 @@ struct MainView: View {
                     fatalError("No article to show")
                 }
             }
-            .alert(isPresented: $addingNewTag) {
-                Alert(title: Text("Hello"),
-                      message: Text("You should add your tag"),
-                      dismissButton: .default(Text("OK")))
+            .sheet(isPresented: $addingNewTag) {
+                AddNewTagView { tagName in
+                    self.addingNewTag = false
+                    viewModel.addNewTag(named: tagName, to: addingNewTagToArticle!) {
+                        selectedFeedback.notificationOccurred(.success)
+                    }
+                }
             }
     }
 

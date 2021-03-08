@@ -62,12 +62,34 @@ class ObservableHomeViewModel: ObservableObject {
     func loadMoreUntagged() {
         print("No-op for now!")
     }
+
+    func addNewTag(named tagName: String, to articleId: String, onFinished: @escaping () -> Void) {
+        homeViewModel.addTagToArticle(tag: tagName, articleId: articleId) { [self] result, error in
+            if let error = error {
+                print(error)
+            } else {
+                if let result = result, result == KotlinBoolean(bool: true) {
+                    if case AsyncResult<MainViewState>.data(let current) = state {
+                        state = .data(current.tagging(articleId, withNewTag: tagName))
+                    }
+                    onFinished()
+                }
+            }
+        }
+    }
 }
 
 extension MainViewState {
 
     func tagging(_ articleId: String, with tag: Tag) -> MainViewState {
         doCopy(tags: tags, latestUntagged: latestUntagged.filter { $0.id != articleId })
+    }
+
+    func tagging(_ articleId: String, withNewTag newTag: String) -> MainViewState {
+        var tags: [Tag] = self.tags
+        let tag = Tag(id: newTag, name: newTag, numberOfArticles: 0)
+        tags.append(tag as Tag)
+        return doCopy(tags: tags, latestUntagged: latestUntagged.filter { $0.id != articleId })
     }
 
 }
