@@ -12,6 +12,7 @@ struct MainView: View {
     @State var addingNewTag: Bool = false
     @State var addingNewTagToArticle: String?
     @State var enteredNewDrop: Bool = false
+    @State var dragClicked: Bool = false
     @StateObject var viewModel: ObservableHomeViewModel
     @StateObject var foo = Foo()
 
@@ -32,9 +33,12 @@ struct MainView: View {
                         Divider()
                     }
                 }
+                Rectangle()
+                    .foregroundColor(Color(UIColor.systemBackground))
+                    .frame(height: 50)
             }
-            Button("Foo") {
-                print("Clicked")
+            Button("Add new tag") {
+                dragClicked = true
             }
             .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
             .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
@@ -60,6 +64,11 @@ struct MainView: View {
                     }
                 }
             }
+        .alert(isPresented: $dragClicked) {
+            Alert(title: Text("Add new tag"),
+                message: Text("Drag an article on the button to create a new tag"),
+                dismissButton: .default(Text("OK")))
+        }
     }
 
     private func tagListItem(from tag: Tag) -> some View {
