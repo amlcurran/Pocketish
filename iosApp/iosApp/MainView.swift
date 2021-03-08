@@ -1,20 +1,27 @@
 import SwiftUI
 import shared
 
-class Foo: ObservableObject {
-    @Published var article: Article?
-}
-
 struct MainView: View {
 
+    enum Sheet: Identifiable {
+        case showArticle(Article)
+        case addNewTag(String)
+
+        var id: String {
+            switch self {
+            case .showArticle(let article):
+                return "article-" + article.id
+            case .addNewTag(let articleId):
+                return "newtag-" + articleId
+            }
+        }
+    }
+
     let state: MainViewState
-    @State var showingArticle: Bool = false
-    @State var addingNewTag: Bool = false
-    @State var addingNewTagToArticle: String?
+    @State var showSheet: Sheet?
     @State var enteredNewDrop: Bool = false
     @State var dragClicked: Bool = false
     @StateObject var viewModel: ObservableHomeViewModel
-    @StateObject var foo = Foo()
 
     private let selectedFeedback = UINotificationFeedbackGenerator()
 
@@ -24,8 +31,7 @@ struct MainView: View {
                 HorizontalArticles(articles: state.latestUntagged) {
                     viewModel.loadMoreUntagged()
                 } onArticleClicked: { article in
-                    foo.article = article
-                    showingArticle = true
+                    showSheet = .showArticle(article)
                 }
                 ForEach(state.tags) { (tag: Tag) in
                     tagListItem(from: tag)
@@ -44,24 +50,21 @@ struct MainView: View {
             .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
                 enteredNewDrop = entered
             }, droppedArticle: { articleId in
-                addingNewTagToArticle = articleId
-                addingNewTag = true
+                showSheet = .addNewTag(articleId)
             }))
         }
             .listStyle(PlainListStyle())
-            .sheet(isPresented: $showingArticle) {
-                if let article = foo.article {
-                    SafariView(url: URL(string: article.url)!)
-                } else {
-                    fatalError("No article to show")
-                }
-            }
-            .sheet(isPresented: $addingNewTag) {
-                AddNewTagView { tagName in
-                    self.addingNewTag = false
-                    viewModel.addNewTag(named: tagName, to: addingNewTagToArticle!) {
-                        selectedFeedback.notificationOccurred(.success)
+            .sheet(item: $showSheet) { foo in
+                switch foo {
+                case .addNewTag(let id):
+                    AddNewTagView { tagName in
+                        self.showSheet = nil
+                        viewModel.addNewTag(named: tagName, to: id) {
+                            selectedFeedback.notificationOccurred(.success)
+                        }
                     }
+                case .showArticle(let article):
+                    SafariView(url: URL(string: article.url)!)
                 }
             }
         .alert(isPresented: $dragClicked) {

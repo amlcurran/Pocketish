@@ -18,7 +18,7 @@ struct ArticleView: View {
             RemoteImage(url: article.mainImage()?.src)
                 .aspectRatio(contentMode: .fill)
                 .frame(maxHeight: 90)
-            Text(article.title)
+            Text(article.definitelyTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(1)
                 .padding(.foo([.leading, .trailing, .top]))
@@ -41,4 +41,16 @@ struct ArticleView_Previews: PreviewProvider {
                                      tags: nil,
                                      url: "https://www.google.com", images: [:]))
     }
+}
+
+extension Article {
+
+    var definitelyTitle: String {
+        if title.isEmpty {
+            return " "
+        } else {
+            return title
+        }
+    }
+
 }
