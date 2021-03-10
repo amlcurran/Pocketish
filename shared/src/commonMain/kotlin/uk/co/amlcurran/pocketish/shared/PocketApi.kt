@@ -117,6 +117,7 @@ data class Article(@SerialName("item_id") val id: String,
                    @SerialName("resolved_title") val title: String,
                    @SerialName("tags") val tags: Map<String, TagResponse>? = emptyMap(),
                    @SerialName("resolved_url" ) val url: String,
+                   @SerialName("excerpt" ) val excerpt: String,
                    @SerialName("images") val images: Map<String, Image> = emptyMap()
 ) {
 

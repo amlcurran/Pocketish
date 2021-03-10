@@ -9,8 +9,22 @@ struct ArticlesByTag: View {
     var body: some View {
         AsyncView(state: viewModel.tagsState) { (articles: TagViewState) in
             List(articles.articles) { (article: Article) in
-                Text(article.title)
-            }
+                Link(destination: URL(string: article.url)!) {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(article.title)
+                                .font(.system(.title3, design: .rounded))
+                            Spacer(minLength: 6)
+                            Text(article.excerpt)
+                                .lineLimit(2)
+                                .foregroundColor(.secondary)
+                        }
+                            .padding(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        Image(systemName: "chevron.forward")
+                        .foregroundColor(.secondary)
+                    }
+                }
+            }.font(.system(.body, design: .rounded))
         }
             .navigationTitle(tag.name)
             .navigationBarTitle(tag.name)

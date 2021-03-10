@@ -34,15 +34,6 @@ struct ArticleView: View {
     }
 }
 
-struct ArticleView_Previews: PreviewProvider {
-    static var previews: some View {
-        ArticleView(article: Article(id: "abcde",
-                                     title: "Another article",
-                                     tags: nil,
-                                     url: "https://www.google.com", images: [:]))
-    }
-}
-
 extension Article {
 
     var definitelyTitle: String {
