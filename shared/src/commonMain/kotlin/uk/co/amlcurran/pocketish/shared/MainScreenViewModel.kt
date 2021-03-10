@@ -5,6 +5,11 @@ data class MainViewState(
     val latestUntagged: List<Article>
 )
 
+data class TagViewState(
+    val tag: Tag,
+    val articles: List<Article>
+)
+
 class MainScreenViewModel(
     private val pocketApi: PocketApi,
     private val tagsRepository: TagsRepository,
@@ -23,6 +28,15 @@ class MainScreenViewModel(
             full = true
         )
         return MainViewState(tags, latestUntagged)
+    }
+
+    suspend fun getArticlesWithTag(tag: String): TagViewState {
+        val latestUntagged = pocketApi.getArticlesWithTag(
+            tag,
+            userStore["access_token"]!!,
+            full = true
+        )
+        return TagViewState(Tag(tag, tag, latestUntagged.size), latestUntagged)
     }
 
     suspend fun addTagToArticle(tag: String, articleId: String): Boolean {

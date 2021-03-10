@@ -14,6 +14,7 @@ class ObservableHomeViewModel: ObservableObject {
     private let homeViewModel: MainScreenViewModel
 
     @Published var state: AsyncResult<MainViewState> = .loading
+    @Published var tagsState: AsyncResult<TagViewState> = .loading
     @Published var reloading: Bool = false
 
     init(homeViewModel: MainScreenViewModel) {
@@ -73,6 +74,18 @@ class ObservableHomeViewModel: ObservableObject {
                         state = .data(current.tagging(articleId, withNewTag: tagName))
                     }
                     onFinished()
+                }
+            }
+        }
+    }
+
+    func loadArticles(tagged tag: Tag) {
+        homeViewModel.getArticlesWithTag(tag: tag.id) { [weak self] result, error in
+            if let error = error {
+                print(error)
+            } else {
+                if let result = result {
+                    self?.tagsState = .data(result)
                 }
             }
         }

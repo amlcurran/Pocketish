@@ -75,7 +75,7 @@ struct MainView: View {
     }
 
     private func tagListItem(from tag: Tag) -> some View {
-        NavigationLink(destination: ArticlesByTag(tag: tag)) {
+        NavigationLink(destination: ArticlesByTag(tag: tag, viewModel: viewModel)) {
             ListItem(leftText: tag.name,
                 rightText: "\(tag.numberOfArticles)",
                 rightImage: Image(systemName: "chevron.right"))
