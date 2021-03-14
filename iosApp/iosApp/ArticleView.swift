@@ -17,7 +17,9 @@ struct ArticleView: View {
         VStack {
             RemoteImage(url: article.mainImage()?.src)
                 .aspectRatio(contentMode: .fill)
-                .frame(maxHeight: 90)
+                .frame(height: 100)
+                .clipped()
+            .background(Color.green)
             Text(article.definitelyTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(1)

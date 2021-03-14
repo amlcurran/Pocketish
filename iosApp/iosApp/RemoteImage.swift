@@ -15,14 +15,14 @@ enum LoadState<T> {
 struct RemoteImage: View {
 
     private class Loader: ObservableObject {
-        var data = Data()
-        var state = LoadState<Data>.loading
+        var state = LoadState<UIImage>.loading
 
         init(url: String?) {
             if let foo = url, let parsedURL = URL(string: foo) {
                 URLSession.shared.dataTask(with: parsedURL) { data, response, error in
-                    if let data = data, data.count > 0 {
-                        self.state = .success(data)
+                    if let data = data, data.count > 0, let image = UIImage(data: data) {
+                        Thread.sleep(forTimeInterval: 1.0)
+                        self.state = .success(image)
                     } else {
                         self.state = .failure
                     }
@@ -41,53 +41,23 @@ struct RemoteImage: View {
     }
 
     @StateObject private var loader: Loader
-    var loading: Image
-    var failure: Image
 
     var body: some View {
-        imageBloop(image: selectImage())
-    }
-
-    func imageBloop(image: (image: Image, fill: Bool)) -> some View {
-        if image.fill {
-            return AnyView(
-                image.image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            )
-        } else {
-            return AnyView(
-                image.image
-                    .font(.system(size: 60))
-                    .foregroundColor(.black)
-                    .mask(
-                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.05), Color.black.opacity(0.2)]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
-            )
-        }
-    }
-
-    init(url: String?,
-         loading: Image = Image(systemName: "photo").renderingMode(.template),
-         failure: Image = Image(systemName: "multiply.circle").renderingMode(.template)) {
-        _loader = StateObject(wrappedValue: Loader(url: url))
-        self.loading = loading
-        self.failure = failure
-    }
-
-    private func selectImage() -> (Image, fill: Bool) {
         switch loader.state {
+        case let .success(image):
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
         case .loading:
-            return (loading, false)
+            Image(systemName: "arrow.clockwise")
         case .failure:
-            return (failure, false)
-        case .success(let data):
-            if let image = UIImage(data: data) {
-                return (Image(uiImage: image), true)
-            } else {
-                return (failure, false)
-            }
+            Image(systemName: "sleep")
+                .aspectRatio(contentMode: .fit)
         }
+    }
+
+    init(url: String?) {
+        _loader = StateObject(wrappedValue: Loader(url: url))
     }
 }
 

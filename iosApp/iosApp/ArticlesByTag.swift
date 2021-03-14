@@ -10,21 +10,7 @@ struct ArticlesByTag: View {
         AsyncView(state: viewModel.tagsState) { (articles: TagViewState) in
             List {
                 ForEach(articles.articles) { (article: Article) in
-                    Link(destination: URL(string: article.url)!) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(article.title)
-                                    .font(.system(.body, design: .rounded))
-                                Spacer(minLength: 6)
-                                Text(article.excerpt)
-                                    .lineLimit(2)
-                                    .foregroundColor(.secondary)
-                            }
-                                .padding(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
-                            Image(systemName: "chevron.forward")
-                                .foregroundColor(.secondary)
-                        }
-                    }
+                    articleItem(article: article)
                 }
                 .onDelete { items in
                     print("Don't do anything yet!")
@@ -38,6 +24,38 @@ struct ArticlesByTag: View {
             }
     }
 
+    private func articleItem(article: Article) -> some View {
+        Link(destination: URL(string: article.url)!) {
+            HStack {
+                RemoteImage(url: article.mainImage()?.src)
+                    .frame(width: 100)
+                    .clipped()
+                VStack(alignment: .leading) {
+                    Text(article.title)
+                        .font(.system(.body, design: .rounded))
+                    Spacer(minLength: 6)
+                    Text(article.excerpt)
+                        .lineLimit(2)
+                        .foregroundColor(.secondary)
+                }
+                    .padding(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
+                Image(systemName: "chevron.forward")
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+
+}
+
+struct CardStyle: ViewModifier {
+
+    func body(content: Content) -> some View {
+        content
+            .background(Color(UIColor.secondarySystemBackground))
+            .cornerRadius(12)
+            .shadow(radius: 3)
+            .padding(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
+    }
 }
 
 extension MainScreenViewModel {

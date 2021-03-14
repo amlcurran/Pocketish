@@ -35,10 +35,7 @@ struct HorizontalArticles: View {
                 ForEach(articles) { article in
                     ArticleView(article: article)
                         .frame(width: 200)
-                        .background(Color(UIColor.secondarySystemBackground))
-                        .cornerRadius(12)
-                        .shadow(radius: 3)
-                        .padding(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
+                        .modifier(CardStyle())
                         .onDrag { NSItemProvider(object: article.id as NSString) }
                         .onTapGesture { onArticleClicked(article) }
                 }.animation(.easeInOut(duration: 0.2))
