@@ -19,7 +19,6 @@ struct ArticleView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(height: 100)
                 .clipped()
-            .background(Color.green)
             Text(article.definitelyTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(1)

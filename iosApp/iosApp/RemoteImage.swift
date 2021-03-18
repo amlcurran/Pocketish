@@ -50,9 +50,10 @@ struct RemoteImage: View {
                 .aspectRatio(contentMode: .fill)
         case .loading:
             Image(systemName: "arrow.clockwise")
+                .font(.system(size: 36, design: .rounded))
         case .failure:
             Image(systemName: "sleep")
-                .aspectRatio(contentMode: .fit)
+                .font(.system(size: 36, design: .rounded))
         }
     }
 
