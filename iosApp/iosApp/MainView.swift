@@ -43,15 +43,28 @@ struct MainView: View {
                     .foregroundColor(Color(UIColor.systemBackground))
                     .frame(height: 50)
             }
-            Button("Add new tag") {
-                dragClicked = true
+            HStack {
+                Button("Archive") {
+                    dragClicked = true
+                }
+                    .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
+                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
+                        enteredNewDrop = entered
+                    }, droppedArticle: { articleId in
+                        viewModel.archive(articleId) {
+
+                        }
+                    }))
+                Button("Add new tag") {
+                    dragClicked = true
+                }
+                    .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
+                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
+                        enteredNewDrop = entered
+                    }, droppedArticle: { articleId in
+                        showSheet = .addNewTag(articleId)
+                    }))
             }
-            .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
-            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
-                enteredNewDrop = entered
-            }, droppedArticle: { articleId in
-                showSheet = .addNewTag(articleId)
-            }))
         }
             .listStyle(PlainListStyle())
             .sheet(item: $showSheet) { foo in

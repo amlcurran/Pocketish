@@ -33,7 +33,6 @@ struct ArticlesByTag: View {
                 VStack(alignment: .leading) {
                     Text(article.title)
                         .font(.system(.body, design: .rounded))
-                    Spacer(minLength: 6)
                     Text(article.excerpt)
                         .lineLimit(2)
                         .foregroundColor(.secondary)

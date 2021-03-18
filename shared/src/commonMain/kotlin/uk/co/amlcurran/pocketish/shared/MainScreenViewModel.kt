@@ -43,6 +43,10 @@ class MainScreenViewModel(
         return pocketApi.add(tagId = tag, articleId = articleId, userStore["access_token"]!!) ?: false
     }
 
+    suspend fun archive(articleId: String): Boolean {
+        return pocketApi.archive(articleId, userStore["access_token"]!!) ?: false
+    }
+
 }
 
 data class Tag(

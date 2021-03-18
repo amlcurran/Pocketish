@@ -30,7 +30,9 @@ struct HomeView: View {
                 reloadButton()
             }
             .font(.system(.body, design: .rounded))
-        }.onAppear { viewModel.appeared() }
+        }
+            .navigationViewStyle(StackNavigationViewStyle())
+            .onAppear { viewModel.appeared() }
     }
 
     private func reloadButton() -> some View {

@@ -52,7 +52,7 @@ class ObservableHomeViewModel: ObservableObject {
             } else {
                 if let result = result, result == KotlinBoolean(bool: true) {
                     if case AsyncResult<MainViewState>.data(let current) = state {
-                        state = .data(current.tagging(articleId, with: tag))
+                        state = .data(current.removingUntaggedArticle(articleId))
                     }
                     onFinished()
                 }
@@ -62,6 +62,21 @@ class ObservableHomeViewModel: ObservableObject {
 
     func loadMoreUntagged() {
         print("No-op for now!")
+    }
+
+    func archive(_ id: String, onFinished: @escaping () -> Void) {
+        homeViewModel.archive(articleId: id) { [self] result, error in
+            if let error = error {
+                print(error)
+            } else {
+                if let result = result, result == KotlinBoolean(bool: true) {
+                    if case AsyncResult<MainViewState>.data(let current) = state {
+                        state = .data(current.removingUntaggedArticle(id))
+                    }
+                    onFinished()
+                }
+            }
+        }
     }
 
     func addNewTag(named tagName: String, to articleId: String, onFinished: @escaping () -> Void) {
@@ -94,7 +109,7 @@ class ObservableHomeViewModel: ObservableObject {
 
 extension MainViewState {
 
-    func tagging(_ articleId: String, with tag: Tag) -> MainViewState {
+    func removingUntaggedArticle(_ articleId: String) -> MainViewState {
         doCopy(tags: tags, latestUntagged: latestUntagged.filter { $0.id != articleId })
     }
 

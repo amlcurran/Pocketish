@@ -88,6 +88,14 @@ class PocketApi {
             url.parameters["actions"] = """[{ "action": "tags_add", "item_id": "$articleId", "tags": "$tagId" }]"""
         }.action_results.firstOrNull()
     }
+
+    suspend fun archive(articleId: String, accessToken: String): Boolean? {
+        return httpClient.post<ActionsResponse>("https://getpocket.com/v3/send") {
+            url.parameters["consumer_key"] = consumerKey
+            url.parameters["access_token"] = accessToken
+            url.parameters["actions"] = """[{ "action": "archive", "item_id": "$articleId" }]"""
+        }.action_results.firstOrNull()
+    }
 }
 
 @Serializable
