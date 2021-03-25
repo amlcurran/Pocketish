@@ -52,8 +52,10 @@ struct RemoteImage: View {
             Image(systemName: "arrow.clockwise")
                 .font(.system(size: 36, design: .rounded))
         case .failure:
-            Image(systemName: "sleep")
-                .font(.system(size: 36, design: .rounded))
+            Image(systemName: "photo")
+                .font(.system(size: 128, design: .rounded))
+                .rotationEffect(.degrees(-45))
+                .foregroundColor(Color.accentColor.opacity(0.3))
         }
     }
 

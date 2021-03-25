@@ -6,7 +6,7 @@ struct RoundedButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .makeTheButton(withColor: entered ? .accentColor : .green)
+            .makeTheButton(withColor: entered ? Color.accentColor : .accentColor)
             .animation(.easeInOut(duration: 0.1))
     }
 

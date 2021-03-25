@@ -43,10 +43,11 @@ struct MainView: View {
                     .foregroundColor(Color(UIColor.systemBackground))
                     .frame(height: 50)
             }
-            HStack {
-                Button("Archive") {
-                    dragClicked = true
-                }
+            VStack {
+                HStack {
+                    Button("Archive") {
+                        dragClicked = true
+                    }
                     .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
                     .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
                         enteredNewDrop = entered
@@ -55,15 +56,16 @@ struct MainView: View {
 
                         }
                     }))
-                Button("Add new tag") {
-                    dragClicked = true
-                }
+                    Button("Add new tag") {
+                        dragClicked = true
+                    }
                     .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
                     .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
                         enteredNewDrop = entered
                     }, droppedArticle: { articleId in
                         showSheet = .addNewTag(articleId)
                     }))
+                }
             }
         }
             .listStyle(PlainListStyle())

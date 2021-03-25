@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             mainRouter.start { (viewState, error) in
                 if viewState != nil {
                     let viewModel = ObservableHomeViewModel(homeViewModel: model)
-                    let viewController = UIHostingController(rootView: HomeView(viewModel: viewModel))
+                    let viewController = UIHostingController(rootView: HomeView(viewModel: viewModel).accentColor(.orange))
                     window.rootViewController = viewController
                 }
             }

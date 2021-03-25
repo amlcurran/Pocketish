@@ -13,7 +13,10 @@ struct ArticlesByTag: View {
                     articleItem(article: article)
                 }
                 .onDelete { items in
-                    print("Don't do anything yet!")
+                    let article = items.first.map { articles.articles[$0] }
+                    viewModel.archive(article!.id) {
+
+                    }
                 }
             }.font(.system(.body, design: .rounded))
         }
@@ -29,6 +32,7 @@ struct ArticlesByTag: View {
             HStack {
                 RemoteImage(url: article.mainImage()?.src)
                     .frame(width: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                     .clipped()
                 VStack(alignment: .leading) {
                     Text(article.title)

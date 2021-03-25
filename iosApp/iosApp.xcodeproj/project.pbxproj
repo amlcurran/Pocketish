@@ -87,6 +87,7 @@
 		862F91E125EAB1940016D473 /* HorizontalArticles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalArticles.swift; sourceTree = "<group>"; };
 		862F91E525EAB6850016D473 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
 		862F91ED25EAFB510016D473 /* ArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleView.swift; sourceTree = "<group>"; };
+		86848B2626052D6800DEE4DA /* Pocketish.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocketish.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +112,7 @@
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
+				86848B2626052D6800DEE4DA /* Pocketish.entitlements */,
 				7555FF7D242A565900829871 /* iosApp */,
 				7555FF94242A565B00829871 /* iosAppTests */,
 				7555FF9F242A565B00829871 /* iosAppUITests */,
@@ -131,28 +133,28 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				698538833F036DFFB5EC097E /* AddNewTagView.swift */,
 				7555FF7E242A565900829871 /* AppDelegate.swift */,
-				7555FF80242A565900829871 /* SceneDelegate.swift */,
-				7555FF82242A565900829871 /* LoadingYourTags.swift */,
+				69853836C4982856BE6A0087 /* ArticleDropDelegate.swift */,
+				69853325535EE959E3808D3F /* ArticlesByTag.swift */,
+				862F91ED25EAFB510016D473 /* ArticleView.swift */,
 				7555FF84242A565B00829871 /* Assets.xcassets */,
-				7555FF89242A565B00829871 /* LaunchScreen.storyboard */,
-				7555FF8C242A565B00829871 /* Info.plist */,
-				7555FF86242A565B00829871 /* Preview Content */,
+				69853B3521EEBDB8DE08647B /* AsyncView.swift */,
+				69853126574A0E46ACD0C96C /* EdgeInsets+Api.swift */,
+				698530C85B4B94F8B3535304 /* Hidden.swift */,
 				862F91CE25E5A3CF0016D473 /* HomeView.swift */,
 				862F91E125EAB1940016D473 /* HorizontalArticles.swift */,
-				862F91E525EAB6850016D473 /* RemoteImage.swift */,
-				862F91ED25EAFB510016D473 /* ArticleView.swift */,
-				69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */,
+				7555FF8C242A565B00829871 /* Info.plist */,
+				7555FF89242A565B00829871 /* LaunchScreen.storyboard */,
 				698536EAD9E56774FB6E729E /* ListItem.swift */,
-				69853E917989FBEB29EF13AA /* SafariView.swift */,
-				69853325535EE959E3808D3F /* ArticlesByTag.swift */,
+				7555FF82242A565900829871 /* LoadingYourTags.swift */,
 				69853DD7F8B6E82E68B20FA9 /* MainView.swift */,
-				69853126574A0E46ACD0C96C /* EdgeInsets+Api.swift */,
-				69853836C4982856BE6A0087 /* ArticleDropDelegate.swift */,
-				698530C85B4B94F8B3535304 /* Hidden.swift */,
+				69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */,
+				7555FF86242A565B00829871 /* Preview Content */,
+				862F91E525EAB6850016D473 /* RemoteImage.swift */,
 				698537109B08963DCF159C1F /* RoundedButtonStyle.swift */,
-				698538833F036DFFB5EC097E /* AddNewTagView.swift */,
-				69853B3521EEBDB8DE08647B /* AsyncView.swift */,
+				69853E917989FBEB29EF13AA /* SafariView.swift */,
+				7555FF80242A565900829871 /* SceneDelegate.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -462,6 +464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Pocketish.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 3H3SBN3AYY;
@@ -475,6 +478,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.amlcurran.Pocketish;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -484,6 +488,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Pocketish.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 3H3SBN3AYY;
@@ -497,6 +502,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.amlcurran.Pocketish;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

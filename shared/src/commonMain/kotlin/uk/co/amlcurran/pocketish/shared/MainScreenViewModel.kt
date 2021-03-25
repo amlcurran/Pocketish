@@ -24,7 +24,7 @@ class MainScreenViewModel(
         val latestUntagged = pocketApi.getArticlesWithTag(
             "_untagged_",
             userStore["access_token"]!!,
-            maxCount = 6,
+            maxCount = 10,
             full = true
         )
         return MainViewState(tags, latestUntagged)
