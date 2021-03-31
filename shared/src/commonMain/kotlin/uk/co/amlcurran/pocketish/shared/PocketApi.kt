@@ -8,8 +8,17 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.json.Json
+
+@Serializable
+data class RequestAuthBody(
+    @SerialName("consumer_key") val appKey: String,
+    @SerialName("redirect_uri") val redirectUri: String
+)
+
+@Serializable
+data class RequestResponse(
+    val code: String
+)
 
 class PocketApi {
 
@@ -34,17 +43,6 @@ class PocketApi {
         }
         return response.code
     }
-
-    @Serializable
-    private data class RequestAuthBody(
-        @SerialName("consumer_key") val appKey: String,
-        @SerialName("redirect_uri") val redirectUri: String
-    )
-
-    @Serializable
-    private data class RequestResponse(
-        val code: String
-    )
 
     suspend fun continueLogin(code: String): String {
         val response = httpClient.post<AuthorizeResponse>("https://getpocket.com/v3/oauth/authorize") {

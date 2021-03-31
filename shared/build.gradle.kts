@@ -15,8 +15,10 @@ kotlin {
             }
         }
     }
-    js().browser {
-
+    js {
+        browser {
+            binaries.executable()
+        }
     }
     sourceSets {
         val ktorVersion = "1.4.1"
@@ -50,6 +52,8 @@ kotlin {
                 implementation(npm("react", "17.0.1"))
                 implementation(npm("react-dom", "17.0.1"))
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
             }
         }
     }

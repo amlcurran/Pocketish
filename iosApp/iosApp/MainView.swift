@@ -3,18 +3,16 @@ import shared
 
 struct MainView: View {
 
-    enum Sheet: Identifiable {
-        case showArticle(Article)
-        case addNewTag(String)
-
-        var id: String {
-            switch self {
-            case .showArticle(let article):
-                return "article-" + article.id
-            case .addNewTag(let articleId):
-                return "newtag-" + articleId
-            }
+    struct Sheet: Identifiable {
+        static func showArticle(_ article: Article) -> Sheet {
+            Sheet(id: "article-" + article.id)
         }
+
+        static func addNewTag(to article: String) -> Sheet {
+            Sheet(id: "newtag-" + article)
+        }
+
+        let id: String
     }
 
     let state: MainViewState
@@ -63,7 +61,7 @@ struct MainView: View {
                     .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
                         enteredNewDrop = entered
                     }, droppedArticle: { articleId in
-                        showSheet = .addNewTag(articleId)
+                        showSheet = .addNewTag(to: articleId)
                     }))
                 }
             }

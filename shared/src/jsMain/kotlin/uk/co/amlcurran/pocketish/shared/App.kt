@@ -4,58 +4,66 @@ import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import kotlinx.html.js.onClickFunction
+import react.*
+import react.dom.button
 import react.dom.div
+import kotlin.js.Console
 
 external interface LoginState : RState {
     var loading: Boolean
+    var loggedIn: Boolean
+    var mainState: MainViewState?
 }
 
-class App: RComponent<RProps, LoginState>() {
+
+class App: RComponent<RProps, LoginState>(), URLLauncher {
+
+    private val pocketApi = PocketApi()
+    private val userStore = LocalStorageUserStore()
+    private val loginViewModel = LoginViewModel(pocketApi, this, userStore)
+    private val mainViewModel = MainScreenViewModel(pocketApi, TagsFromArticlesRepository(pocketApi, userStore), userStore)
 
     override fun LoginState.init() {
-        val scope = MainScope()
-        scope.launch {
-            print("Get ready")
-            loginViewModel.login("https://www.google.com")
-            setState(transformState = {
-                it.loading = true
-                return@setState it
-            })
+        MainScope().launch {
+            if (loginViewModel.needsLogin()) {
+                loginViewModel.login("https://www.google.com")
+                setState {
+                    loading = true
+                }
+            } else {
+                setState {
+                    loggedIn = true
+                }
+                val state = mainViewModel.getTagsState(ignoreCache = false)
+                setState {
+                    mainState = state
+                }
+            }
         }
     }
 
-    private val loginViewModel = LoginViewModel(PocketApi(), object : URLLauncher {
-        override fun launch(url: String) {
-            window.open(url, target = "_blank")
-        }
-
-    }, object : UserStore {
-        override fun get(key: String): String? {
-            return localStorage.getItem(key)
-        }
-
-        override fun set(key: String, value: String?) {
-            localStorage.setItem(key, value ?: "")
-        }
-
-        override fun getStringArray(key: String): Array<String> {
-            return localStorage.getItem(key)?.split(";")?.toTypedArray() ?: emptyArray()
-        }
-
-        override fun setStringArray(key: String, list: List<String>) {
-            localStorage.setItem(key, list.joinToString(","))
-        }
-
-    })
-
     override fun RBuilder.render() {
-        div {
-            +"Foo bar"
+        state.mainState?.let {
+            div {
+                +"${it.latestUntagged.size}"
+            }
         }
+        button {
+            +"Authorize"
+            attrs {
+                onClickFunction = {
+                    MainScope().launch {
+                        loginViewModel.continueLogin()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun launch(url: String) {
+        console.log("Launching $url")
+        window.open(url)
     }
 
 }
