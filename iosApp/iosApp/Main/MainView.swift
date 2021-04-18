@@ -25,7 +25,13 @@ struct MainView: View {
                     showSheet = .showArticle(article)
                 }
                 ForEach(state.tags) { (tag: Tag) in
-                    tagListItem(from: tag)
+                    TagListItem(tag: tag, enteredTagDrop: $enteredTagDrop) { articleId in
+                        viewModel.add(tag, toArticleWithId: articleId) {
+                            selectedFeedback.notificationOccurred(.success)
+                        }
+                    } destination: {
+                        ArticlesByTag(tag: tag, viewModel: viewModel)
+                    }
                     if tag.id != state.tags.last?.id {
                         Divider()
                     }
@@ -68,20 +74,4 @@ struct MainView: View {
         }
     }
 
-    private func tagListItem(from tag: Tag) -> some View {
-        NavigationLink(destination: ArticlesByTag(tag: tag, viewModel: viewModel)) {
-            ListItem(leftText: tag.name,
-                rightText: "\(tag.numberOfArticles)",
-                rightImage: Image(systemName: "chevron.right"))
-        }
-        .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, dropEntered: $enteredTagDrop) { articleId in
-            viewModel.add(tag, toArticleWithId: articleId) {
-                selectedFeedback.notificationOccurred(.success)
-            }
-        })
-        .background(enteredTagDrop == tag ? Color.black.opacity(0.1) : Color.clear)
-        .animation(.default)
-    }
-
 }
-
