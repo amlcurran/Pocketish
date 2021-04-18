@@ -8,6 +8,7 @@
 
 import SwiftUI
 import shared
+import Combine
 
 enum AsyncResult<T: Equatable> {
     case idle
@@ -25,12 +26,21 @@ struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
     @State var launchType: OpenIn = .safari
+    @StateObject var textObserver = TextFieldObserver()
 
     var body: some View {
         NavigationView {
-            VStack {
+            ZStack {
                 viewForState(viewModel.state)
+                    .animation(nil)
+                if !textObserver.debouncedText.isEmpty {
+                    Text(textObserver.debouncedText)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.blue.opacity(0.2))
+                }
             }
+            .animation(Animation.easeIn.speed(4))
+                .transition(.opacity)
             .navigationBarTitle("Tags")
             .toolbar {
                 safariButton()
@@ -39,6 +49,18 @@ struct HomeView: View {
         }
             .navigationViewStyle(StackNavigationViewStyle())
             .onAppear { viewModel.appeared() }
+    }
+
+    private func searchOverlay() -> some View {
+        if textObserver.debouncedText.isEmpty {
+            return AnyView(Text("blahblah"))
+        } else {
+            return AnyView(Text(textObserver.debouncedText)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(Color.blue.opacity(0.2))
+                            .animation(.easeIn)
+                            .transition(.opacity))
+        }
     }
 
     private func reloadButton() -> some View {
@@ -78,10 +100,26 @@ struct HomeView: View {
         case .loading, .idle, .failure:
             return AnyView(ProgressView())
         case .data(let state):
-            return AnyView(MainView(state: state, viewModel: viewModel))
+            return AnyView(MainView(state: state, searchText: $textObserver.searchText, viewModel: viewModel))
         }
     }
 
+}
+
+class TextFieldObserver : ObservableObject {
+    @Published var debouncedText = ""
+    @Published var searchText = ""
+
+    private var subscriptions = Set<AnyCancellable>()
+
+    init() {
+        $searchText
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .sink(receiveValue: { t in
+                self.debouncedText = t
+            } )
+            .store(in: &subscriptions)
+    }
 }
 
 struct TagsView_Previews: PreviewProvider {

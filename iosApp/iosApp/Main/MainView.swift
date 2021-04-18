@@ -9,7 +9,7 @@ struct MainView: View {
     @State var enteredArchiveDrop: Bool = false
     @State var enteredTagDrop: Bool = false
     @State var dragClicked: Bool = false
-    @State var searchText: String = ""
+    @Binding var searchText: String
     @StateObject var viewModel: ObservableHomeViewModel
 
     let selectedFeedback = UINotificationFeedbackGenerator()
