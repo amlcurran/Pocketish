@@ -31,6 +31,8 @@
 		862F91E225EAB1940016D473 /* HorizontalArticles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862F91E125EAB1940016D473 /* HorizontalArticles.swift */; };
 		862F91E625EAB6850016D473 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862F91E525EAB6850016D473 /* RemoteImage.swift */; };
 		862F91EE25EAFB520016D473 /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862F91ED25EAFB510016D473 /* ArticleView.swift */; };
+		86ADBE3D262C692900B50516 /* MainView+Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3C262C692900B50516 /* MainView+Sheets.swift */; };
+		86ADBE40262C766600B50516 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3F262C766600B50516 /* SearchBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +90,8 @@
 		862F91E525EAB6850016D473 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
 		862F91ED25EAFB510016D473 /* ArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleView.swift; sourceTree = "<group>"; };
 		86848B2626052D6800DEE4DA /* Pocketish.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocketish.entitlements; sourceTree = "<group>"; };
+		86ADBE3C262C692900B50516 /* MainView+Sheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainView+Sheets.swift"; sourceTree = "<group>"; };
+		86ADBE3F262C766600B50516 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +196,7 @@
 				69853B3521EEBDB8DE08647B /* AsyncView.swift */,
 				69853126574A0E46ACD0C96C /* EdgeInsets+Api.swift */,
 				698530C85B4B94F8B3535304 /* Hidden.swift */,
+				86ADBE3F262C766600B50516 /* SearchBar.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -205,6 +210,7 @@
 				698536EAD9E56774FB6E729E /* ListItem.swift */,
 				69853DD7F8B6E82E68B20FA9 /* MainView.swift */,
 				69853CF48C5734D1AD46F653 /* ObservableHomeViewModel.swift */,
+				86ADBE3C262C692900B50516 /* MainView+Sheets.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -328,6 +334,8 @@
 				69853A387256351AFCEE6BE0 /* Hidden.swift in Sources */,
 				69853A620FBD03E0A149AA3C /* RoundedButtonStyle.swift in Sources */,
 				698532268325DCF181A563D7 /* AddNewTagView.swift in Sources */,
+				86ADBE40262C766600B50516 /* SearchBar.swift in Sources */,
+				86ADBE3D262C692900B50516 /* MainView+Sheets.swift in Sources */,
 				698537D53F9BD13030216B09 /* AsyncView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -16,9 +16,15 @@ enum AsyncResult<T: Equatable> {
     case data(T)
 }
 
+enum OpenIn {
+    case safari
+    case inApp
+}
+
 struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
+    @State var launchType: OpenIn = .safari
 
     var body: some View {
         NavigationView {
@@ -27,7 +33,7 @@ struct HomeView: View {
             }
             .navigationBarTitle("Tags")
             .toolbar {
-                reloadButton()
+                safariButton()
             }
             .font(.system(.body, design: .rounded))
         }
@@ -44,6 +50,26 @@ struct HomeView: View {
             } else {
                 Image(systemName: "arrow.clockwise")
             }
+        }
+    }
+
+    private func safariButton() -> some View {
+        Menu {
+            Button(action: {
+                viewModel.forceRefresh()
+            }) {
+                Label("Refresh", systemImage: "arrow.clockwise")
+            }
+            .disabled(viewModel.reloading)
+            Picker(selection: $launchType, label: Text("FOO")) {
+                Label("Open in browser", systemImage: "safari")
+                    .tag(OpenIn.safari)
+                Label("Open in app", systemImage: "app.badge")
+                    .tag(OpenIn.inApp)
+            }
+        }
+        label: {
+            Image(systemName: "ellipsis.circle")
         }
     }
 

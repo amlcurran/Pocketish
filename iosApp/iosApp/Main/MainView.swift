@@ -1,28 +1,6 @@
 import SwiftUI
 import shared
 
-struct Sheet: Identifiable {
-    static func showArticle(_ article: Article) -> Sheet {
-        Sheet(id: "article-" + article.id) { _ in
-            AnyView(SafariView(url: URL(string: article.url)!))
-        }
-    }
-
-    static func addNewTag(to article: String) -> Sheet {
-        Sheet(id: "newtag-" + article) { mainView in
-            AnyView(AddNewTagView { tagName in
-                mainView.showSheet = nil
-                mainView.viewModel.addNewTag(named: tagName, to: article) {
-                    mainView.selectedFeedback.notificationOccurred(.success)
-                }
-            })
-        }
-    }
-
-    let id: String
-    let content: (MainView) -> AnyView
-}
-
 struct MainView: View {
 
     let state: MainViewState
@@ -31,6 +9,7 @@ struct MainView: View {
     @State var enteredArchiveDrop: Bool = false
     @State var enteredTagDrop: Bool = false
     @State var dragClicked: Bool = false
+    @State var searchText: String = ""
     @StateObject var viewModel: ObservableHomeViewModel
 
     let selectedFeedback = UINotificationFeedbackGenerator()
@@ -38,6 +17,8 @@ struct MainView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             ScrollView(.vertical) {
+                SearchBar(placeholder: "Search articles", searchText: $searchText)
+                    .padding(.horizontal)
                 HorizontalArticles(articles: state.latestUntagged) {
                     viewModel.loadMoreUntagged()
                 } onArticleClicked: { article in
