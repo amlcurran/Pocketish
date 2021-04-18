@@ -1,27 +1,39 @@
 import SwiftUI
 import shared
 
-struct MainView: View {
-
-    struct Sheet: Identifiable {
-        static func showArticle(_ article: Article) -> Sheet {
-            Sheet(id: "article-" + article.id)
+struct Sheet: Identifiable {
+    static func showArticle(_ article: Article) -> Sheet {
+        Sheet(id: "article-" + article.id) { _ in
+            AnyView(SafariView(url: URL(string: article.url)!))
         }
-
-        static func addNewTag(to article: String) -> Sheet {
-            Sheet(id: "newtag-" + article)
-        }
-
-        let id: String
     }
+
+    static func addNewTag(to article: String) -> Sheet {
+        Sheet(id: "newtag-" + article) { mainView in
+            AnyView(AddNewTagView { tagName in
+                mainView.showSheet = nil
+                mainView.viewModel.addNewTag(named: tagName, to: article) {
+                    mainView.selectedFeedback.notificationOccurred(.success)
+                }
+            })
+        }
+    }
+
+    let id: String
+    let content: (MainView) -> AnyView
+}
+
+struct MainView: View {
 
     let state: MainViewState
     @State var showSheet: Sheet?
     @State var enteredNewDrop: Bool = false
+    @State var enteredArchiveDrop: Bool = false
+    @State var enteredTagDrop: Bool = false
     @State var dragClicked: Bool = false
     @StateObject var viewModel: ObservableHomeViewModel
 
-    private let selectedFeedback = UINotificationFeedbackGenerator()
+    let selectedFeedback = UINotificationFeedbackGenerator()
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -46,10 +58,8 @@ struct MainView: View {
                     Button("Archive") {
                         dragClicked = true
                     }
-                    .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
-                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
-                        enteredNewDrop = entered
-                    }, droppedArticle: { articleId in
+                    .buttonStyle(RoundedButtonStyle(entered: $enteredArchiveDrop))
+                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: $enteredArchiveDrop, droppedArticle: { articleId in
                         viewModel.archive(articleId) {
 
                         }
@@ -58,32 +68,22 @@ struct MainView: View {
                         dragClicked = true
                     }
                     .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
-                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: { entered in
-                        enteredNewDrop = entered
-                    }, droppedArticle: { articleId in
+                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: $enteredNewDrop, droppedArticle: { articleId in
                         showSheet = .addNewTag(to: articleId)
                     }))
+                    .frame(maxWidth: .infinity)
                 }
+                .padding(.horizontal)
             }
         }
-            .listStyle(PlainListStyle())
-            .sheet(item: $showSheet) { foo in
-                switch foo {
-                case .addNewTag(let id):
-                    AddNewTagView { tagName in
-                        self.showSheet = nil
-                        viewModel.addNewTag(named: tagName, to: id) {
-                            selectedFeedback.notificationOccurred(.success)
-                        }
-                    }
-                case .showArticle(let article):
-                    SafariView(url: URL(string: article.url)!)
-                }
-            }
+        .listStyle(PlainListStyle())
+        .sheet(item: $showSheet) { foo in
+            foo.content(self)
+        }
         .alert(isPresented: $dragClicked) {
             Alert(title: Text("Add new tag"),
-                message: Text("Drag an article on the button to create a new tag"),
-                dismissButton: .default(Text("OK")))
+                  message: Text("Drag an article on the button to create a new tag"),
+                  dismissButton: .default(Text("OK")))
         }
     }
 
@@ -93,7 +93,7 @@ struct MainView: View {
                 rightText: "\(tag.numberOfArticles)",
                 rightImage: Image(systemName: "chevron.right"))
         }
-            .onDrop(of: ["public.text"], delegate: ArticleDropDelegate { articleId in
+        .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: $enteredTagDrop) { articleId in
                 viewModel.add(tag, toArticleWithId: articleId) {
                     selectedFeedback.notificationOccurred(.success)
                 }

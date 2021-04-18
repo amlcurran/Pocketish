@@ -1,21 +1,21 @@
 package uk.co.amlcurran.pocketish.shared
 
-import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.css.fontFamily
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.button
 import react.dom.div
-import kotlin.js.Console
+import styled.css
+import styled.styledDiv
 
 external interface LoginState : RState {
     var loading: Boolean
     var loggedIn: Boolean
     var mainState: MainViewState?
 }
-
 
 class App: RComponent<RProps, LoginState>(), URLLauncher {
 
@@ -44,17 +44,22 @@ class App: RComponent<RProps, LoginState>(), URLLauncher {
     }
 
     override fun RBuilder.render() {
-        state.mainState?.let {
-            div {
-                +"${it.latestUntagged.size}"
+        styledDiv {
+            css {
+                fontFamily = "IBM Plex Sans, sans-serif"
             }
-        }
-        button {
-            +"Authorize"
-            attrs {
-                onClickFunction = {
-                    MainScope().launch {
-                        loginViewModel.continueLogin()
+            state.mainState?.let {
+                child(MainView::class) {
+                    attrs.mainState = it
+                }
+            }
+            button {
+                +"Authorize"
+                attrs {
+                    onClickFunction = {
+                        MainScope().launch {
+                            loginViewModel.continueLogin()
+                        }
                     }
                 }
             }

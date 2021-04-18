@@ -18,6 +18,8 @@ kotlin {
     js {
         browser {
             binaries.executable()
+            commonWebpackConfig {
+            }
         }
     }
     sourceSets {
@@ -51,6 +53,9 @@ kotlin {
                 implementation("org.jetbrains:kotlin-react-dom:17.0.1-pre.148-kotlin-1.4.21")
                 implementation(npm("react", "17.0.1"))
                 implementation(npm("react-dom", "17.0.1"))
+                implementation("org.jetbrains:kotlin-styled:5.2.1-pre.148-kotlin-1.4.21")
+                implementation(npm("styled-components", "~5.2.1"))
+
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-json-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
