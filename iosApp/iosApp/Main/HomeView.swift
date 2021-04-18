@@ -26,7 +26,7 @@ struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
     @State var launchType: OpenIn = .safari
-    @StateObject var textObserver = TextFieldObserver()
+    @StateObject var textObserver = Debouncer<String>(initial: "")
 
     var body: some View {
         NavigationView {
@@ -104,22 +104,6 @@ struct HomeView: View {
         }
     }
 
-}
-
-class TextFieldObserver : ObservableObject {
-    @Published var debouncedText = ""
-    @Published var searchText = ""
-
-    private var subscriptions = Set<AnyCancellable>()
-
-    init() {
-        $searchText
-            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-            .sink(receiveValue: { t in
-                self.debouncedText = t
-            } )
-            .store(in: &subscriptions)
-    }
 }
 
 struct TagsView_Previews: PreviewProvider {

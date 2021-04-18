@@ -7,7 +7,7 @@ struct MainView: View {
     @State var showSheet: Sheet?
     @State var enteredNewDrop: Bool = false
     @State var enteredArchiveDrop: Bool = false
-    @State var enteredTagDrop: Bool = false
+    @State var enteredTagDrop: Tag? = nil
     @State var dragClicked: Bool = false
     @Binding var searchText: String
     @StateObject var viewModel: ObservableHomeViewModel
@@ -40,7 +40,7 @@ struct MainView: View {
                         dragClicked = true
                     }
                     .buttonStyle(RoundedButtonStyle(entered: $enteredArchiveDrop))
-                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: $enteredArchiveDrop, droppedArticle: { articleId in
+                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate2(dropEntered: $enteredArchiveDrop, droppedArticle: { articleId in
                         viewModel.archive(articleId) {
 
                         }
@@ -49,7 +49,7 @@ struct MainView: View {
                         dragClicked = true
                     }
                     .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
-                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: $enteredNewDrop, droppedArticle: { articleId in
+                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate2(dropEntered: $enteredNewDrop, droppedArticle: { articleId in
                         showSheet = .addNewTag(to: articleId)
                     }))
                     .frame(maxWidth: .infinity)
@@ -74,11 +74,13 @@ struct MainView: View {
                 rightText: "\(tag.numberOfArticles)",
                 rightImage: Image(systemName: "chevron.right"))
         }
-        .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(dropEntered: $enteredTagDrop) { articleId in
-                viewModel.add(tag, toArticleWithId: articleId) {
-                    selectedFeedback.notificationOccurred(.success)
-                }
-            })
+        .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, dropEntered: $enteredTagDrop) { articleId in
+            viewModel.add(tag, toArticleWithId: articleId) {
+                selectedFeedback.notificationOccurred(.success)
+            }
+        })
+        .background(enteredTagDrop == tag ? Color.black.opacity(0.1) : Color.clear)
+        .animation(.default)
     }
 
 }
