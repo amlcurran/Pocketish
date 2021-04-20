@@ -25,7 +25,7 @@ struct TagListItem<Destination: View>: View {
         .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, dropEntered: $enteredTagDrop) { articleId in
             onDropped(articleId)
         })
-        .background(enteredTagDrop == tag ? AnyView(Color.black.opacity(0.1).colorInvert()) : AnyView(Color.clear))
+        .background(enteredTagDrop == tag ? AnyView(Color.primary.opacity(0.1).colorInvert()) : AnyView(Color.clear))
         .animation(.default)
     }
 

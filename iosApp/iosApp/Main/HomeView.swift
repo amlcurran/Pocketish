@@ -43,7 +43,25 @@ struct HomeView: View {
                 .transition(.opacity)
             .navigationBarTitle("Tags")
             .toolbar {
-                safariButton()
+                ToolbarItem {
+                    Menu {
+                        Button(action: {
+                            viewModel.forceRefresh()
+                        }) {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                        }
+                        .disabled(viewModel.reloading)
+                        Picker(selection: $launchType, label: Text("FOO")) {
+                            Label("Open in browser", systemImage: "safari")
+                                .tag(OpenIn.safari)
+                            Label("Open in app", systemImage: "app.badge")
+                                .tag(OpenIn.inApp)
+                        }
+                    }
+                    label: {
+                        Label("", systemImage: "ellipsis.circle")
+                    }
+                }
             }
             .font(.system(.body, design: .rounded))
         }
@@ -60,38 +78,6 @@ struct HomeView: View {
                             .background(Color.blue.opacity(0.2))
                             .animation(.easeIn)
                             .transition(.opacity))
-        }
-    }
-
-    private func reloadButton() -> some View {
-        Button(action: {
-            viewModel.forceRefresh()
-        }) {
-            if viewModel.reloading {
-                ProgressView()
-            } else {
-                Image(systemName: "arrow.clockwise")
-            }
-        }
-    }
-
-    private func safariButton() -> some View {
-        Menu {
-            Button(action: {
-                viewModel.forceRefresh()
-            }) {
-                Label("Refresh", systemImage: "arrow.clockwise")
-            }
-            .disabled(viewModel.reloading)
-            Picker(selection: $launchType, label: Text("FOO")) {
-                Label("Open in browser", systemImage: "safari")
-                    .tag(OpenIn.safari)
-                Label("Open in app", systemImage: "app.badge")
-                    .tag(OpenIn.inApp)
-            }
-        }
-        label: {
-            Image(systemName: "ellipsis.circle")
         }
     }
 
