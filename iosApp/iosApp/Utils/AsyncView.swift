@@ -10,7 +10,7 @@ struct AsyncView<T: AnyObject, Content: View>: View {
         var foo: AnyView!
         print(state)
         state.handle { state in
-            foo = AnyView(builder(state as! T))
+            foo = AnyView(builder(state!))
         } onLoading: {
             foo = AnyView(ProgressView())
         } onError: { _ in

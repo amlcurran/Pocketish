@@ -21,6 +21,7 @@ class MainScreenViewModel(
     val state = MutableStateFlow<AsyncResult<MainViewState>>(AsyncResult.Loading())
 
     suspend fun getTagsState(ignoreCache: Boolean) {
+        state.value = AsyncResult.Loading()
         val tags = tagsRepository.allTags(ignoreCache = ignoreCache)
             .map { tag ->
                 Tag(tag, tag, 0)

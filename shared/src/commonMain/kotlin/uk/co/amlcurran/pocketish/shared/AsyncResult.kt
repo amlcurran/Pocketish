@@ -10,4 +10,15 @@ sealed class AsyncResult<T> {
         is Loading -> null
         is Error -> null
     }
+
+    fun <U> handle(onData: (T) -> U,
+                   onLoading: () -> U,
+                   onError: (kotlin.Error) -> U): U {
+        return when (this) {
+            is Success -> onData(this.data)
+            is Loading -> onLoading()
+            is Error -> onError(this.error)
+        }
+    }
+
 }

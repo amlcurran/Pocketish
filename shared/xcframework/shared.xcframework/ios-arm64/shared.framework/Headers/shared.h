@@ -6,7 +6,7 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 
-@class SharedAddTagAction, SharedActions, SharedActionsResponse, SharedTagResponse, SharedArticleImage, SharedArticle, SharedArticleListResponse, SharedAsyncResult<T>, SharedKotlinError, SharedAsyncResultError<T>, SharedKotlinUnit, SharedAsyncResultLoading<T>, SharedAsyncResultSuccess<T>, SharedPocketApi, SharedTagViewState, SharedTag, SharedMainViewState, SharedKtor_httpUrl, SharedPocketApiAuthorizeBody, SharedPocketApiAuthorizeResponse, SharedRequestAuthBody, SharedRequestResponse, SharedKotlinArray<T>, SharedKotlinThrowable, SharedKotlinException, SharedKotlinRuntimeException, SharedKotlinIllegalStateException, SharedKtor_httpURLProtocol, SharedKotlinx_serialization_coreSerializersModule, SharedKotlinx_serialization_coreSerialKind, SharedKotlinNothing;
+@class SharedAddTagAction, SharedActions, SharedActionsResponse, SharedTagResponse, SharedArticleImage, SharedArticle, SharedArticleListResponse, SharedKotlinError, SharedAsyncResult<T>, SharedAsyncResultError<T>, SharedKotlinUnit, SharedAsyncResultLoading<T>, SharedAsyncResultSuccess<T>, SharedPocketApi, SharedTagViewState, SharedTag, SharedMainViewState, SharedKtor_httpUrl, SharedPocketApiAuthorizeBody, SharedPocketApiAuthorizeResponse, SharedRequestAuthBody, SharedRequestResponse, SharedKotlinArray<T>, SharedKotlinThrowable, SharedKotlinException, SharedKotlinRuntimeException, SharedKotlinIllegalStateException, SharedKtor_httpURLProtocol, SharedKotlinx_serialization_coreSerializersModule, SharedKotlinx_serialization_coreSerialKind, SharedKotlinNothing;
 
 @protocol SharedKotlinx_serialization_coreKSerializer, SharedURLLauncher, SharedUserStore, SharedKotlinSuspendFunction0, SharedTagsRepository, SharedKotlinx_coroutines_coreMutableStateFlow, SharedKotlinx_serialization_coreEncoder, SharedKotlinx_serialization_coreSerialDescriptor, SharedKotlinx_serialization_coreSerializationStrategy, SharedKotlinx_serialization_coreDecoder, SharedKotlinx_serialization_coreDeserializationStrategy, SharedKotlinFunction, SharedKotlinx_coroutines_coreFlowCollector, SharedKotlinx_coroutines_coreFlow, SharedKotlinx_coroutines_coreSharedFlow, SharedKotlinx_coroutines_coreStateFlow, SharedKotlinx_coroutines_coreMutableSharedFlow, SharedKtor_httpParameters, SharedKotlinIterator, SharedKotlinx_serialization_coreCompositeEncoder, SharedKotlinAnnotation, SharedKotlinx_serialization_coreCompositeDecoder, SharedKotlinMapEntry, SharedKtor_utilsStringValues, SharedKotlinx_serialization_coreSerializersModuleCollector, SharedKotlinKClass, SharedKotlinKDeclarationContainer, SharedKotlinKAnnotatedElement, SharedKotlinKClassifier;
 
@@ -281,6 +281,7 @@ __attribute__((swift_name("ArticleListResponse.Companion")))
 
 __attribute__((swift_name("AsyncResult")))
 @interface SharedAsyncResult<T> : SharedBase
+- (id _Nullable)handleOnData:(id _Nullable (^)(T _Nullable))onData onLoading:(id _Nullable (^)(void))onLoading onError:(id _Nullable (^)(SharedKotlinError *))onError __attribute__((swift_name("handle(onData:onLoading:onError:)")));
 @property (readonly) T _Nullable result __attribute__((swift_name("result")));
 @end;
 
@@ -661,10 +662,6 @@ __attribute__((swift_name("UserDefaultsStore")))
 - (SharedKotlinArray<NSString *> *)getStringArrayKey:(NSString *)key __attribute__((swift_name("getStringArray(key:)")));
 - (void)setKey:(NSString *)key value:(NSString * _Nullable)value __attribute__((swift_name("set(key:value:)")));
 - (void)setStringArrayKey:(NSString *)key list:(NSArray<NSString *> *)list __attribute__((swift_name("setStringArray(key:list:)")));
-@end;
-
-@interface SharedAsyncResult (Extensions)
-- (void)handleOnData:(void (^)(id _Nullable))onData onLoading:(void (^)(void))onLoading onError:(void (^)(SharedKotlinError *))onError __attribute__((swift_name("handle(onData:onLoading:onError:)")));
 @end;
 
 @interface SharedMainViewState (Extensions)

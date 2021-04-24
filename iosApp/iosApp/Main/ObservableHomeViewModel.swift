@@ -45,7 +45,6 @@ class ObservableHomeViewModel: ObservableObject {
 
     @Published var state: AsyncResult<MainViewState> = AsyncResultLoading(foo: KotlinUnit())
     @Published var tagsState: AsyncResult<TagViewState> = AsyncResultLoading(foo: KotlinUnit())
-    @Published var reloading: Bool = false
     @Published var loadingMoreUntagged: Bool = false
 
     init(homeViewModel: MainScreenViewModel) {
@@ -62,9 +61,8 @@ class ObservableHomeViewModel: ObservableObject {
     }
 
     func forceRefresh(onlyUntagged: Bool = false) {
-        reloading = true
         homeViewModel.getTagsState(ignoreCache: true) { state, error in
-            self.reloading = false
+
         }
     }
 

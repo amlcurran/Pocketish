@@ -22,38 +22,36 @@ struct HomeView: View {
     @StateObject var textObserver = Debouncer<String>(initial: "")
 
     var body: some View {
-            ZStack {
-                AsyncView(state: viewModel.state) { state in
-                    MainView(state: state, searchText: $textObserver.searchText, viewModel: viewModel)
-                }.animation(nil)
-            }
-            .animation(Animation.easeIn.speed(4))
-                .transition(.opacity)
-            .navigationBarTitle("Tags")
-            .toolbar {
-                ToolbarItem {
-                    Menu {
-                        Button(action: {
-                            viewModel.forceRefresh()
-                        }) {
-                            Label("Refresh", systemImage: "arrow.clockwise")
-                        }
-                        .disabled(viewModel.reloading)
-                        Picker(selection: $launchType, label: Text("FOO")) {
-                            Label("Open in browser", systemImage: "safari")
-                                .tag(OpenIn.safari)
-                            Label("Open in app", systemImage: "app.badge")
-                                .tag(OpenIn.inApp)
-                        }
+        AsyncView(state: viewModel.state) { state in
+            MainView(state: state, searchText: $textObserver.searchText, viewModel: viewModel)
+        }
+        .animation(nil)
+        .animation(Animation.easeIn.speed(4))
+        .transition(.opacity)
+        .navigationBarTitle("Tags")
+        .toolbar {
+            ToolbarItem {
+                Menu {
+                    Button(action: {
+                        viewModel.forceRefresh()
+                    }) {
+                        Label("Refresh", systemImage: "arrow.clockwise")
                     }
-                    label: {
-                        Label("", systemImage: "ellipsis.circle")
+                    Picker(selection: $launchType, label: Text("FOO")) {
+                        Label("Open in browser", systemImage: "safari")
+                            .tag(OpenIn.safari)
+                        Label("Open in app", systemImage: "app.badge")
+                            .tag(OpenIn.inApp)
                     }
                 }
+                label: {
+                    Label("", systemImage: "ellipsis.circle")
+                }
             }
-            .font(.system(.body, design: .rounded))
-            .navigationViewStyle(StackNavigationViewStyle())
-            .onAppear { viewModel.appeared() }
+        }
+        .font(.system(.body, design: .rounded))
+        .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear { viewModel.appeared() }
     }
 
 }
