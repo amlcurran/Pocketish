@@ -40,6 +40,13 @@ class MainScreenViewModel(
         )
     }
 
+    suspend fun loadMoreUntagged() {
+        val offset = state.value?.latestUntagged?.size ?: 0
+        val extraUntagged = getLatestUntagged(offset)
+        val oldUntagged = state.value?.latestUntagged ?: emptyList()
+        state.value = state.value?.copy(latestUntagged = oldUntagged + extraUntagged)
+    }
+
     suspend fun getArticlesWithTag(tag: String): TagViewState {
         val latestUntagged = pocketApi.getArticlesWithTag(
             tag,

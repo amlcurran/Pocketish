@@ -365,6 +365,12 @@ __attribute__((swift_name("MainScreenViewModel")))
  Other uncaught Kotlin exceptions are fatal.
 */
 - (void)getTagsStateIgnoreCache:(BOOL)ignoreCache completionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("getTagsState(ignoreCache:completionHandler:)")));
+
+/**
+ @note This method converts instances of CancellationException to errors.
+ Other uncaught Kotlin exceptions are fatal.
+*/
+- (void)loadMoreUntaggedWithCompletionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("loadMoreUntagged(completionHandler:)")));
 @property (readonly) id<SharedKotlinx_coroutines_coreMutableStateFlow> state __attribute__((swift_name("state")));
 @end;
 

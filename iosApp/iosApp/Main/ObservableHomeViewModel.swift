@@ -75,17 +75,8 @@ class ObservableHomeViewModel: ObservableObject {
 
     func loadMoreUntagged() {
         loadingMoreUntagged = true
-        let offset = state.value?.latestUntagged.count ?? 0
-        homeViewModel.getLatestUntagged(offset: Int32(offset)) { state, error in
+        homeViewModel.loadMoreUntagged { state, error in
             self.loadingMoreUntagged = false
-            if let state = state, case let .data(data) = self.state {
-                var newArticles = data.latestUntagged
-                newArticles.append(contentsOf: state)
-                self.state = .data(data.doCopy(tags: data.tags, latestUntagged: newArticles))
-            }
-            if let error = error {
-                self.state = .failure(error)
-            }
         }
     }
 
