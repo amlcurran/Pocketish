@@ -12,55 +12,62 @@ enum LoadState<T> {
     case loading, success(T), failure
 }
 
-struct RemoteImage: View {
+private class RemoteLoader: ObservableObject {
+    var state = LoadState<UIImage>.loading
 
-    private class Loader: ObservableObject {
-        var state = LoadState<UIImage>.loading
+    init(url: String?) {
+        if let foo = url, let parsedURL = URL(string: foo) {
+            URLSession.shared.dataTask(with: parsedURL) { data, response, error in
+                if let data = data, data.count > 0, let image = UIImage(data: data) {
+                    self.state = .success(image)
+                } else {
+                    self.state = .failure
+                }
 
-        init(url: String?) {
-            if let foo = url, let parsedURL = URL(string: foo) {
-                URLSession.shared.dataTask(with: parsedURL) { data, response, error in
-                    if let data = data, data.count > 0, let image = UIImage(data: data) {
-                        Thread.sleep(forTimeInterval: 1.0)
-                        self.state = .success(image)
-                    } else {
-                        self.state = .failure
-                    }
-
-                    DispatchQueue.main.async {
-                        self.objectWillChange.send()
-                    }
-                }.resume()
-            } else {
-                self.state = .failure
                 DispatchQueue.main.async {
                     self.objectWillChange.send()
                 }
+            }.resume()
+        } else {
+            self.state = .failure
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
             }
         }
     }
+}
 
-    @StateObject private var loader: Loader
+struct RemoteImage: View {
+
+    @StateObject private var loader: RemoteLoader
 
     var body: some View {
+        foo()
+    }
+
+    private func foo() -> some View {
         switch loader.state {
         case let .success(image):
-            Image(uiImage: image)
+            return AnyView(Image(uiImage: image)
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .aspectRatio(contentMode: .fill))
         case .loading:
-            Image(systemName: "arrow.clockwise")
-                .font(.system(size: 36, design: .rounded))
+            return AnyView(Image(systemName: "arrow.clockwise")
+                .font(.system(size: 36, design: .rounded)))
         case .failure:
-            Image(systemName: "photo")
-                .font(.system(size: 128, design: .rounded))
-                .rotationEffect(.degrees(-45))
-                .foregroundColor(Color.accentColor.opacity(0.3))
+            return AnyView(
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .font(.system(size: 128, design: .rounded))
+                    .rotationEffect(.degrees(-45))
+                    .foregroundColor(.accentColor.opacity(0.3))
+            )
         }
     }
 
     init(url: String?) {
-        _loader = StateObject(wrappedValue: Loader(url: url))
+        _loader = StateObject(wrappedValue: RemoteLoader(url: url))
     }
 }
 
