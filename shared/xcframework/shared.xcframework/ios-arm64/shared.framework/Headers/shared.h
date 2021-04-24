@@ -8,7 +8,7 @@
 
 @class SharedAddTagAction, SharedActions, SharedActionsResponse, SharedTagResponse, SharedArticleImage, SharedArticle, SharedArticleListResponse, SharedPocketApi, SharedKotlinUnit, SharedMainViewState, SharedTagViewState, SharedTag, SharedKtor_httpUrl, SharedPocketApiAuthorizeBody, SharedPocketApiAuthorizeResponse, SharedRequestAuthBody, SharedRequestResponse, SharedKotlinArray<T>, SharedKotlinThrowable, SharedKotlinException, SharedKotlinRuntimeException, SharedKotlinIllegalStateException, SharedKtor_httpURLProtocol, SharedKotlinx_serialization_coreSerializersModule, SharedKotlinx_serialization_coreSerialKind, SharedKotlinNothing;
 
-@protocol SharedKotlinx_serialization_coreKSerializer, SharedURLLauncher, SharedUserStore, SharedKotlinSuspendFunction0, SharedTagsRepository, SharedKotlinx_serialization_coreEncoder, SharedKotlinx_serialization_coreSerialDescriptor, SharedKotlinx_serialization_coreSerializationStrategy, SharedKotlinx_serialization_coreDecoder, SharedKotlinx_serialization_coreDeserializationStrategy, SharedKotlinFunction, SharedKtor_httpParameters, SharedKotlinIterator, SharedKotlinx_serialization_coreCompositeEncoder, SharedKotlinAnnotation, SharedKotlinx_serialization_coreCompositeDecoder, SharedKotlinMapEntry, SharedKtor_utilsStringValues, SharedKotlinx_serialization_coreSerializersModuleCollector, SharedKotlinKClass, SharedKotlinKDeclarationContainer, SharedKotlinKAnnotatedElement, SharedKotlinKClassifier;
+@protocol SharedKotlinx_serialization_coreKSerializer, SharedURLLauncher, SharedUserStore, SharedKotlinSuspendFunction0, SharedTagsRepository, SharedKotlinx_coroutines_coreMutableStateFlow, SharedKotlinx_serialization_coreEncoder, SharedKotlinx_serialization_coreSerialDescriptor, SharedKotlinx_serialization_coreSerializationStrategy, SharedKotlinx_serialization_coreDecoder, SharedKotlinx_serialization_coreDeserializationStrategy, SharedKotlinFunction, SharedKotlinx_coroutines_coreFlowCollector, SharedKotlinx_coroutines_coreFlow, SharedKotlinx_coroutines_coreSharedFlow, SharedKotlinx_coroutines_coreStateFlow, SharedKotlinx_coroutines_coreMutableSharedFlow, SharedKtor_httpParameters, SharedKotlinIterator, SharedKotlinx_serialization_coreCompositeEncoder, SharedKotlinAnnotation, SharedKotlinx_serialization_coreCompositeDecoder, SharedKotlinMapEntry, SharedKtor_utilsStringValues, SharedKotlinx_serialization_coreSerializersModuleCollector, SharedKotlinKClass, SharedKotlinKDeclarationContainer, SharedKotlinKAnnotatedElement, SharedKotlinKClassifier;
 
 NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic push
@@ -340,13 +340,13 @@ __attribute__((swift_name("MainScreenViewModel")))
  @note This method converts instances of CancellationException to errors.
  Other uncaught Kotlin exceptions are fatal.
 */
-- (void)addTagToArticleTag:(NSString *)tag articleId:(NSString *)articleId completionHandler:(void (^)(SharedBoolean * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("addTagToArticle(tag:articleId:completionHandler:)")));
+- (void)addTagToArticleTag:(NSString *)tag articleId:(NSString *)articleId completionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("addTagToArticle(tag:articleId:completionHandler:)")));
 
 /**
  @note This method converts instances of CancellationException to errors.
  Other uncaught Kotlin exceptions are fatal.
 */
-- (void)archiveArticleId:(NSString *)articleId completionHandler:(void (^)(SharedBoolean * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("archive(articleId:completionHandler:)")));
+- (void)archiveArticleId:(NSString *)articleId completionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("archive(articleId:completionHandler:)")));
 
 /**
  @note This method converts instances of CancellationException to errors.
@@ -364,7 +364,8 @@ __attribute__((swift_name("MainScreenViewModel")))
  @note This method converts instances of CancellationException to errors.
  Other uncaught Kotlin exceptions are fatal.
 */
-- (void)getTagsStateIgnoreCache:(BOOL)ignoreCache completionHandler:(void (^)(SharedMainViewState * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("getTagsState(ignoreCache:completionHandler:)")));
+- (void)getTagsStateIgnoreCache:(BOOL)ignoreCache completionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("getTagsState(ignoreCache:completionHandler:)")));
+@property (readonly) id<SharedKotlinx_coroutines_coreMutableStateFlow> state __attribute__((swift_name("state")));
 @end;
 
 __attribute__((objc_subclassing_restricted))
@@ -621,6 +622,11 @@ __attribute__((swift_name("UserDefaultsStore")))
 - (void)setStringArrayKey:(NSString *)key list:(NSArray<NSString *> *)list __attribute__((swift_name("setStringArray(key:list:)")));
 @end;
 
+@interface SharedMainViewState (Extensions)
+- (SharedMainViewState *)removingUntaggedArticleArticleId:(NSString *)articleId __attribute__((swift_name("removingUntaggedArticle(articleId:)")));
+- (SharedMainViewState *)taggingArticleId:(NSString *)articleId newTag:(NSString *)newTag __attribute__((swift_name("tagging(articleId:newTag:)")));
+@end;
+
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("HiddenKt")))
 @interface SharedHiddenKt : SharedBase
@@ -725,6 +731,55 @@ __attribute__((swift_name("KotlinSuspendFunction0")))
  Other uncaught Kotlin exceptions are fatal.
 */
 - (void)invokeWithCompletionHandler:(void (^)(id _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("invoke(completionHandler:)")));
+@end;
+
+__attribute__((swift_name("Kotlinx_coroutines_coreFlow")))
+@protocol SharedKotlinx_coroutines_coreFlow
+@required
+
+/**
+ @note This method converts instances of CancellationException to errors.
+ Other uncaught Kotlin exceptions are fatal.
+*/
+- (void)collectCollector:(id<SharedKotlinx_coroutines_coreFlowCollector>)collector completionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("collect(collector:completionHandler:)")));
+@end;
+
+__attribute__((swift_name("Kotlinx_coroutines_coreSharedFlow")))
+@protocol SharedKotlinx_coroutines_coreSharedFlow <SharedKotlinx_coroutines_coreFlow>
+@required
+@property (readonly) NSArray<id> *replayCache __attribute__((swift_name("replayCache")));
+@end;
+
+__attribute__((swift_name("Kotlinx_coroutines_coreStateFlow")))
+@protocol SharedKotlinx_coroutines_coreStateFlow <SharedKotlinx_coroutines_coreSharedFlow>
+@required
+@property (readonly) id _Nullable value __attribute__((swift_name("value")));
+@end;
+
+__attribute__((swift_name("Kotlinx_coroutines_coreFlowCollector")))
+@protocol SharedKotlinx_coroutines_coreFlowCollector
+@required
+
+/**
+ @note This method converts instances of CancellationException to errors.
+ Other uncaught Kotlin exceptions are fatal.
+*/
+- (void)emitValue:(id _Nullable)value completionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("emit(value:completionHandler:)")));
+@end;
+
+__attribute__((swift_name("Kotlinx_coroutines_coreMutableSharedFlow")))
+@protocol SharedKotlinx_coroutines_coreMutableSharedFlow <SharedKotlinx_coroutines_coreSharedFlow, SharedKotlinx_coroutines_coreFlowCollector>
+@required
+- (void)resetReplayCache __attribute__((swift_name("resetReplayCache()")));
+- (BOOL)tryEmitValue:(id _Nullable)value __attribute__((swift_name("tryEmit(value:)")));
+@property (readonly) id<SharedKotlinx_coroutines_coreStateFlow> subscriptionCount __attribute__((swift_name("subscriptionCount")));
+@end;
+
+__attribute__((swift_name("Kotlinx_coroutines_coreMutableStateFlow")))
+@protocol SharedKotlinx_coroutines_coreMutableStateFlow <SharedKotlinx_coroutines_coreStateFlow, SharedKotlinx_coroutines_coreMutableSharedFlow>
+@required
+- (BOOL)compareAndSetExpect:(id _Nullable)expect update:(id _Nullable)update __attribute__((swift_name("compareAndSet(expect:update:)")));
+- (void)setValue:(id _Nullable)value __attribute__((swift_name("setValue(_:)")));
 @end;
 
 __attribute__((objc_subclassing_restricted))

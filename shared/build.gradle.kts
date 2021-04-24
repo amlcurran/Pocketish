@@ -65,11 +65,16 @@ kotlin {
 
     val xcFrameworkPath = "xcframework/${project.name}.xcframework"
 
+    tasks.register("deleteXcFramework") {
+        delete("xcframework/${project.name}.xcframework")
+    }
+
     tasks.register("buildXcFramework") {
         val mode = "Debug"
         val frameworks = arrayOf("iosArm64", "iosX64")
             .map { kotlin.targets.getByName<KotlinNativeTarget>(it).binaries.getFramework(mode) }
         inputs.property("mode", mode)
+        dependsOn(tasks.getByName("deleteXcFramework"))
         dependsOn(frameworks.map { it.linkTask })
         doLast {
             val buildArgs: () -> List<String> = {

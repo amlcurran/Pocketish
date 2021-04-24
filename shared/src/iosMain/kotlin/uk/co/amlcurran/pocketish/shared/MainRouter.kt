@@ -34,7 +34,8 @@ class MainRouter {
     }
 
     private suspend fun continueFromLoggingIn(): MainViewState {
-        return tagsViewModel.getTagsState(false)
+        tagsViewModel.getTagsState(false)
+        return tagsViewModel.state.value!!
     }
 
 }

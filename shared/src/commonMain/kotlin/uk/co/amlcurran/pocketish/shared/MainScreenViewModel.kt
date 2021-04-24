@@ -1,5 +1,7 @@
 package uk.co.amlcurran.pocketish.shared
 
+import kotlinx.coroutines.flow.MutableStateFlow
+
 data class MainViewState(
     val tags: List<Tag>,
     val latestUntagged: List<Article>
@@ -16,13 +18,16 @@ class MainScreenViewModel(
     private val userStore: UserStore
 ) {
 
-    suspend fun getTagsState(ignoreCache: Boolean): MainViewState {
+    val state = MutableStateFlow<MainViewState?>(null)
+
+    suspend fun getTagsState(ignoreCache: Boolean) {
         val tags = tagsRepository.allTags(ignoreCache = ignoreCache)
             .map { tag ->
                 Tag(tag, tag, 0)
             }
         val latestUntagged = getLatestUntagged()
-        return MainViewState(tags, latestUntagged)
+        val mainViewState = MainViewState(tags, latestUntagged)
+        state.value = mainViewState
     }
 
     suspend fun getLatestUntagged(offset: Int = 0): List<Article> {
@@ -45,14 +50,37 @@ class MainScreenViewModel(
         return TagViewState(Tag(tag, tag, latestUntagged.size), latestUntagged)
     }
 
-    suspend fun addTagToArticle(tag: String, articleId: String): Boolean {
-        return pocketApi.add(tagId = tag, articleId = articleId, userStore["access_token"]!!) ?: false
+    suspend fun addTagToArticle(tag: String, articleId: String) {
+        val add = pocketApi.add(tagId = tag, articleId = articleId, userStore["access_token"]!!) ?: false
+        if (add) {
+            state.value = state.value?.tagging(articleId, tag)
+        }
     }
 
-    suspend fun archive(articleId: String): Boolean {
-        return pocketApi.archive(articleId, userStore["access_token"]!!) ?: false
+    suspend fun archive(articleId: String) {
+        val archived = pocketApi.archive(articleId, userStore["access_token"]!!) ?: false
+        if (archived) {
+            state.value = state.value?.removingUntaggedArticle(articleId)
+        }
     }
 
+}
+
+fun MainViewState.tagging(articleId: String, newTag: String): MainViewState {
+    val tags = this.tags.toMutableList()
+    val tag = Tag(newTag, newTag, 0)
+    tags.add(tag)
+    return copy(
+        tags = tags,
+        latestUntagged = latestUntagged.filter { it.id != articleId }
+    )
+}
+
+fun MainViewState.removingUntaggedArticle(articleId: String): MainViewState {
+    return copy(
+        tags = tags,
+        latestUntagged = latestUntagged.filter { it.id != articleId }
+    )
 }
 
 data class Tag(
