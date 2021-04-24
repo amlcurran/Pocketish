@@ -16,6 +16,7 @@ class ObservableHomeViewModel: ObservableObject {
     @Published var state: AsyncResult<MainViewState> = .loading
     @Published var tagsState: AsyncResult<TagViewState> = .loading
     @Published var reloading: Bool = false
+    @Published var loadingMoreUntagged: Bool = false
 
     init(homeViewModel: MainScreenViewModel) {
         self.homeViewModel = homeViewModel
@@ -32,7 +33,7 @@ class ObservableHomeViewModel: ObservableObject {
         }
     }
 
-    func forceRefresh() {
+    func forceRefresh(onlyUntagged: Bool = false) {
         reloading = true
         homeViewModel.getTagsState(ignoreCache: true) { state, error in
             self.reloading = false
@@ -61,7 +62,19 @@ class ObservableHomeViewModel: ObservableObject {
     }
 
     func loadMoreUntagged() {
-        print("No-op for now!")
+        loadingMoreUntagged = true
+        let offset = state.value?.latestUntagged.count ?? 0
+        homeViewModel.getLatestUntagged(offset: Int32(offset)) { state, error in
+            self.loadingMoreUntagged = false
+            if let state = state, case let .data(data) = self.state {
+                var newArticles = data.latestUntagged
+                newArticles.append(contentsOf: state)
+                self.state = .data(data.doCopy(tags: data.tags, latestUntagged: newArticles))
+            }
+            if let error = error {
+                self.state = .failure(error)
+            }
+        }
     }
 
     func archive(_ id: String, onFinished: @escaping () -> Void) {

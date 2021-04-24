@@ -62,6 +62,32 @@ kotlin {
             }
         }
     }
+
+    val xcFrameworkPath = "xcframework/${project.name}.xcframework"
+
+    tasks.register("buildXcFramework") {
+        val mode = "Debug"
+        val frameworks = arrayOf("iosArm64", "iosX64")
+            .map { kotlin.targets.getByName<KotlinNativeTarget>(it).binaries.getFramework(mode) }
+        inputs.property("mode", mode)
+        dependsOn(frameworks.map { it.linkTask })
+        doLast {
+            val buildArgs: () -> List<String> = {
+                val arguments = mutableListOf("-create-xcframework")
+                frameworks.forEach {
+                    arguments += "-framework"
+                    arguments += "${it.outputDirectory}/${project.name}.framework"
+                }
+                arguments += "-output"
+                arguments += xcFrameworkPath
+                arguments
+            }
+            exec {
+                executable = "xcodebuild"
+                args = buildArgs()
+            }
+        }
+    }
 }
 
 android {

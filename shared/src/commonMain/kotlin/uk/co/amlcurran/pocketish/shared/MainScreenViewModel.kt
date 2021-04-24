@@ -21,19 +21,25 @@ class MainScreenViewModel(
             .map { tag ->
                 Tag(tag, tag, 0)
             }
-        val latestUntagged = pocketApi.getArticlesWithTag(
+        val latestUntagged = getLatestUntagged()
+        return MainViewState(tags, latestUntagged)
+    }
+
+    suspend fun getLatestUntagged(offset: Int = 0): List<Article> {
+        return pocketApi.getArticlesWithTag(
             "_untagged_",
             userStore["access_token"]!!,
             maxCount = 10,
+            offset = offset + 1,
             full = true
         )
-        return MainViewState(tags, latestUntagged)
     }
 
     suspend fun getArticlesWithTag(tag: String): TagViewState {
         val latestUntagged = pocketApi.getArticlesWithTag(
             tag,
             userStore["access_token"]!!,
+            offset = 0,
             full = true
         )
         return TagViewState(Tag(tag, tag, latestUntagged.size), latestUntagged)

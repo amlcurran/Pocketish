@@ -19,7 +19,7 @@ struct MainView: View {
             ScrollView(.vertical) {
                 SearchBar(placeholder: "Search articles", searchText: $searchText)
                     .padding(.horizontal)
-                HorizontalArticles(articles: state.latestUntagged) {
+                HorizontalArticles(articles: state.latestUntagged, loadingMore: $viewModel.loadingMoreUntagged) {
                     viewModel.loadMoreUntagged()
                 } onArticleClicked: { article in
                     showSheet = .showArticle(article)

@@ -15,9 +15,18 @@ enum AsyncResult<T: Equatable> {
     case loading
     case failure(Error)
     case data(T)
+
+    var value: T? {
+        switch self {
+        case let .data(item):
+            return item
+        default:
+            return nil
+        }
+    }
 }
 
-enum OpenIn {
+enum OpenIn: Int {
     case safari
     case inApp
 }
@@ -25,7 +34,7 @@ enum OpenIn {
 struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
-    @State var launchType: OpenIn = .safari
+    @AppStorage("launchType") var launchType: OpenIn = .safari
     @StateObject var textObserver = Debouncer<String>(initial: "")
 
     var body: some View {

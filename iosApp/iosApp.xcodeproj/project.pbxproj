@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -25,13 +25,13 @@
 		7555FF88242A565B00829871 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7555FF87242A565B00829871 /* Preview Assets.xcassets */; };
 		7555FF8B242A565B00829871 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7555FF89242A565B00829871 /* LaunchScreen.storyboard */; };
 		7555FF96242A565B00829871 /* iosAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF95242A565B00829871 /* iosAppTests.swift */; };
-		7555FFB2242A642300829871 /* shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7555FFB1242A642300829871 /* shared.framework */; };
-		7555FFB3242A642300829871 /* shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7555FFB1242A642300829871 /* shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		862F91CF25E5A3CF0016D473 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862F91CE25E5A3CF0016D473 /* HomeView.swift */; };
 		862F91E225EAB1940016D473 /* HorizontalArticles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862F91E125EAB1940016D473 /* HorizontalArticles.swift */; };
 		862F91E625EAB6850016D473 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862F91E525EAB6850016D473 /* RemoteImage.swift */; };
 		862F91EE25EAFB520016D473 /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862F91ED25EAFB510016D473 /* ArticleView.swift */; };
 		86A83412262CCCE60081C23F /* TagListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A83411262CCCE60081C23F /* TagListItem.swift */; };
+		86A8342A263477F50081C23F /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A83429263477F50081C23F /* shared.xcframework */; };
+		86A8342B263477F50081C23F /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 86A83429263477F50081C23F /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		86AB5288262CA2C500F1062E /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AB5287262CA2C500F1062E /* Debouncer.swift */; };
 		86ADBE3D262C692900B50516 /* MainView+Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3C262C692900B50516 /* MainView+Sheets.swift */; };
 		86ADBE40262C766600B50516 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3F262C766600B50516 /* SearchBar.swift */; };
@@ -48,13 +48,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		7555FFB4242A642300829871 /* Embed Frameworks */ = {
+		86A8342C263477F50081C23F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				7555FFB3242A642300829871 /* shared.framework in Embed Frameworks */,
+				86A8342B263477F50081C23F /* shared.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -93,6 +93,9 @@
 		862F91ED25EAFB510016D473 /* ArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleView.swift; sourceTree = "<group>"; };
 		86848B2626052D6800DEE4DA /* Pocketish.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocketish.entitlements; sourceTree = "<group>"; };
 		86A83411262CCCE60081C23F /* TagListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListItem.swift; sourceTree = "<group>"; };
+		86A8341B263474010081C23F /* MyKmmModule.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MyKmmModule.framework; path = "../shared/build/fat-framework/debug/MyKmmModule.framework"; sourceTree = "<group>"; };
+		86A8341F2634745A0081C23F /* shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = shared.framework; path = "../shared/build/fat-framework/debug/shared.framework"; sourceTree = "<group>"; };
+		86A83429263477F50081C23F /* shared.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = shared.xcframework; path = ../shared/xcframework/shared.xcframework; sourceTree = "<group>"; };
 		86AB5287262CA2C500F1062E /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		86ADBE3C262C692900B50516 /* MainView+Sheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainView+Sheets.swift"; sourceTree = "<group>"; };
 		86ADBE3F262C766600B50516 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
@@ -103,7 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7555FFB2242A642300829871 /* shared.framework in Frameworks */,
+				86A8342A263477F50081C23F /* shared.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,6 +191,9 @@
 		7555FFB0242A642200829871 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				86A83429263477F50081C23F /* shared.xcframework */,
+				86A8341F2634745A0081C23F /* shared.framework */,
+				86A8341B263474010081C23F /* MyKmmModule.framework */,
 				7555FFB1242A642300829871 /* shared.framework */,
 			);
 			name = Frameworks;
@@ -228,11 +234,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "Pocketish" */;
 			buildPhases = (
-				86A83414262F6E7B0081C23F /* ShellScript */,
 				7555FF77242A565900829871 /* Sources */,
 				7555FF78242A565900829871 /* Frameworks */,
 				7555FF79242A565900829871 /* Resources */,
-				7555FFB4242A642300829871 /* Embed Frameworks */,
+				86A8342C263477F50081C23F /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -318,27 +323,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		86A83414262F6E7B0081C23F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/../shared",
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../\n./gradlew :shared:packForXcode -PXCODE_CONFIGURATION=${CONFIGURATION}\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7555FF77242A565900829871 /* Sources */ = {

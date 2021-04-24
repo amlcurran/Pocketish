@@ -24,6 +24,7 @@ extension Optional {
 struct HorizontalArticles: View {
 
     let articles: [Article]
+    @Binding var loadingMore: Bool
     let onEndClicked: () -> Void
     let onArticleClicked: (Article) -> Void
 
@@ -39,10 +40,17 @@ struct HorizontalArticles: View {
                         .onDrag { NSItemProvider(object: article.id as NSString) }
                         .onTapGesture { onArticleClicked(article) }
                 }.animation(.easeInOut(duration: 0.2))
-                Image(systemName: "chevron.forward.circle.fill")
-                    .font(.system(size: 42))
-                    .padding()
-                    .onTapGesture { onEndClicked() }
+                ZStack {
+                    Image(systemName: "chevron.forward.circle.fill")
+                        .font(.system(size: 42))
+                        .padding()
+                        .onTapGesture { onEndClicked() }
+                        .disabled(loadingMore)
+                        .opacity(loadingMore ? 0 : 1)
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .opacity(loadingMore ? 1 : 0)
+                }.animation(.default)
             }
             .padding(.foo([.bottom]))
         }.labelStyle(DefaultLabelStyle())

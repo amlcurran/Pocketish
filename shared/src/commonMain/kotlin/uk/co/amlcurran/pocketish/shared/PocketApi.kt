@@ -61,11 +61,16 @@ class PocketApi {
     @Serializable
     data class AuthorizeResponse(@SerialName("access_token") val accessToken: String)
 
-    suspend fun getArticlesWithTag(tag: String, accessToken: String, maxCount: Int? = null, full: Boolean = false): List<Article> {
+    suspend fun getArticlesWithTag(tag: String,
+                                   accessToken: String,
+                                   maxCount: Int? = null,
+                                   offset: Int,
+                                   full: Boolean = false): List<Article> {
         return httpClient.get<ArticleListResponse>("https://getpocket.com/v3/get") {
             url.parameters["consumer_key"] = consumerKey
             url.parameters["access_token"] = accessToken
             url.parameters["tag"] = tag
+            url.parameters["offset"] = offset.toString()
             url.parameters["detailType"] = if (full) "complete" else "simple"
             maxCount?.let { url.parameters["count"] = "$it" }
         }.list.values.toList()
