@@ -10,22 +10,6 @@ import SwiftUI
 import shared
 import Combine
 
-enum AsyncResult<T: Equatable> {
-    case idle
-    case loading
-    case failure(Error)
-    case data(T)
-
-    var value: T? {
-        switch self {
-        case let .data(item):
-            return item
-        default:
-            return nil
-        }
-    }
-}
-
 enum OpenIn: Int {
     case safari
     case inApp
@@ -39,13 +23,9 @@ struct HomeView: View {
 
     var body: some View {
             ZStack {
-                viewForState(viewModel.state)
-                    .animation(nil)
-                if !textObserver.debouncedText.isEmpty {
-                    Text(textObserver.debouncedText)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.blue.opacity(0.2))
-                }
+                AsyncView(state: viewModel.state) { state in
+                    MainView(state: state, searchText: $textObserver.searchText, viewModel: viewModel)
+                }.animation(nil)
             }
             .animation(Animation.easeIn.speed(4))
                 .transition(.opacity)
@@ -74,15 +54,6 @@ struct HomeView: View {
             .font(.system(.body, design: .rounded))
             .navigationViewStyle(StackNavigationViewStyle())
             .onAppear { viewModel.appeared() }
-    }
-
-    private func viewForState(_ state: AsyncResult<MainViewState>) -> some View {
-        switch state {
-        case .loading, .idle, .failure:
-            return AnyView(ProgressView())
-        case .data(let state):
-            return AnyView(MainView(state: state, searchText: $textObserver.searchText, viewModel: viewModel))
-        }
     }
 
 }

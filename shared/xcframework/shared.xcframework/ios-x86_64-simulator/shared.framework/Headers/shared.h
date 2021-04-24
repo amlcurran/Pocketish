@@ -6,7 +6,7 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 
-@class SharedAddTagAction, SharedActions, SharedActionsResponse, SharedTagResponse, SharedArticleImage, SharedArticle, SharedArticleListResponse, SharedPocketApi, SharedKotlinUnit, SharedMainViewState, SharedTagViewState, SharedTag, SharedKtor_httpUrl, SharedPocketApiAuthorizeBody, SharedPocketApiAuthorizeResponse, SharedRequestAuthBody, SharedRequestResponse, SharedKotlinArray<T>, SharedKotlinThrowable, SharedKotlinException, SharedKotlinRuntimeException, SharedKotlinIllegalStateException, SharedKtor_httpURLProtocol, SharedKotlinx_serialization_coreSerializersModule, SharedKotlinx_serialization_coreSerialKind, SharedKotlinNothing;
+@class SharedAddTagAction, SharedActions, SharedActionsResponse, SharedTagResponse, SharedArticleImage, SharedArticle, SharedArticleListResponse, SharedAsyncResult<T>, SharedKotlinError, SharedAsyncResultError<T>, SharedKotlinUnit, SharedAsyncResultLoading<T>, SharedAsyncResultSuccess<T>, SharedPocketApi, SharedTagViewState, SharedTag, SharedMainViewState, SharedKtor_httpUrl, SharedPocketApiAuthorizeBody, SharedPocketApiAuthorizeResponse, SharedRequestAuthBody, SharedRequestResponse, SharedKotlinArray<T>, SharedKotlinThrowable, SharedKotlinException, SharedKotlinRuntimeException, SharedKotlinIllegalStateException, SharedKtor_httpURLProtocol, SharedKotlinx_serialization_coreSerializersModule, SharedKotlinx_serialization_coreSerialKind, SharedKotlinNothing;
 
 @protocol SharedKotlinx_serialization_coreKSerializer, SharedURLLauncher, SharedUserStore, SharedKotlinSuspendFunction0, SharedTagsRepository, SharedKotlinx_coroutines_coreMutableStateFlow, SharedKotlinx_serialization_coreEncoder, SharedKotlinx_serialization_coreSerialDescriptor, SharedKotlinx_serialization_coreSerializationStrategy, SharedKotlinx_serialization_coreDecoder, SharedKotlinx_serialization_coreDeserializationStrategy, SharedKotlinFunction, SharedKotlinx_coroutines_coreFlowCollector, SharedKotlinx_coroutines_coreFlow, SharedKotlinx_coroutines_coreSharedFlow, SharedKotlinx_coroutines_coreStateFlow, SharedKotlinx_coroutines_coreMutableSharedFlow, SharedKtor_httpParameters, SharedKotlinIterator, SharedKotlinx_serialization_coreCompositeEncoder, SharedKotlinAnnotation, SharedKotlinx_serialization_coreCompositeDecoder, SharedKotlinMapEntry, SharedKtor_utilsStringValues, SharedKotlinx_serialization_coreSerializersModuleCollector, SharedKotlinKClass, SharedKotlinKDeclarationContainer, SharedKotlinKAnnotatedElement, SharedKotlinKClassifier;
 
@@ -279,6 +279,47 @@ __attribute__((swift_name("ArticleListResponse.Companion")))
 - (id<SharedKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end;
 
+__attribute__((swift_name("AsyncResult")))
+@interface SharedAsyncResult<T> : SharedBase
+@property (readonly) T _Nullable result __attribute__((swift_name("result")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("AsyncResultError")))
+@interface SharedAsyncResultError<T> : SharedAsyncResult<T>
+- (instancetype)initWithError:(SharedKotlinError *)error __attribute__((swift_name("init(error:)"))) __attribute__((objc_designated_initializer));
+- (SharedKotlinError *)component1 __attribute__((swift_name("component1()")));
+- (SharedAsyncResultError<T> *)doCopyError:(SharedKotlinError *)error __attribute__((swift_name("doCopy(error:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) SharedKotlinError *error __attribute__((swift_name("error")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("AsyncResultLoading")))
+@interface SharedAsyncResultLoading<T> : SharedAsyncResult<T>
+- (instancetype)initWithFoo:(SharedKotlinUnit *)foo __attribute__((swift_name("init(foo:)"))) __attribute__((objc_designated_initializer));
+- (void)component1 __attribute__((swift_name("component1()")));
+- (SharedAsyncResultLoading<T> *)doCopyFoo:(SharedKotlinUnit *)foo __attribute__((swift_name("doCopy(foo:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) SharedKotlinUnit *foo __attribute__((swift_name("foo")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("AsyncResultSuccess")))
+@interface SharedAsyncResultSuccess<T> : SharedAsyncResult<T>
+- (instancetype)initWithData:(T _Nullable)data __attribute__((swift_name("init(data:)"))) __attribute__((objc_designated_initializer));
+- (T _Nullable)component1 __attribute__((swift_name("component1()")));
+- (SharedAsyncResultSuccess<T> *)doCopyData:(T _Nullable)data __attribute__((swift_name("doCopy(data:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) T _Nullable data __attribute__((swift_name("data")));
+@end;
+
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("Greeting")))
 @interface SharedGreeting : SharedBase
@@ -322,13 +363,13 @@ __attribute__((swift_name("MainRouter")))
  @note This method converts instances of CancellationException to errors.
  Other uncaught Kotlin exceptions are fatal.
 */
-- (void)continueLoggingInWithCompletionHandler:(void (^)(SharedMainViewState * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("continueLoggingIn(completionHandler:)")));
+- (void)continueLoggingInWithCompletionHandler:(void (^)(SharedKotlinUnit * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("continueLoggingIn(completionHandler:)")));
 
 /**
  @note This method converts instances of CancellationException to errors.
  Other uncaught Kotlin exceptions are fatal.
 */
-- (void)startWithCompletionHandler:(void (^)(SharedMainViewState * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("start(completionHandler:)")));
+- (void)startWithCompletionHandler:(void (^)(SharedBoolean * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("start(completionHandler:)")));
 @end;
 
 __attribute__((objc_subclassing_restricted))
@@ -353,12 +394,6 @@ __attribute__((swift_name("MainScreenViewModel")))
  Other uncaught Kotlin exceptions are fatal.
 */
 - (void)getArticlesWithTagTag:(NSString *)tag completionHandler:(void (^)(SharedTagViewState * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("getArticlesWithTag(tag:completionHandler:)")));
-
-/**
- @note This method converts instances of CancellationException to errors.
- Other uncaught Kotlin exceptions are fatal.
-*/
-- (void)getLatestUntaggedOffset:(int32_t)offset completionHandler:(void (^)(NSArray<SharedArticle *> * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("getLatestUntagged(offset:completionHandler:)")));
 
 /**
  @note This method converts instances of CancellationException to errors.
@@ -628,6 +663,10 @@ __attribute__((swift_name("UserDefaultsStore")))
 - (void)setStringArrayKey:(NSString *)key list:(NSArray<NSString *> *)list __attribute__((swift_name("setStringArray(key:list:)")));
 @end;
 
+@interface SharedAsyncResult (Extensions)
+- (void)handleOnData:(void (^)(id _Nullable))onData onLoading:(void (^)(void))onLoading onError:(void (^)(SharedKotlinError *))onError __attribute__((swift_name("handle(onData:onLoading:onError:)")));
+@end;
+
 @interface SharedMainViewState (Extensions)
 - (SharedMainViewState *)removingUntaggedArticleArticleId:(NSString *)articleId __attribute__((swift_name("removingUntaggedArticle(articleId:)")));
 - (SharedMainViewState *)taggingArticleId:(NSString *)articleId newTag:(NSString *)newTag __attribute__((swift_name("tagging(articleId:newTag:)")));
@@ -678,6 +717,24 @@ __attribute__((swift_name("KotlinThrowable")))
 @property (readonly) NSString * _Nullable message __attribute__((swift_name("message")));
 @end;
 
+__attribute__((swift_name("KotlinError")))
+@interface SharedKotlinError : SharedKotlinThrowable
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
++ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
+- (instancetype)initWithMessage:(NSString * _Nullable)message __attribute__((swift_name("init(message:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithMessage:(NSString * _Nullable)message cause:(SharedKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(message:cause:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithCause:(SharedKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(cause:)"))) __attribute__((objc_designated_initializer));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("KotlinUnit")))
+@interface SharedKotlinUnit : SharedBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)unit __attribute__((swift_name("init()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@end;
+
 __attribute__((swift_name("KotlinException")))
 @interface SharedKotlinException : SharedKotlinThrowable
 - (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
@@ -712,15 +769,6 @@ __attribute__((swift_name("KotlinCancellationException")))
 - (instancetype)initWithMessage:(NSString * _Nullable)message __attribute__((swift_name("init(message:)"))) __attribute__((objc_designated_initializer));
 - (instancetype)initWithMessage:(NSString * _Nullable)message cause:(SharedKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(message:cause:)"))) __attribute__((objc_designated_initializer));
 - (instancetype)initWithCause:(SharedKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(cause:)"))) __attribute__((objc_designated_initializer));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("KotlinUnit")))
-@interface SharedKotlinUnit : SharedBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)unit __attribute__((swift_name("init()")));
-- (NSString *)description __attribute__((swift_name("description()")));
 @end;
 
 __attribute__((swift_name("KotlinFunction")))

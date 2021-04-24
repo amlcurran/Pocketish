@@ -15,27 +15,17 @@ class MainRouter {
             }
         }, userStore)
     }
-    private val tagsViewModel by lazy {
-        MainScreenViewModel(pocketApi, TagsFromArticlesRepository(pocketApi, userStore), userStore)
-    }
 
-    suspend fun start(): MainViewState? {
-        return if (loginViewModel.needsLogin()) {
+    suspend fun start(): Boolean {
+        if (loginViewModel.needsLogin()) {
             loginViewModel.login("pocketish:authorize")
-            null
-        } else {
-            continueFromLoggingIn()
+            return false
         }
+        return true
     }
 
-    suspend fun continueLoggingIn(): MainViewState {
+    suspend fun continueLoggingIn() {
         loginViewModel.continueLogin()
-        return continueFromLoggingIn()
-    }
-
-    private suspend fun continueFromLoggingIn(): MainViewState {
-        tagsViewModel.getTagsState(false)
-        return tagsViewModel.state.value!!
     }
 
 }

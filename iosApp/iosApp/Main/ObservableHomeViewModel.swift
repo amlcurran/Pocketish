@@ -34,6 +34,7 @@ class Collector<T>: Kotlinx_coroutines_coreFlowCollector {
 
 
     func emit(value: Any?, completionHandler: @escaping (KotlinUnit?, Error?) -> Void) {
+        print("Casting \(value.debugDescription) to \(T.self) resulting in \(value as? T)")
         callback(value as? T)
         completionHandler(KotlinUnit(), nil)
     }
@@ -42,8 +43,8 @@ class Collector<T>: Kotlinx_coroutines_coreFlowCollector {
 class ObservableHomeViewModel: ObservableObject {
     private let homeViewModel: MainScreenViewModel
 
-    @Published var state: AsyncResult<MainViewState> = .loading
-    @Published var tagsState: AsyncResult<TagViewState> = .loading
+    @Published var state: AsyncResult<MainViewState> = AsyncResultLoading(foo: KotlinUnit())
+    @Published var tagsState: AsyncResult<TagViewState> = AsyncResultLoading(foo: KotlinUnit())
     @Published var reloading: Bool = false
     @Published var loadingMoreUntagged: Bool = false
 
@@ -52,8 +53,8 @@ class ObservableHomeViewModel: ObservableObject {
     }
 
     func appeared() {
-        homeViewModel.state.collect { (value: MainViewState) in
-            self.state = .data(value)
+        homeViewModel.state.collect { (value: AsyncResult<MainViewState>) in
+            self.state = value
         }
         homeViewModel.getTagsState(ignoreCache: false) { state, error in
 
@@ -102,7 +103,7 @@ class ObservableHomeViewModel: ObservableObject {
                 print(error)
             } else {
                 if let result = result {
-                    self?.tagsState = .data(result)
+                    self?.tagsState = AsyncResultSuccess(data: result)
                 }
             }
         }

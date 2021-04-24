@@ -24,21 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISearchControllerDeleg
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = UIHostingController(rootView: LoadingYourTags())
             self.window = window
-            let api = PocketApi()
-            let userStore = UserDefaultsStore()
-            let repository = TagsFromArticlesRepository(pocketApi: api, userStore: userStore)
-            let model = MainScreenViewModel(pocketApi: api, tagsRepository: repository, userStore: userStore)
-            mainRouter.start { (viewState, error) in
-                if viewState != nil {
-                    let viewModel = ObservableHomeViewModel(homeViewModel: model)
-                    let viewController = UIHostingController(rootView: HomeView(viewModel: viewModel).accentColor(.orange))
-                    let searchController = UISearchController(searchResultsController: nil)
-                    searchController.delegate = self
-                    viewController.navigationItem.searchController = searchController
-                    viewController.navigationItem.largeTitleDisplayMode = .always
-                    let navigationController = UINavigationController(rootViewController: viewController)
-                    navigationController.navigationBar.prefersLargeTitles = true
-                    window.rootViewController = navigationController
+            mainRouter.start { [weak self] (shouldContinue, error) in
+                if let shouldContinue = shouldContinue, shouldContinue.boolValue {
+                    self?.display()
                 }
             }
             window.makeKeyAndVisible()
@@ -49,15 +37,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISearchControllerDeleg
 
     }
 
-    private func display(_ viewState: MainViewState) {
+    private func display() {
+        let api = PocketApi()
+        let userStore = UserDefaultsStore()
+        let repository = TagsFromArticlesRepository(pocketApi: api, userStore: userStore)
+        let model = MainScreenViewModel(pocketApi: api, tagsRepository: repository, userStore: userStore)
+        let viewModel = ObservableHomeViewModel(homeViewModel: model)
+        let viewController = UIHostingController(rootView: HomeView(viewModel: viewModel).accentColor(.orange))
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.delegate = self
+        viewController.navigationItem.searchController = searchController
+        viewController.navigationItem.largeTitleDisplayMode = .always
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.navigationBar.prefersLargeTitles = true
+        window?.rootViewController = navigationController
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         for url in URLContexts where url.url.absoluteString == "pocketish:authorize" {
-            mainRouter.continueLoggingIn { [weak self] viewState, _ in
-                if let viewState = viewState {
-                    self?.display(viewState)
-                }
+            mainRouter.continueLoggingIn { [weak self] _, _ in
+                self?.display()
             }
         }
     }

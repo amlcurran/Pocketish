@@ -1,18 +1,22 @@
 import SwiftUI
+import shared
 
-struct AsyncView<T: Equatable, Content: View>: View {
+struct AsyncView<T: AnyObject, Content: View>: View {
 
     var state: AsyncResult<T>
     let builder: (T) -> Content
 
     var body: some View {
+        var foo: AnyView!
         print(state)
-        switch state {
-        case .loading, .idle, .failure:
-            return AnyView(ProgressView())
-        case .data(let state):
-            return AnyView(builder(state))
+        state.handle { state in
+            foo = AnyView(builder(state as! T))
+        } onLoading: {
+            foo = AnyView(ProgressView())
+        } onError: { _ in
+            foo = AnyView(ProgressView())
         }
+        return foo
     }
 
 }

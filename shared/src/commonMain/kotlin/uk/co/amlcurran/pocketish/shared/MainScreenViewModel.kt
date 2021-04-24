@@ -18,7 +18,7 @@ class MainScreenViewModel(
     private val userStore: UserStore
 ) {
 
-    val state = MutableStateFlow<MainViewState?>(null)
+    val state = MutableStateFlow<AsyncResult<MainViewState>>(AsyncResult.Loading())
 
     suspend fun getTagsState(ignoreCache: Boolean) {
         val tags = tagsRepository.allTags(ignoreCache = ignoreCache)
@@ -27,10 +27,10 @@ class MainScreenViewModel(
             }
         val latestUntagged = getLatestUntagged()
         val mainViewState = MainViewState(tags, latestUntagged)
-        state.value = mainViewState
+        state.value = AsyncResult.Success(mainViewState)
     }
 
-    suspend fun getLatestUntagged(offset: Int = 0): List<Article> {
+    private suspend fun getLatestUntagged(offset: Int = 0): List<Article> {
         return pocketApi.getArticlesWithTag(
             "_untagged_",
             userStore["access_token"]!!,
@@ -41,10 +41,10 @@ class MainScreenViewModel(
     }
 
     suspend fun loadMoreUntagged() {
-        val offset = state.value?.latestUntagged?.size ?: 0
+        val offset = state.value.result?.latestUntagged?.size ?: 0
         val extraUntagged = getLatestUntagged(offset)
-        val oldUntagged = state.value?.latestUntagged ?: emptyList()
-        state.value = state.value?.copy(latestUntagged = oldUntagged + extraUntagged)
+        val oldUntagged = state.value.result?.latestUntagged ?: emptyList()
+        state.value = AsyncResult.Success(state.value.result!!.copy(latestUntagged = oldUntagged + extraUntagged))
     }
 
     suspend fun getArticlesWithTag(tag: String): TagViewState {
@@ -60,14 +60,14 @@ class MainScreenViewModel(
     suspend fun addTagToArticle(tag: String, articleId: String) {
         val add = pocketApi.add(tagId = tag, articleId = articleId, userStore["access_token"]!!) ?: false
         if (add) {
-            state.value = state.value?.tagging(articleId, tag)
+            state.value = AsyncResult.Success(state.value.result!!.tagging(articleId, tag))
         }
     }
 
     suspend fun archive(articleId: String) {
         val archived = pocketApi.archive(articleId, userStore["access_token"]!!) ?: false
         if (archived) {
-            state.value = state.value?.removingUntaggedArticle(articleId)
+            state.value = AsyncResult.Success(state.value.result!!.removingUntaggedArticle(articleId))
         }
     }
 
