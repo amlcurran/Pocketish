@@ -2,7 +2,7 @@ import UIKit
 import SwiftUI
 import shared
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISearchControllerDelegate {
 
     var window: UIWindow?
     let mainRouter = MainRouter()
@@ -32,7 +32,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if viewState != nil {
                     let viewModel = ObservableHomeViewModel(homeViewModel: model)
                     let viewController = UIHostingController(rootView: HomeView(viewModel: viewModel).accentColor(.orange))
-                    window.rootViewController = viewController
+                    let searchController = UISearchController(searchResultsController: nil)
+                    searchController.delegate = self
+                    viewController.navigationItem.searchController = searchController
+                    viewController.navigationItem.largeTitleDisplayMode = .always
+                    let navigationController = UINavigationController(rootViewController: viewController)
+                    navigationController.navigationBar.prefersLargeTitles = true
+                    window.rootViewController = navigationController
                 }
             }
             window.makeKeyAndVisible()

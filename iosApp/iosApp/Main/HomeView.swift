@@ -38,7 +38,6 @@ struct HomeView: View {
     @StateObject var textObserver = Debouncer<String>(initial: "")
 
     var body: some View {
-        NavigationView {
             ZStack {
                 viewForState(viewModel.state)
                     .animation(nil)
@@ -73,21 +72,8 @@ struct HomeView: View {
                 }
             }
             .font(.system(.body, design: .rounded))
-        }
             .navigationViewStyle(StackNavigationViewStyle())
             .onAppear { viewModel.appeared() }
-    }
-
-    private func searchOverlay() -> some View {
-        if textObserver.debouncedText.isEmpty {
-            return AnyView(Text("blahblah"))
-        } else {
-            return AnyView(Text(textObserver.debouncedText)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.blue.opacity(0.2))
-                            .animation(.easeIn)
-                            .transition(.opacity))
-        }
     }
 
     private func viewForState(_ state: AsyncResult<MainViewState>) -> some View {

@@ -17,8 +17,6 @@ struct MainView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             ScrollView(.vertical) {
-                SearchBar(placeholder: "Search articles", searchText: $searchText)
-                    .padding(.horizontal)
                 HorizontalArticles(articles: state.latestUntagged, loadingMore: $viewModel.loadingMoreUntagged) {
                     viewModel.loadMoreUntagged()
                 } onArticleClicked: { article in
@@ -30,7 +28,7 @@ struct MainView: View {
                             selectedFeedback.notificationOccurred(.success)
                         }
                     } destination: {
-                        ArticlesByTag(tag: tag, viewModel: viewModel)
+                        ArticlesByTag(tag: tag, viewModel: viewModel.duplicate())
                     }
                     if tag.id != state.tags.last?.id {
                         Divider()

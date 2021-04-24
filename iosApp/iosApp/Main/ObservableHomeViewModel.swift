@@ -77,6 +77,10 @@ class ObservableHomeViewModel: ObservableObject {
         }
     }
 
+    func duplicate() -> ObservableHomeViewModel {
+        return ObservableHomeViewModel(homeViewModel: self.homeViewModel)
+    }
+
     func archive(_ id: String, onFinished: @escaping () -> Void) {
         homeViewModel.archive(articleId: id) { [self] result, error in
             if let error = error {
