@@ -1,8 +1,6 @@
 package uk.co.amlcurran.pocketish.shared
 
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.css.*
@@ -10,6 +8,7 @@ import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import react.*
+import react.dom.div
 import styled.*
 
 external interface MainProps : RProps {
@@ -41,27 +40,28 @@ class MainView: RComponent<MainProps, MainState>() {
                 article(it)
             }
         }
-        result.tags.map {
-            styledH3 {
-                +it.name
+        styledDiv {
+            css {
+                display = Display.grid
+            }
+            for (it in result.tags) {
+                child(ListItem::class) {
+                    attrs.leftText = it.name
+                }
             }
         }
     }
 
     override fun componentDidMount() {
         GlobalScope.launch {
-            println("Setting up collection")
-            MainScope().launch {
+            GlobalScope.launch {
                 props.mainScreenViewModel.state.collectLatest {
-                    println("Collected $it")
                     setState {
                         viewState = it
                     }
                 }
             }
-            println("Loading state")
             props.mainScreenViewModel.getTagsState(false)
-            println("Loaded state")
         }
     }
 }

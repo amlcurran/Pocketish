@@ -9,6 +9,7 @@ import react.*
 import react.dom.button
 import styled.css
 import styled.styledDiv
+import styled.styledH1
 
 external interface LoginState : RState {
     var loading: Boolean
@@ -40,6 +41,9 @@ class App: RComponent<RProps, LoginState>(), URLLauncher {
         styledDiv {
             css {
                 fontFamily = "IBM Plex Sans, sans-serif"
+            }
+            styledH1 {
+                +"Tags"
             }
             if (state.loggedIn) {
                 child(MainView::class) {

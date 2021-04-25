@@ -13,7 +13,7 @@ class LocalStorageUserStore: UserStore {
     }
 
     override fun getStringArray(key: String): Array<String> {
-        return localStorage.getItem(key)?.split(";")?.toTypedArray() ?: emptyArray()
+        return localStorage.getItem(key)?.split(",")?.toTypedArray() ?: emptyArray()
     }
 
     override fun setStringArray(key: String, list: List<String>) {
