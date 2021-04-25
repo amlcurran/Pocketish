@@ -1,24 +1,35 @@
 package uk.co.amlcurran.pocketish.shared
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
-import kotlinx.css.properties.Time
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import react.*
 import styled.*
-import kotlin.time.seconds
 
 external interface MainProps : RProps {
-    var mainState: MainViewState
+    var mainScreenViewModel: MainScreenViewModel
 }
 
-class MainView: RComponent<MainProps, RState>() {
+external interface MainState : RState {
+    var viewState: AsyncResult<MainViewState>
+}
+
+class MainView: RComponent<MainProps, MainState>() {
 
     override fun RBuilder.render() {
+        when (state.viewState) {
+            is AsyncResult.Success -> foo(state.viewState.result!!)
+            else -> +"Loading..."
+        }
+    }
+
+    private fun RBuilder.foo(result: MainViewState) {
         styledDiv {
             css {
                 display = Display.flex
@@ -26,14 +37,31 @@ class MainView: RComponent<MainProps, RState>() {
                 overflowX = Overflow.auto
                 whiteSpace = WhiteSpace.nowrap
             }
-            props.mainState.latestUntagged.map {
+            result.latestUntagged.map {
                 article(it)
             }
         }
-        props.mainState.tags.map {
+        result.tags.map {
             styledH3 {
                 +it.name
             }
+        }
+    }
+
+    override fun componentDidMount() {
+        GlobalScope.launch {
+            println("Setting up collection")
+            MainScope().launch {
+                props.mainScreenViewModel.state.collectLatest {
+                    println("Collected $it")
+                    setState {
+                        viewState = it
+                    }
+                }
+            }
+            println("Loading state")
+            props.mainScreenViewModel.getTagsState(false)
+            println("Loaded state")
         }
     }
 }

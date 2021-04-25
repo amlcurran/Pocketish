@@ -19,11 +19,10 @@ struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
     @AppStorage("launchType") var launchType: OpenIn = .safari
-    @StateObject var textObserver = Debouncer<String>(initial: "")
 
     var body: some View {
         AsyncView(state: viewModel.state) { state in
-            MainView(state: state, searchText: $textObserver.searchText, viewModel: viewModel)
+            MainView(state: state, viewModel: viewModel)
         }
         .animation(nil)
         .animation(Animation.easeIn.speed(4))

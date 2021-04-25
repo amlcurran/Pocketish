@@ -7,14 +7,12 @@ import kotlinx.css.fontFamily
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.button
-import react.dom.div
 import styled.css
 import styled.styledDiv
 
 external interface LoginState : RState {
     var loading: Boolean
     var loggedIn: Boolean
-    var mainState: MainViewState?
 }
 
 class App: RComponent<RProps, LoginState>(), URLLauncher {
@@ -22,7 +20,6 @@ class App: RComponent<RProps, LoginState>(), URLLauncher {
     private val pocketApi = PocketApi()
     private val userStore = LocalStorageUserStore()
     private val loginViewModel = LoginViewModel(pocketApi, this, userStore)
-    private val mainViewModel = MainScreenViewModel(pocketApi, TagsFromArticlesRepository(pocketApi, userStore), userStore)
 
     override fun LoginState.init() {
         MainScope().launch {
@@ -35,10 +32,6 @@ class App: RComponent<RProps, LoginState>(), URLLauncher {
                 setState {
                     loggedIn = true
                 }
-                val state = mainViewModel.getTagsState(ignoreCache = false)
-                setState {
-                    mainState = state
-                }
             }
         }
     }
@@ -48,17 +41,22 @@ class App: RComponent<RProps, LoginState>(), URLLauncher {
             css {
                 fontFamily = "IBM Plex Sans, sans-serif"
             }
-            state.mainState?.let {
+            if (state.loggedIn) {
                 child(MainView::class) {
-                    attrs.mainState = it
+                    attrs.mainScreenViewModel = MainScreenViewModel(
+                        pocketApi,
+                        TagsFromArticlesRepository(pocketApi, userStore),
+                        userStore
+                    )
                 }
-            }
-            button {
-                +"Authorize"
-                attrs {
-                    onClickFunction = {
-                        MainScope().launch {
-                            loginViewModel.continueLogin()
+            } else {
+                button {
+                    +"Log in to Pocket"
+                    attrs {
+                        onClickFunction = {
+                            MainScope().launch {
+                                loginViewModel.continueLogin()
+                            }
                         }
                     }
                 }
