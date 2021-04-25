@@ -54,13 +54,13 @@ class MainView: RComponent<MainProps, MainState>() {
 
     override fun componentDidMount() {
         GlobalScope.launch {
-            GlobalScope.launch {
-                props.mainScreenViewModel.state.collectLatest {
-                    setState {
-                        viewState = it
-                    }
+            props.mainScreenViewModel.state.collectLatest {
+                setState {
+                    viewState = it
                 }
             }
+        }
+        GlobalScope.launch {
             props.mainScreenViewModel.getTagsState(false)
         }
     }
@@ -102,10 +102,13 @@ fun RBuilder.article(article: Article) {
         styledH4 {
             css {
                 margin(vertical = 0.8.em)
+                put("-webkit-line-clamp", "3")
+                put("-webkit-box-orient", "vertical")
+                put("display", "-webkit-box")
+                overflow = Overflow.hidden
             }
             +article.title
         }
-        +article.excerpt
     }
 }
 

@@ -9,9 +9,7 @@ import styled.styledH3
 
 class ListItemProps(
     var leftText: String
-) : RProps {
-
-}
+) : RProps
 
 class ListItem: RComponent<ListItemProps, RState>() {
 
