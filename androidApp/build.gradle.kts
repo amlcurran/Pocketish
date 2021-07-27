@@ -3,13 +3,6 @@ plugins {
     kotlin("android")
 }
 
-dependencies {
-    implementation(project(":shared"))
-    implementation("com.google.android.material:material:1.3.0")
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0")
-}
 
 android {
     compileSdkVersion(30)
@@ -25,4 +18,27 @@ android {
             isMinifyEnabled = false
         }
     }
+    buildFeatures {
+        compose = true
+        viewBinding = true
+    }
+    composeOptions {
+        kotlinCompilerVersion =  "1.5.10"
+        kotlinCompilerExtensionVersion = "1.0.0-rc01"
+    }
+}
+
+dependencies {
+    implementation(project(":shared"))
+    implementation("com.google.android.material:material:1.3.0")
+    implementation("androidx.appcompat:appcompat:1.3.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0")
+
+    implementation("androidx.compose.ui:ui:1.0.0-rc01")
+    implementation("androidx.compose.ui:ui-tooling:1.0.0-rc01")
+    implementation("androidx.compose.foundation:foundation:1.0.0-rc01")
+    implementation("androidx.compose.material:material:1.0.0-rc01")
+    implementation("androidx.compose.material:material-icons-core:1.0.0-rc01")
+    implementation("androidx.compose.material:material-icons-extended:1.0.0-rc01")
 }

@@ -24,13 +24,14 @@ kotlin {
     }
     sourceSets {
         val ktorVersion = "1.4.1"
+        val coroutinesVersion = "1.5.0"
 
         val commonMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2-native-mt")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 
             }
@@ -39,7 +40,7 @@ kotlin {
             dependencies {
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
                 implementation("com.google.android.material:material:1.3.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             }
         }
         val iosMain by getting {
