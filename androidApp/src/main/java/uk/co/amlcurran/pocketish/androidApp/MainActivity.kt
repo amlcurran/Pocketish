@@ -16,9 +16,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import uk.co.amlcurran.pocketish.androidApp.databinding.ActivityMainBinding
@@ -45,37 +47,49 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.start(launchedFresh) {
                 tagsViewModel.getTagsState(ignoreCache = false)
-                tagsViewModel.state.collect { result ->
-                    result.handle(
-                        onData = { tagsState ->
-                            binding.mainCompose.setContent {
-                                MaterialTheme {
-                                    LazyColumn {
-                                        items(1) {
-                                            LatestUntagged(tagsState.latestUntagged)
-                                        }
-                                        items(tagsState.tags) { tag ->
-                                            TagItem(tag)
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        onLoading = {
-                            binding.mainCompose.setContent {
-                                MaterialTheme {
-                                    Loading()
-                                }
-                            }
-                        },
-                        onError = {  }
-                    )
-
-                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            tagsViewModel.state.collectInto(binding.mainCompose) { result ->
+                MainView(result)
             }
         }
     }
 
+}
+
+suspend fun <T> Flow<AsyncResult<T>>.collectInto(foo: ComposeView, main: @Composable (T) -> Unit) {
+    collect { result ->
+        result.handle(
+            onData = { tagsState ->
+                foo.setContent {
+                    MaterialTheme {
+                        main(tagsState)
+                    }
+                }
+            },
+            onLoading = {
+                foo.setContent {
+                    MaterialTheme {
+                        Loading()
+                    }
+                }
+            },
+            onError = {  }
+        )
+    }
+}
+
+@Composable
+private fun MainView(tagsState: MainViewState) {
+    LazyColumn {
+        items(1) {
+            LatestUntagged(tagsState.latestUntagged)
+        }
+        items(tagsState.tags) { tag ->
+            TagItem(tag)
+        }
+    }
 }
 
 @Composable
@@ -89,7 +103,9 @@ private fun TagItem(tag: Tag) {
 private fun LatestUntagged(articles: List<Article>) {
     LazyRow {
         items(articles) { article ->
-            Card(modifier = Modifier.widthIn(max = 200.dp).padding(16.dp)) {
+            Card(modifier = Modifier
+                .widthIn(max = 200.dp)
+                .padding(16.dp)) {
                 Column {
                     Text(article.title, maxLines = 3)
                     Text(article.url, maxLines = 1)
