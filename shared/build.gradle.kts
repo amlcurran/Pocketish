@@ -1,18 +1,23 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.10"
+    kotlin("plugin.serialization") version "1.6.0"
     id("com.android.library")
 }
 
 kotlin {
     android()
-    ios {
-        binaries {
-            framework {
-                baseName = "shared"
-            }
+    val xcf = XCFramework()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = "shared"
+            xcf.add(this)
         }
     }
     js {
@@ -23,15 +28,15 @@ kotlin {
         }
     }
     sourceSets {
-        val ktorVersion = "1.4.1"
-        val coroutinesVersion = "1.5.0"
+        val ktorVersion = "1.6.7"
+        val coroutinesVersion = "1.6.0"
 
         val commonMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion-native-mt")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 
             }
@@ -43,56 +48,32 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             }
         }
-        val iosMain by getting {
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
         }
-        val jsMain by getting {
-            dependencies {
-                implementation("org.jetbrains:kotlin-react:17.0.1-pre.148-kotlin-1.4.21")
-                implementation("org.jetbrains:kotlin-react-dom:17.0.1-pre.148-kotlin-1.4.21")
-                implementation(npm("react", "17.0.1"))
-                implementation(npm("react-dom", "17.0.1"))
-                implementation("org.jetbrains:kotlin-styled:5.2.1-pre.148-kotlin-1.4.21")
-                implementation(npm("styled-components", "~5.2.1"))
-
-                implementation("io.ktor:ktor-client-js:$ktorVersion")
-                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
-                implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
-            }
-        }
-    }
-
-    val xcFrameworkPath = "xcframework/${project.name}.xcframework"
-
-    tasks.register("deleteXcFramework") {
-        delete("xcframework/${project.name}.xcframework")
-    }
-
-    tasks.register("buildXcFramework") {
-        val mode = "Debug"
-        val frameworks = arrayOf("iosArm64", "iosX64")
-            .map { kotlin.targets.getByName<KotlinNativeTarget>(it).binaries.getFramework(mode) }
-        inputs.property("mode", mode)
-        dependsOn(tasks.getByName("deleteXcFramework"))
-        dependsOn(frameworks.map { it.linkTask })
-        doLast {
-            val buildArgs: () -> List<String> = {
-                val arguments = mutableListOf("-create-xcframework")
-                frameworks.forEach {
-                    arguments += "-framework"
-                    arguments += "${it.outputDirectory}/${project.name}.framework"
-                }
-                arguments += "-output"
-                arguments += xcFrameworkPath
-                arguments
-            }
-            exec {
-                executable = "xcodebuild"
-                args = buildArgs()
-            }
-        }
+//        val jsMain by getting {
+//            dependencies {
+//                implementation("org.jetbrains:kotlin-react:17.0.1-pre.148-kotlin-1.4.21")
+//                implementation("org.jetbrains:kotlin-react-dom:17.0.1-pre.148-kotlin-1.4.21")
+//                implementation(npm("react", "17.0.1"))
+//                implementation(npm("react-dom", "17.0.1"))
+//                implementation("org.jetbrains:kotlin-styled:5.2.1-pre.148-kotlin-1.4.21")
+//                implementation(npm("styled-components", "~5.2.1"))
+//
+//                implementation("io.ktor:ktor-client-js:$ktorVersion")
+//                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
+//                implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
+//            }
+//        }
     }
 }
 
@@ -104,19 +85,3 @@ android {
         targetSdkVersion(30)
     }
 }
-
-val packForXcode by tasks.creating(Sync::class) {
-    group = "build"
-    val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
-    val sdkName = System.getenv("SDK_NAME") ?: "iphonesimulator"
-    val targetName = "ios" + if (sdkName.startsWith("iphoneos")) "Arm64" else "X64"
-    print(targetName)
-    val framework = kotlin.targets.getByName<KotlinNativeTarget>(targetName).binaries.getFramework(mode)
-    inputs.property("mode", mode)
-    dependsOn(framework.linkTask)
-    val targetDir = File(buildDir, "xcode-frameworks")
-    from({ framework.outputDirectory })
-    into(targetDir)
-}
-
-tasks.getByName("build").dependsOn(packForXcode)
