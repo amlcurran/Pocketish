@@ -11,7 +11,7 @@ struct RoundedButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .background(RoundedRectangle(cornerRadius: 24).foregroundColor(.accentColor))
             .brightness(entered ? -0.2 : 0.0)
-            .animation(.easeInOut(duration: 0.1))
+            .animation(.easeInOut(duration: 0.1), value: entered)
     }
 
 }

@@ -22,7 +22,7 @@ struct MainView: View {
                     showSheet = .showArticle(article)
                 }
                 ForEach(state.tags) { (tag: Tag) in
-                    TagListItem(tag: tag, enteredTagDrop: $enteredTagDrop) { articleId in
+                    TagListItem(tag: tag) { articleId in
                         viewModel.add(tag, toArticleWithId: articleId) {
                             selectedFeedback.notificationOccurred(.success)
                         }

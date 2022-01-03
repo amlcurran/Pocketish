@@ -44,7 +44,6 @@ class ObservableHomeViewModel: ObservableObject {
     private let homeViewModel: MainScreenViewModel
 
     @Published var state: AsyncResult<MainViewState> = AsyncResultLoading(foo: KotlinUnit())
-    @Published var tagsState: AsyncResult<TagViewState> = AsyncResultLoading(foo: KotlinUnit())
     @Published var loadingMoreUntagged: Bool = false
 
     init(homeViewModel: MainScreenViewModel) {
@@ -94,16 +93,16 @@ class ObservableHomeViewModel: ObservableObject {
 
         }
     }
+    
+    @Published var tagsState: AsyncResult<TagViewState> = AsyncResultLoading(foo: KotlinUnit())
 
-    func loadArticles(tagged tag: Tag) {
-        homeViewModel.getArticlesWithTag(tag: tag.id) { [weak self] result, error in
-            if let error = error {
-                print(error)
-            } else {
-                if let result = result {
-                    self?.tagsState = AsyncResultSuccess(data: result)
-                }
-            }
+    @MainActor
+    func loadArticles(tagged tag: Tag) async {
+        do {
+            let result = try await homeViewModel.getArticlesWithTag(tag: tag.id)
+            tagsState = AsyncResultSuccess(data: result)
+        } catch {
+            tagsState = AsyncResultError(error: error as! KotlinError)
         }
     }
 }

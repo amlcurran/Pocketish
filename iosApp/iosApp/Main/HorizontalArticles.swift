@@ -39,7 +39,7 @@ struct HorizontalArticles: View {
                         .modifier(CardStyle())
                         .onDrag { NSItemProvider(object: article.id as NSString) }
                         .onTapGesture { onArticleClicked(article) }
-                }.animation(.easeInOut(duration: 0.2))
+                }.animation(.easeInOut(duration: 0.2), value: articles)
                 ZStack {
                     Image(systemName: "chevron.forward.circle.fill")
                         .font(.system(size: 42))
@@ -50,7 +50,7 @@ struct HorizontalArticles: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .opacity(loadingMore ? 1 : 0)
-                }.animation(.default)
+                }.animation(.default, value: loadingMore)
             }
             .padding(.foo([.bottom]))
         }.labelStyle(DefaultLabelStyle())

@@ -24,9 +24,7 @@ struct HomeView: View {
         AsyncView(state: viewModel.state) { state in
             MainView(state: state, viewModel: viewModel)
         }
-        .animation(nil)
-        .animation(Animation.easeIn.speed(4))
-        .transition(.opacity)
+        .animation(.easeIn.speed(4), value: viewModel.state)
         .navigationBarTitle("Tags")
         .toolbar {
             ToolbarItem {
@@ -49,7 +47,7 @@ struct HomeView: View {
             }
         }
         .font(.system(.body, design: .rounded))
-        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationViewStyle(.stack)
         .onAppear { viewModel.appeared() }
     }
 

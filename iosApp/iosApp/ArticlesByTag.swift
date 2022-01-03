@@ -22,8 +22,8 @@ struct ArticlesByTag: View {
         }
             .navigationTitle(tag.name)
             .navigationBarTitle(tag.name)
-            .onAppear {
-                viewModel.loadArticles(tagged: tag)
+            .task {
+                await viewModel.loadArticles(tagged: tag)
             }
     }
 

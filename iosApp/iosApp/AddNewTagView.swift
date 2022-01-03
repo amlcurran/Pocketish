@@ -16,3 +16,13 @@ struct AddNewTagView: View {
     }
 
 }
+
+struct AddNewTagView_Preview: PreviewProvider {
+    
+    static var previews: some View {
+        Group {
+            AddNewTagView { _ in }
+        }
+    }
+    
+}

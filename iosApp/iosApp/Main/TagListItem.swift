@@ -12,21 +12,21 @@ import shared
 struct TagListItem<Destination: View>: View {
 
     let tag: Tag
-    @Binding var enteredTagDrop: Tag?
+    @State var enteredTagDrop: Tag?
     let onDropped: (String) -> Void
     let destination: () -> Destination
 
     var body: some View {
         NavigationLink(destination: destination()) {
             ListItem(leftText: tag.name,
-                rightText: "\(tag.numberOfArticles)",
+                rightText: "",
                 rightImage: Image(systemName: "chevron.right"))
         }
         .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, dropEntered: $enteredTagDrop) { articleId in
             onDropped(articleId)
         })
-        .background(enteredTagDrop == tag ? AnyView(Color.primary.opacity(0.1).colorInvert()) : AnyView(Color.clear))
-        .animation(.default)
+        .background(Color.accentColor.opacity(enteredTagDrop == tag ? 0.2 : 0))
+        .animation(.default, value: enteredTagDrop)
     }
 
 }

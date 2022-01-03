@@ -1,6 +1,7 @@
 package uk.co.amlcurran.pocketish.shared
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.native.concurrent.SharedImmutable
 
 data class MainViewState(
     val tags: List<Tag>,
