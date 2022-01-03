@@ -9,17 +9,18 @@ struct MainView: View {
     @State var enteredArchiveDrop: Bool = false
     @State var enteredTagDrop: Tag? = nil
     @State var dragClicked: Bool = false
+    @Environment(\.openURL) var openURL: OpenURLAction
     @StateObject var viewModel: ObservableHomeViewModel
 
     let selectedFeedback = UINotificationFeedbackGenerator()
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack {
             ScrollView(.vertical) {
                 HorizontalArticles(articles: state.latestUntagged, loadingMore: $viewModel.loadingMoreUntagged) {
                     viewModel.loadMoreUntagged()
                 } onArticleClicked: { article in
-                    showSheet = .showArticle(article)
+                    openURL(URL(string: article.url)!)
                 }
                 ForEach(state.tags) { (tag: Tag) in
                     TagListItem(tag: tag) { articleId in
@@ -33,9 +34,6 @@ struct MainView: View {
                         Divider()
                     }
                 }
-                Rectangle()
-                    .foregroundColor(Color(UIColor.systemBackground))
-                    .frame(height: 50)
             }
             VStack {
                 HStack {
@@ -57,7 +55,7 @@ struct MainView: View {
                     }))
                     .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal)
+                .padding()
             }
         }
         .listStyle(PlainListStyle())

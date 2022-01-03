@@ -10,15 +10,9 @@ import SwiftUI
 import shared
 import Combine
 
-enum OpenIn: Int {
-    case safari
-    case inApp
-}
-
 struct HomeView: View {
 
     @ObservedObject var viewModel: ObservableHomeViewModel
-    @AppStorage("launchType") var launchType: OpenIn = .safari
 
     var body: some View {
         AsyncView(state: viewModel.state) { state in
@@ -33,12 +27,6 @@ struct HomeView: View {
                         viewModel.forceRefresh()
                     }) {
                         Label("Refresh", systemImage: "arrow.clockwise")
-                    }
-                    Picker(selection: $launchType, label: Text("FOO")) {
-                        Label("Open in browser", systemImage: "safari")
-                            .tag(OpenIn.safari)
-                        Label("Open in app", systemImage: "app.badge")
-                            .tag(OpenIn.inApp)
                     }
                 }
                 label: {
