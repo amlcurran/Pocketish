@@ -22,16 +22,18 @@ struct HomeView: View {
         .navigationBarTitle("Tags")
         .toolbar {
             ToolbarItem {
-                Menu {
+//                Menu {
                     Button(action: {
-                        viewModel.forceRefresh()
+                        Task {
+                            await viewModel.forceRefresh()
+                        }
                     }) {
                         Label("Refresh", systemImage: "arrow.clockwise")
                     }
-                }
-                label: {
-                    Label("", systemImage: "ellipsis.circle")
-                }
+//                }
+//                label: {
+//                    Label("", systemImage: "ellipsis.circle")
+//                }
             }
         }
         .font(.system(.body, design: .rounded))

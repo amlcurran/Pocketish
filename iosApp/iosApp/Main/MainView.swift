@@ -58,7 +58,7 @@ struct MainView: View {
                 .padding()
             }
         }
-        .listStyle(PlainListStyle())
+        .listStyle(.plain)
         .sheet(item: $showSheet) { foo in
             foo.content(self)
         }

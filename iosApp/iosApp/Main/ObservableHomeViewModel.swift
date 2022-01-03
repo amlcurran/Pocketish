@@ -59,9 +59,11 @@ class ObservableHomeViewModel: ObservableObject {
         }
     }
 
-    func forceRefresh(onlyUntagged: Bool = false) {
-        homeViewModel.getTagsState(ignoreCache: true) { state, error in
-
+    func forceRefresh(onlyUntagged: Bool = false) async {
+        do {
+            try await homeViewModel.getTagsState(ignoreCache: true)
+        } catch {
+            print(error)
         }
     }
 
