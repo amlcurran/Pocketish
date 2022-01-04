@@ -12,6 +12,10 @@ enum LoadState<T> {
     case loading, success(T), failure
 }
 
+extension LoadState: Equatable where T: Equatable {
+    
+}
+
 private class RemoteLoader: ObservableObject {
     var state = LoadState<UIImage>.loading
 
@@ -43,26 +47,25 @@ struct RemoteImage: View {
 
     var body: some View {
         foo()
+            .animation(.default, value: loader.state)
     }
 
+    @ViewBuilder
     private func foo() -> some View {
         switch loader.state {
         case let .success(image):
-            return AnyView(Image(uiImage: image)
+            Image(uiImage: image)
                 .resizable()
-                .aspectRatio(contentMode: .fill))
+                .aspectRatio(contentMode: .fill)
         case .loading:
-            return AnyView(Image(systemName: "arrow.clockwise")
-                .font(.system(size: 36, design: .rounded)))
+            ProgressView()
         case .failure:
-            return AnyView(
-                Image(systemName: "photo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .font(.system(size: 128, design: .rounded))
-                    .rotationEffect(.degrees(-45))
-                    .foregroundColor(.accentColor.opacity(0.3))
-            )
+            Image(systemName: "photo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .font(.system(size: 128, design: .rounded))
+                .rotationEffect(.degrees(-45))
+                .foregroundColor(.accentColor.opacity(0.3))
         }
     }
 

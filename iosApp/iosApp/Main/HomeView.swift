@@ -12,7 +12,7 @@ import Combine
 
 struct HomeView: View {
 
-    @ObservedObject var viewModel: ObservableHomeViewModel
+    @StateObject var viewModel: ObservableMainViewModel
 
     var body: some View {
         AsyncView(state: viewModel.state) { state in
@@ -22,23 +22,24 @@ struct HomeView: View {
         .navigationBarTitle("Tags")
         .toolbar {
             ToolbarItem {
-//                Menu {
-                    Button(action: {
-                        Task {
-                            await viewModel.forceRefresh()
-                        }
-                    }) {
-                        Label("Refresh", systemImage: "arrow.clockwise")
+                Button(action: {
+                    Task {
+                        await viewModel.forceRefresh()
                     }
-//                }
-//                label: {
-//                    Label("", systemImage: "ellipsis.circle")
-//                }
+                }) {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
         }
         .font(.system(.body, design: .rounded))
         .navigationViewStyle(.stack)
-        .onAppear { viewModel.appeared() }
+        .task {
+            do {
+                try await viewModel.appeared()
+            } catch {
+                print(error)
+            }
+        }
     }
 
 }

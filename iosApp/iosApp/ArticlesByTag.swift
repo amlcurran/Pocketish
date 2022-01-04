@@ -4,7 +4,7 @@ import shared
 struct ArticlesByTag: View {
 
     let tag: Tag
-    @StateObject var viewModel: ObservableHomeViewModel = ObservableHomeViewModel(homeViewModel: .standard)
+    @ObservedObject var viewModel = ObservableByTagsViewModel(homeViewModel: .standard)
 
     var body: some View {
         AsyncView(state: viewModel.tagsState) { (articles: TagViewState) in
@@ -22,6 +22,8 @@ struct ArticlesByTag: View {
         }
             .navigationTitle(tag.name)
             .navigationBarTitle(tag.name)
+            .listStyle(.plain)
+            .listRowSeparator(.hidden)
             .task {
                 await viewModel.loadArticles(tagged: tag)
             }
@@ -29,9 +31,9 @@ struct ArticlesByTag: View {
 
     private func articleItem(article: Article) -> some View {
         Link(destination: URL(string: article.url)!) {
-            HStack {
+            HStack(alignment: .top) {
                 RemoteImage(url: article.mainImage()?.src)
-                    .frame(width: 100)
+                    .frame(width: 100, height: 80)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .clipped()
                 VStack(alignment: .leading) {
@@ -41,10 +43,10 @@ struct ArticlesByTag: View {
                         .lineLimit(2)
                         .foregroundColor(.secondary)
                 }
-                    .padding(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
                 Image(systemName: "chevron.forward")
                     .foregroundColor(.secondary)
             }
+            .padding(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
         }
     }
 

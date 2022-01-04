@@ -63,7 +63,7 @@ private func homeView() -> some View {
     let userStore = UserDefaultsStore()
     let repository = TagsFromArticlesRepository(pocketApi: api, userStore: userStore)
     let model = MainScreenViewModel(pocketApi: api, tagsRepository: repository, userStore: userStore)
-    let viewModel = ObservableHomeViewModel(homeViewModel: model)
+    let viewModel = ObservableMainViewModel(homeViewModel: model)
     return HomeView(viewModel: viewModel)
         .accentColor(.orange)
 }
@@ -78,22 +78,25 @@ struct PocketishApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if loggedIn {
-                NavigationView {
-                    homeView()
-                }
-                .searchable(text: $search, prompt: "Find an article")
-                .navigationViewStyle(.stack)
-            } else {
-                LoadingYourTags()
-                    .onOpenURL { url in
-                        if url.absoluteString == "pocketish:authorize" {
-                            mainRouter.continueLoggingIn { _, _ in
-                                loggedIn = true
+            ZStack {
+                if loggedIn {
+                    NavigationView {
+                        homeView()
+                    }
+                    .searchable(text: $search, prompt: "Find an article")
+                    .navigationViewStyle(.stack)
+                } else {
+                    LoadingYourTags()
+                        .onOpenURL { url in
+                            if url.absoluteString == "pocketish:authorize" {
+                                mainRouter.continueLoggingIn { _, _ in
+                                    loggedIn = true
+                                }
                             }
                         }
-                    }
+                }
             }
+            .animation(.default, value: loggedIn)
         }
         .onChange(of: scenePhase) { newValue in
             if newValue == .active {

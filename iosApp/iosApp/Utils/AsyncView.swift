@@ -9,7 +9,6 @@ struct AsyncView<T: AnyObject, Content: View>: View {
 
     var body: some View {
         var foo: AnyView!
-        print(state)
         state.handle { state in
             foo = AnyView(builder(state!))
         } onLoading: {

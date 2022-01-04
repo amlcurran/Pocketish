@@ -10,7 +10,7 @@ struct MainView: View {
     @State var enteredTagDrop: Tag? = nil
     @State var dragClicked: Bool = false
     @Environment(\.openURL) var openURL: OpenURLAction
-    @StateObject var viewModel: ObservableHomeViewModel
+    @StateObject var viewModel: ObservableMainViewModel
 
     let selectedFeedback = UINotificationFeedbackGenerator()
 
@@ -28,7 +28,7 @@ struct MainView: View {
                             selectedFeedback.notificationOccurred(.success)
                         }
                     } destination: {
-                        ArticlesByTag(tag: tag, viewModel: viewModel.duplicate())
+                        ArticlesByTag(tag: tag)
                     }
                     if tag.id != state.tags.last?.id {
                         Divider()

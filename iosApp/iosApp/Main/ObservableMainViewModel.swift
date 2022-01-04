@@ -34,77 +34,83 @@ class Collector<T>: Kotlinx_coroutines_coreFlowCollector {
 
 
     func emit(value: Any?, completionHandler: @escaping (KotlinUnit?, Error?) -> Void) {
-        print("Casting \(value.debugDescription) to \(T.self) resulting in \(value as? T)")
         callback(value as? T)
         completionHandler(KotlinUnit(), nil)
     }
 }
 
-class ObservableHomeViewModel: ObservableObject {
-    private let homeViewModel: MainScreenViewModel
+class ObservableMainViewModel: ObservableObject {
+    private let model: MainScreenViewModel
 
     @Published var state: AsyncResult<MainViewState> = AsyncResultLoading(foo: KotlinUnit())
     @Published var loadingMoreUntagged: Bool = false
 
     init(homeViewModel: MainScreenViewModel) {
-        self.homeViewModel = homeViewModel
-    }
-
-    func appeared() {
+        self.model = homeViewModel
         homeViewModel.state.collect { (value: AsyncResult<MainViewState>) in
             self.state = value
         }
-        homeViewModel.getTagsState(ignoreCache: false) { state, error in
+    }
 
-        }
+    func appeared() async throws {
+        try await model.getTagsState(ignoreCache: false)
     }
 
     func forceRefresh(onlyUntagged: Bool = false) async {
         do {
-            try await homeViewModel.getTagsState(ignoreCache: true)
+            try await model.getTagsState(ignoreCache: true)
         } catch {
             print(error)
         }
     }
 
     func add(_ tag: Tag, toArticleWithId articleId: String, onFinished: @escaping () -> Void) {
-        homeViewModel.addTagToArticle(tag: tag.id, articleId: articleId) { _, _ in
+        model.addTagToArticle(tag: tag.id, articleId: articleId) { _, _ in
 
         }
     }
 
     func loadMoreUntagged() {
         loadingMoreUntagged = true
-        homeViewModel.loadMoreUntagged { state, error in
+        model.loadMoreUntagged { state, error in
             self.loadingMoreUntagged = false
         }
     }
 
-    func duplicate() -> ObservableHomeViewModel {
-        return ObservableHomeViewModel(homeViewModel: self.homeViewModel)
-    }
-
     func archive(_ id: String, onFinished: @escaping () -> Void) {
-        homeViewModel.archive(articleId: id) { _, _ in
+        model.archive(articleId: id) { _, _ in
 
         }
     }
 
     func addNewTag(named tagName: String, to articleId: String, onFinished: @escaping () -> Void) {
-        homeViewModel.addTagToArticle(tag: tagName, articleId: articleId) { result, error in
+        model.addTagToArticle(tag: tagName, articleId: articleId) { result, error in
 
         }
     }
-    
+}
+
+class ObservableByTagsViewModel: ObservableObject {
+    private let model: MainScreenViewModel
     @Published var tagsState: AsyncResult<TagViewState> = AsyncResultLoading(foo: KotlinUnit())
+
+    init(homeViewModel: MainScreenViewModel) {
+        self.model = homeViewModel
+    }
 
     @MainActor
     func loadArticles(tagged tag: Tag) async {
         do {
-            let result = try await homeViewModel.getArticlesWithTag(tag: tag.id)
+            let result = try await model.getArticlesWithTag(tag: tag.id)
             tagsState = AsyncResultSuccess(data: result)
         } catch {
             tagsState = AsyncResultError(error: error as! KotlinError)
+        }
+    }
+    
+    func archive(_ id: String, onFinished: @escaping () -> Void) {
+        model.archive(articleId: id) { _, _ in
+
         }
     }
 }
