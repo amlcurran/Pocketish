@@ -31,12 +31,10 @@ struct HorizontalArticles: View {
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
-                Spacer()
-                    .frame(idealWidth: 16)
                 ForEach(articles) { article in
                     ArticleView(article: article)
                         .frame(width: 200)
-                        .modifier(CardStyle())
+                        .modifier(.card)
                         .onDrag { NSItemProvider(object: article.id as NSString) }
                         .onTapGesture { onArticleClicked(article) }
                 }.animation(.easeInOut(duration: 0.2), value: articles)
@@ -53,7 +51,7 @@ struct HorizontalArticles: View {
                 }.animation(.default, value: loadingMore)
             }
             .padding(.foo([.bottom]))
-        }.labelStyle(DefaultLabelStyle())
+        }
     }
 }
 

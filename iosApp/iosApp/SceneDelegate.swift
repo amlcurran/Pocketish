@@ -58,15 +58,6 @@ import shared
 //
 //}
 
-private func homeView() -> some View {
-    let api = PocketApi()
-    let userStore = UserDefaultsStore()
-    let repository = TagsFromArticlesRepository(pocketApi: api, userStore: userStore)
-    let model = MainScreenViewModel(pocketApi: api, tagsRepository: repository, userStore: userStore)
-    let viewModel = ObservableMainViewModel(homeViewModel: model)
-    return HomeView(viewModel: viewModel)
-        .accentColor(.orange)
-}
 
 @main
 struct PocketishApp: App {
@@ -81,10 +72,9 @@ struct PocketishApp: App {
             ZStack {
                 if loggedIn {
                     NavigationView {
-                        homeView()
+                        HomeView()
                     }
                     .searchable(text: $search, prompt: "Find an article")
-                    .navigationViewStyle(.stack)
                 } else {
                     LoadingYourTags()
                         .onOpenURL { url in
@@ -97,6 +87,7 @@ struct PocketishApp: App {
                 }
             }
             .animation(.default, value: loggedIn)
+            .accentColor(.orange)
         }
         .onChange(of: scenePhase) { newValue in
             if newValue == .active {

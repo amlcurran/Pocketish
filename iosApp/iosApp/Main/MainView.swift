@@ -10,17 +10,25 @@ struct MainView: View {
     @State var enteredTagDrop: Tag? = nil
     @State var dragClicked: Bool = false
     @Environment(\.openURL) var openURL: OpenURLAction
-    @StateObject var viewModel: ObservableMainViewModel
+    @Environment(\.horizontalSizeClass) var horizontalSize: UserInterfaceSizeClass?
+    @StateObject var viewModel = ObservableMainViewModel(homeViewModel: .standard)
 
     let selectedFeedback = UINotificationFeedbackGenerator()
 
     var body: some View {
         VStack {
-            ScrollView(.vertical) {
-                HorizontalArticles(articles: state.latestUntagged, loadingMore: $viewModel.loadingMoreUntagged) {
-                    viewModel.loadMoreUntagged()
-                } onArticleClicked: { article in
-                    openURL(URL(string: article.url)!)
+            List {
+                if horizontalSize != .regular {
+                    HorizontalArticles(articles: state.latestUntagged,
+                                       loadingMore: $viewModel.loadingMoreUntagged) {
+                        viewModel.loadMoreUntagged()
+                    } onArticleClicked: { article in
+                        openURL(URL(string: article.url)!)
+                    }
+                } else {
+                    NavigationLink("Untagged") {
+                        ArticlesByTag(tag: Tag(id: "", name: "", numberOfArticles: 0))
+                    }
                 }
                 ForEach(state.tags) { (tag: Tag) in
                     TagListItem(tag: tag) { articleId in
@@ -29,9 +37,6 @@ struct MainView: View {
                         }
                     } destination: {
                         ArticlesByTag(tag: tag)
-                    }
-                    if tag.id != state.tags.last?.id {
-                        Divider()
                     }
                 }
             }
@@ -58,7 +63,6 @@ struct MainView: View {
                 .padding()
             }
         }
-        .listStyle(.plain)
         .sheet(item: $showSheet) { foo in
             foo.content(self)
         }

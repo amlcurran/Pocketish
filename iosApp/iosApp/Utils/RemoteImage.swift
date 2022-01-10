@@ -44,6 +44,12 @@ private class RemoteLoader: ObservableObject {
 struct RemoteImage: View {
 
     @StateObject private var loader: RemoteLoader
+    let showsSpinner: Bool
+    
+    init(url: String?, showsSpinner: Bool = true) {
+        _loader = StateObject(wrappedValue: RemoteLoader(url: url))
+        self.showsSpinner = showsSpinner
+    }
 
     var body: some View {
         foo()
@@ -59,6 +65,7 @@ struct RemoteImage: View {
                 .aspectRatio(contentMode: .fill)
         case .loading:
             ProgressView()
+                .opacity(showsSpinner ? 1 : 0)
         case .failure:
             Image(systemName: "photo")
                 .resizable()
@@ -67,10 +74,6 @@ struct RemoteImage: View {
                 .rotationEffect(.degrees(-45))
                 .foregroundColor(.accentColor.opacity(0.3))
         }
-    }
-
-    init(url: String?) {
-        _loader = StateObject(wrappedValue: RemoteLoader(url: url))
     }
 }
 

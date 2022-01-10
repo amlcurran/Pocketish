@@ -4,13 +4,13 @@ import shared
 struct ArticlesByTag: View {
 
     let tag: Tag
-    @ObservedObject var viewModel = ObservableByTagsViewModel(homeViewModel: .standard)
+    @StateObject var viewModel = ObservableByTagsViewModel(homeViewModel: .standard)
 
     var body: some View {
         AsyncView(state: viewModel.tagsState) { (articles: TagViewState) in
             List {
-                ForEach(articles.articles) { (article: Article) in
-                    articleItem(article: article)
+                ForEach(articles.articles) {
+                    ArticleItemView(article: $0)
                 }
                 .onDelete { items in
                     let article = items.first.map { articles.articles[$0] }
@@ -20,23 +20,27 @@ struct ArticlesByTag: View {
                 }
             }.font(.system(.body, design: .rounded))
         }
-            .navigationTitle(tag.name)
-            .navigationBarTitle(tag.name)
-            .listStyle(.plain)
-            .listRowSeparator(.hidden)
-            .task {
-                await viewModel.loadArticles(tagged: tag)
-            }
+        .listStyle(.plain)
+        .navigationTitle(tag.name.isEmpty ? "Untagged" : tag.name)
+        .task {
+            await viewModel.loadArticles(tagged: tag)
+        }
     }
 
-    private func articleItem(article: Article) -> some View {
+}
+
+struct ArticleItemView: View {
+    
+    let article: Article
+    
+    var body: some View {
         Link(destination: URL(string: article.url)!) {
-            HStack(alignment: .top) {
-                RemoteImage(url: article.mainImage()?.src)
+            HStack(alignment: .center) {
+                RemoteImage(url: article.mainImage()?.src, showsSpinner: false)
                     .frame(width: 100, height: 80)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .clipped()
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(article.title)
                         .font(.system(.body, design: .rounded))
                     Text(article.excerpt)
@@ -48,8 +52,9 @@ struct ArticlesByTag: View {
             }
             .padding(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
         }
+        .onDrag { NSItemProvider(object: article.id as NSString) }
     }
-
+    
 }
 
 struct CardStyle: ViewModifier {
@@ -61,6 +66,14 @@ struct CardStyle: ViewModifier {
             .shadow(radius: 3)
             .padding(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
     }
+}
+
+extension ViewModifier where Self == CardStyle {
+    
+    static var card: CardStyle  {
+        CardStyle()
+    }
+    
 }
 
 extension MainScreenViewModel {

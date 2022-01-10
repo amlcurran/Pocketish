@@ -18,9 +18,7 @@ struct TagListItem<Destination: View>: View {
 
     var body: some View {
         NavigationLink(destination: destination()) {
-            ListItem(leftText: tag.name,
-                rightText: "",
-                rightImage: Image(systemName: "chevron.right"))
+            Text(tag.name)
         }
         .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, dropEntered: $enteredTagDrop) { articleId in
             onDropped(articleId)
