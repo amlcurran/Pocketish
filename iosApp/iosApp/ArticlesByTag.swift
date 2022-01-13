@@ -13,9 +13,9 @@ struct ArticlesByTag: View {
                     ArticleItemView(article: $0)
                 }
                 .onDelete { items in
-                    let article = items.first.map { articles.articles[$0] }
-                    viewModel.archive(article!.id) {
-
+                    Task {
+                        let article = items.first.map { articles.articles[$0] }
+                        await viewModel.archive(article!.id)
                     }
                 }
             }.font(.system(.body, design: .rounded))

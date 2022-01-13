@@ -1,7 +1,6 @@
 package uk.co.amlcurran.pocketish.shared
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.native.concurrent.SharedImmutable
 
 data class MainViewState(
     val tags: List<Tag>,
@@ -25,7 +24,7 @@ class MainScreenViewModel(
         state.value = AsyncResult.Loading()
         val tags = tagsRepository.allTags(ignoreCache = ignoreCache)
             .map { tag ->
-                Tag(tag, tag, 0)
+                Tag(tag, tag)
             }
         val latestUntagged = getLatestUntagged()
         val mainViewState = MainViewState(tags, latestUntagged)
@@ -34,7 +33,7 @@ class MainScreenViewModel(
 
     private suspend fun getLatestUntagged(offset: Int = 0): List<Article> {
         return pocketApi.getArticlesWithTag(
-            "_untagged_",
+            Tag.untagged.id,
             userStore["access_token"]!!,
             maxCount = 10,
             offset = offset + 1,
@@ -56,28 +55,22 @@ class MainScreenViewModel(
             offset = 0,
             full = true
         )
-        return TagViewState(Tag(tag, tag, latestUntagged.size), latestUntagged)
+        return TagViewState(Tag(tag, tag), latestUntagged)
     }
 
-    suspend fun addTagToArticle(tag: String, articleId: String) {
-        val add = pocketApi.add(tagId = tag, articleId = articleId, userStore["access_token"]!!) ?: false
-        if (add) {
-            state.value = AsyncResult.Success(state.value.result!!.tagging(articleId, tag))
-        }
+    suspend fun addTagToArticle(tag: String, articleId: String): Boolean {
+        return pocketApi.add(tagId = tag, articleId = articleId, userStore["access_token"]!!) ?: false
     }
 
-    suspend fun archive(articleId: String) {
-        val archived = pocketApi.archive(articleId, userStore["access_token"]!!) ?: false
-        if (archived) {
-            state.value = AsyncResult.Success(state.value.result!!.removingUntaggedArticle(articleId))
-        }
+    suspend fun archive(articleId: String): Boolean {
+        return pocketApi.archive(articleId, userStore["access_token"]!!) ?: false
     }
 
 }
 
 fun MainViewState.tagging(articleId: String, newTag: String): MainViewState {
     val tags = this.tags.toMutableList()
-    val tag = Tag(newTag, newTag, 0)
+    val tag = Tag(newTag, newTag)
     tags.add(tag)
     return copy(
         tags = tags,
@@ -94,6 +87,13 @@ fun MainViewState.removingUntaggedArticle(articleId: String): MainViewState {
 
 data class Tag(
     val id: String,
-    val name: String,
-    val numberOfArticles: Int
-)
+    val name: String
+) {
+
+    companion object {
+
+        val untagged = Tag("_untagged_", "Untagged")
+
+    }
+
+}

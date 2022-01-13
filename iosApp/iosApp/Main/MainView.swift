@@ -27,7 +27,7 @@ struct MainView: View {
                     }
                 } else {
                     NavigationLink("Untagged") {
-                        ArticlesByTag(tag: Tag(id: "", name: "", numberOfArticles: 0))
+                        ArticlesByTag(tag: Tag.companion.untagged)
                     }
                 }
                 ForEach(state.tags) { (tag: Tag) in
@@ -40,37 +40,33 @@ struct MainView: View {
                     }
                 }
             }
-            VStack {
-                HStack {
-                    Button("Archive") {
-                        dragClicked = true
-                    }
-                    .buttonStyle(RoundedButtonStyle(entered: $enteredArchiveDrop))
-                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate2(dropEntered: $enteredArchiveDrop, droppedArticle: { articleId in
-                        viewModel.archive(articleId) {
+            DropView(showSheet: $showSheet) { articleId in
+                viewModel.archive(articleId) {
 
-                        }
-                    }))
-                    Button("Add new tag") {
-                        dragClicked = true
-                    }
-                    .buttonStyle(RoundedButtonStyle(entered: $enteredNewDrop))
-                    .onDrop(of: ["public.text"], delegate: ArticleDropDelegate2(dropEntered: $enteredNewDrop, droppedArticle: { articleId in
-                        showSheet = .addNewTag(to: articleId)
-                    }))
-                    .frame(maxWidth: .infinity)
                 }
-                .padding()
             }
         }
         .sheet(item: $showSheet) { foo in
             foo.content(self)
         }
-        .alert(isPresented: $dragClicked) {
-            Alert(title: Text("Add new tag"),
-                  message: Text("Drag an article on the button to create a new tag"),
-                  dismissButton: .default(Text("OK")))
-        }
     }
 
+}
+
+struct MainView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        Group {
+            MainView(state: MainViewState(
+                tags: [
+                    Tag(id: "foo", name: "Foo"),
+                    Tag(id: "bar", name: "Baz")
+                ],
+                latestUntagged: [
+                    Article(id: "abc", title: "An article", tags: nil, url: "https://foo.com", excerpt: "Blah Blah blah", images: [:])
+                ])
+            )
+        }
+    }
+    
 }

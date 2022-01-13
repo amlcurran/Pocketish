@@ -33,6 +33,7 @@
 		86ADBE40262C766600B50516 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3F262C766600B50516 /* SearchBar.swift */; };
 		9F54D664277E75F100943AAD /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F54D663277E75F100943AAD /* shared.xcframework */; };
 		9F54D665277E75F100943AAD /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9F54D663277E75F100943AAD /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9F62AC43278CDA4E002D77CE /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC42278CDA4E002D77CE /* DropView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,7 @@
 		86ADBE3C262C692900B50516 /* MainView+Sheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainView+Sheets.swift"; sourceTree = "<group>"; };
 		86ADBE3F262C766600B50516 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		9F54D663277E75F100943AAD /* shared.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = shared.xcframework; path = ../shared/build/XCFrameworks/debug/shared.xcframework; sourceTree = "<group>"; };
+		9F62AC42278CDA4E002D77CE /* DropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,6 +221,7 @@
 				69853CF48C5734D1AD46F653 /* ObservableMainViewModel.swift */,
 				86ADBE3C262C692900B50516 /* MainView+Sheets.swift */,
 				86A83411262CCCE60081C23F /* TagListItem.swift */,
+				9F62AC42278CDA4E002D77CE /* DropView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -342,6 +345,7 @@
 				69853A387256351AFCEE6BE0 /* Hidden.swift in Sources */,
 				69853A620FBD03E0A149AA3C /* RoundedButtonStyle.swift in Sources */,
 				698532268325DCF181A563D7 /* AddNewTagView.swift in Sources */,
+				9F62AC43278CDA4E002D77CE /* DropView.swift in Sources */,
 				86ADBE40262C766600B50516 /* SearchBar.swift in Sources */,
 				86ADBE3D262C692900B50516 /* MainView+Sheets.swift in Sources */,
 				698537D53F9BD13030216B09 /* AsyncView.swift in Sources */,

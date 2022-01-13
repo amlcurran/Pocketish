@@ -17,26 +17,23 @@ extension LoadState: Equatable where T: Equatable {
 }
 
 private class RemoteLoader: ObservableObject {
-    var state = LoadState<UIImage>.loading
+    @Published var state = LoadState<UIImage>.loading
 
     init(url: String?) {
         if let foo = url, let parsedURL = URL(string: foo) {
             URLSession.shared.dataTask(with: parsedURL) { data, response, error in
                 if let data = data, data.count > 0, let image = UIImage(data: data) {
-                    self.state = .success(image)
+                    DispatchQueue.main.async {
+                        self.state = .success(image)
+                    }
                 } else {
-                    self.state = .failure
-                }
-
-                DispatchQueue.main.async {
-                    self.objectWillChange.send()
+                    DispatchQueue.main.async {
+                        self.state = .failure
+                    }
                 }
             }.resume()
         } else {
             self.state = .failure
-            DispatchQueue.main.async {
-                self.objectWillChange.send()
-            }
         }
     }
 }
@@ -53,7 +50,7 @@ struct RemoteImage: View {
 
     var body: some View {
         foo()
-            .animation(.default, value: loader.state)
+            .animation(.easeIn(duration: 0.15), value: loader.state)
     }
 
     @ViewBuilder
