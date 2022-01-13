@@ -1,22 +1,31 @@
 import SwiftUI
 import shared
 
+extension Notification.Name {
+    
+    static let articleGotTagged = Notification.Name("ArticleWasTagged")
+    
+}
+
 struct ArticlesByTag: View {
 
     let tag: Tag
+    let articleTagged = NotificationCenter.default.publisher(for: Notification.Name.articleGotTagged)
     @StateObject var viewModel = ObservableByTagsViewModel(homeViewModel: .standard)
 
     var body: some View {
         AsyncView(state: viewModel.tagsState) { (articles: TagViewState) in
             List {
-                ForEach(articles.articles) {
-                    ArticleItemView(article: $0)
-                }
-                .onDelete { items in
-                    Task {
-                        let article = items.first.map { articles.articles[$0] }
-                        await viewModel.archive(article!.id)
-                    }
+                ForEach(articles.articles) { article in
+                    ArticleItemView(article: article)
+                        .swipeActions {
+                            Button("Archive") {
+                                Task {
+                                    await viewModel.archive(article.id)
+                                }
+                            }
+                            .tint(.red)
+                        }
                 }
             }.font(.system(.body, design: .rounded))
         }
@@ -24,6 +33,9 @@ struct ArticlesByTag: View {
         .navigationTitle(tag.name.isEmpty ? "Untagged" : tag.name)
         .task {
             await viewModel.loadArticles(tagged: tag)
+        }
+        .onReceive(articleTagged) { notification in
+            viewModel.articleWasArchived(notification.userInfo!["articleId"] as! String)
         }
     }
 

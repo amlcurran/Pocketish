@@ -65,8 +65,12 @@ class ObservableMainViewModel: ObservableObject {
     }
 
     func add(_ tag: Tag, toArticleWithId articleId: String, onFinished: @escaping () -> Void) {
-        model.addTagToArticle(tag: tag.id, articleId: articleId) { _, _ in
-
+        model.addTagToArticle(tag: tag.id, articleId: articleId) { result, _ in
+            if result?.boolValue == true {
+                NotificationCenter.default.post(name: .articleGotTagged, object: nil, userInfo: [
+                    "articleId": articleId
+                ])
+            }
         }
     }
 
@@ -108,14 +112,25 @@ class ObservableByTagsViewModel: ObservableObject {
         }
     }
     
+    func articleWasArchived(_ articleId: String) {
+        if let state = self.tagsState.result {
+            self.tagsState = AsyncResultSuccess(
+                data: TagViewState(tag: state.tag, articles: state.articles.filter { $0.id != articleId })
+            )
+        }
+    }
+    
     func archive(_ id: String) async {
         do {
             let result = try await model.archive(articleId: id)
-            if result.boolValue, let state = self.tagsState.result {
-                self.tagsState = AsyncResultSuccess(
-                    data: TagViewState(tag: state.tag, articles: state.articles.filter { $0.id != id })
-                )
+            DispatchQueue.main.async {
+                if result.boolValue, let state = self.tagsState.result {
+                    self.tagsState = AsyncResultSuccess(
+                        data: TagViewState(tag: state.tag, articles: state.articles.filter { $0.id != id })
+                    )
+                }
             }
+            
         } catch {
             
         }
