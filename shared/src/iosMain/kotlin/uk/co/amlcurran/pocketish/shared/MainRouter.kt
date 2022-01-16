@@ -1,8 +1,6 @@
 package uk.co.amlcurran.pocketish.shared
 
-import platform.Foundation.NSURL
 import platform.Foundation.NSUserDefaults
-import platform.UIKit.UIApplication
 
 class MainRouter {
 
@@ -11,7 +9,7 @@ class MainRouter {
     private val loginViewModel by lazy {
         LoginViewModel(pocketApi, object : URLLauncher {
             override fun launch(url: String) {
-                UIApplication.sharedApplication.openURL(NSURL(string = url))
+                print("Open $url")
             }
         }, userStore)
     }

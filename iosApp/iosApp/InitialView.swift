@@ -10,7 +10,7 @@ import SwiftUI
 import shared
 import Combine
 
-struct HomeView: View {
+struct InitialView: View {
 
     @StateObject var viewModel = ObservableMainViewModel(homeViewModel: .standard)
 
@@ -20,17 +20,6 @@ struct HomeView: View {
         }
         .animation(.easeIn.speed(4), value: viewModel.state)
         .navigationBarTitle("Tags")
-        .toolbar {
-            ToolbarItem {
-                Button(action: {
-                    Task {
-                        await viewModel.forceRefresh()
-                    }
-                }) {
-                    Label("Refresh", systemImage: "arrow.clockwise")
-                }
-            }
-        }
         .font(.system(.body, design: .rounded))
         .navigationViewStyle(.stack)
         .task {

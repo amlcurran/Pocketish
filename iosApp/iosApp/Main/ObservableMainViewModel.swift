@@ -94,45 +94,8 @@ class ObservableMainViewModel: ObservableObject {
     }
 }
 
-class ObservableByTagsViewModel: ObservableObject {
-    private let model: MainScreenViewModel
-    @Published var tagsState: AsyncResult<TagViewState> = AsyncResultLoading(foo: KotlinUnit())
-
-    init(homeViewModel: MainScreenViewModel) {
-        self.model = homeViewModel
-    }
-
-    @MainActor
-    func loadArticles(tagged tag: Tag) async {
-        do {
-            let result = try await model.getArticlesWithTag(tag: tag.id)
-            tagsState = AsyncResultSuccess(data: result)
-        } catch {
-            tagsState = AsyncResultError(error: error as! KotlinError)
-        }
-    }
+extension Notification.Name {
     
-    func articleWasArchived(_ articleId: String) {
-        if let state = self.tagsState.result {
-            self.tagsState = AsyncResultSuccess(
-                data: TagViewState(tag: state.tag, articles: state.articles.filter { $0.id != articleId })
-            )
-        }
-    }
+    static let articleGotTagged = Notification.Name("ArticleWasTagged")
     
-    func archive(_ id: String) async {
-        do {
-            let result = try await model.archive(articleId: id)
-            DispatchQueue.main.async {
-                if result.boolValue, let state = self.tagsState.result {
-                    self.tagsState = AsyncResultSuccess(
-                        data: TagViewState(tag: state.tag, articles: state.articles.filter { $0.id != id })
-                    )
-                }
-            }
-            
-        } catch {
-            
-        }
-    }
 }

@@ -64,7 +64,6 @@ struct PocketishApp: App {
     
     @Environment(\.scenePhase) private var scenePhase
     @State private var loggedIn = false
-    @State private var search = ""
     private let mainRouter = MainRouter()
     
     var body: some Scene {
@@ -72,9 +71,8 @@ struct PocketishApp: App {
             ZStack {
                 if loggedIn {
                     NavigationView {
-                        HomeView()
+                        InitialView()
                     }
-                    .searchable(text: $search, prompt: "Find an article")
                 } else {
                     LoadingYourTags()
                         .onOpenURL { url in

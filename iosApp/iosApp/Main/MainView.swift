@@ -1,34 +1,11 @@
 import SwiftUI
 import shared
 
-struct UntaggedView: View {
-    
-    let latestUntagged: [Article]
-    let compact: Bool
-    @Binding var loadingMoreUntagged: Bool
-    let onLoadMore: () -> Void
-    @Environment(\.openURL) var openURL: OpenURLAction
-    
-    var body: some View {
-        if compact {
-            HorizontalArticles(articles: latestUntagged,
-                               loadingMore: $loadingMoreUntagged,
-                               onEndClicked: onLoadMore) { article in
-                openURL(URL(string: article.url)!)
-            }
-        } else {
-            NavigationLink("Untagged") {
-                ArticlesByTag(tag: Tag.companion.untagged)
-            }
-        }
-    }
-    
-}
-
 struct MainView: View {
 
     let state: MainViewState
     @State var showSheet: Sheet?
+    @State private var search = ""
     @StateObject var viewModel = ObservableMainViewModel(homeViewModel: .standard)
     @Environment(\.horizontalSizeClass) var horizontalSize: UserInterfaceSizeClass?
 
@@ -61,6 +38,18 @@ struct MainView: View {
         }
         .sheet(item: $showSheet) { foo in
             foo.content(self)
+        }
+        .searchable(text: $search, prompt: "Find an article")
+        .toolbar {
+            ToolbarItem {
+                Button(action: {
+                    Task {
+                        await viewModel.forceRefresh()
+                    }
+                }) {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
+            }
         }
     }
 

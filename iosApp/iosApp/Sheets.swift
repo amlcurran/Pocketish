@@ -18,12 +18,16 @@ struct Sheet: Identifiable {
     
     static func addNewTag(to article: String) -> Sheet {
         Sheet(id: "newtag-" + article) { mainView in
-            AnyView(AddNewTagView { tagName in
-                mainView.showSheet = nil
-                mainView.viewModel.addNewTag(named: tagName, to: article) {
-                    mainView.selectedFeedback.notificationOccurred(.success)
+            AnyView(
+                NavigationView {
+                    AddNewTagView { tagName in
+                        mainView.showSheet = nil
+                        mainView.viewModel.addNewTag(named: tagName, to: article) {
+                            mainView.selectedFeedback.notificationOccurred(.success)
+                        }
+                    }
                 }
-            })
+            )
         }
     }
     
