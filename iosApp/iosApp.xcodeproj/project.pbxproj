@@ -37,6 +37,7 @@
 		9F62AC452794CF67002D77CE /* UntaggedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC442794CF67002D77CE /* UntaggedView.swift */; };
 		9F62AC492794D0F6002D77CE /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC482794D0F6002D77CE /* ArticleListView.swift */; };
 		9F62AC4B2794D12B002D77CE /* ObservableByTagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC4A2794D12B002D77CE /* ObservableByTagsViewModel.swift */; };
+		9F99B72B27A9DD030022CB1E /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F99B72A27A9DD030022CB1E /* Secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,7 @@
 		9F62AC442794CF67002D77CE /* UntaggedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntaggedView.swift; sourceTree = "<group>"; };
 		9F62AC482794D0F6002D77CE /* ArticleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
 		9F62AC4A2794D12B002D77CE /* ObservableByTagsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableByTagsViewModel.swift; sourceTree = "<group>"; };
+		9F99B72A27A9DD030022CB1E /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 				86ADBE3C262C692900B50516 /* Sheets.swift */,
 				7555FF84242A565B00829871 /* Assets.xcassets */,
 				7555FF89242A565B00829871 /* LaunchScreen.storyboard */,
+				9F99B72A27A9DD030022CB1E /* Secrets.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -288,7 +291,7 @@
 		7555FF73242A565900829871 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1320;
 				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = orgName;
 				TargetAttributes = {
@@ -361,6 +364,7 @@
 				69853EA7C1C77F4C49B8C767 /* MainView.swift in Sources */,
 				69853A7623CD5C2E44CE8866 /* EdgeInsets+Api.swift in Sources */,
 				6985309CFEC141E59423ACA8 /* ArticleDropDelegate.swift in Sources */,
+				9F99B72B27A9DD030022CB1E /* Secrets.swift in Sources */,
 				69853A387256351AFCEE6BE0 /* Hidden.swift in Sources */,
 				9F62AC452794CF67002D77CE /* UntaggedView.swift in Sources */,
 				69853A620FBD03E0A149AA3C /* RoundedButtonStyle.swift in Sources */,

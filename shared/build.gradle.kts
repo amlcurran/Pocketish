@@ -50,16 +50,12 @@ kotlin {
         }
         val iosX64Main by getting
         val iosArm64Main by getting
-        val macosX64Main by getting
-        val macosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
-            macosArm64Main.dependsOn(this)
-            macosX64Main.dependsOn(this)
             dependencies {
                 implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
@@ -82,10 +78,10 @@ kotlin {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdkVersion(24)
-        targetSdkVersion(30)
+        minSdk = 24
+        targetSdk = 30
     }
 }

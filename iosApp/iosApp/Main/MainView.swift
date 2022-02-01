@@ -1,11 +1,17 @@
 import SwiftUI
 import shared
 
+enum OpenIn: Int {
+    case safari
+    case app
+}
+
 struct MainView: View {
 
     let state: MainViewState
     @State var showSheet: Sheet?
     @State private var search = ""
+    @AppStorage("openIn") var openIn: OpenIn = .safari
     @StateObject var viewModel = ObservableMainViewModel(homeViewModel: .standard)
     @Environment(\.horizontalSizeClass) var horizontalSize: UserInterfaceSizeClass?
 
@@ -42,6 +48,18 @@ struct MainView: View {
         .searchable(text: $search, prompt: "Find an article")
         .toolbar {
             ToolbarItem {
+                Menu {
+                    Picker(selection: $openIn, label: Label("Open in", systemImage: "arrow.up.right.square")) {
+                        Text("Safari")
+                            .tag(OpenIn.safari)
+                        Text("In-app")
+                            .tag(OpenIn.app)
+                    }
+                } label: {
+                    Label("Menu", systemImage: "ellipsis.circle")
+                }
+            }
+            ToolbarItem {
                 Button(action: {
                     Task {
                         await viewModel.forceRefresh()
@@ -58,7 +76,7 @@ struct MainView: View {
 struct MainView_Previews: PreviewProvider {
     
     static var previews: some View {
-        Group {
+        NavigationView {
             MainView(state: MainViewState(
                 tags: [
                     Tag(id: "foo", name: "Foo"),

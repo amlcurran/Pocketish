@@ -5,10 +5,10 @@ struct ArticlesByTag: View {
 
     let tag: Tag
     let articleTagged = NotificationCenter.default.publisher(for: Notification.Name.articleGotTagged)
-    @StateObject var viewModel = ObservableByTagsViewModel(homeViewModel: .standard)
+    @StateObject var viewModel = ObservableByTagsViewModel()
 
     var body: some View {
-        AsyncView(state: viewModel.tagsState) { (articles: TagViewState) in
+        AsyncView2(state: viewModel.tagsState) { (articles: TagViewState2) in
             List {
                 ForEach(articles.articles) { article in
                     ArticleItemView(article: article)
@@ -24,7 +24,9 @@ struct ArticlesByTag: View {
             }.font(.system(.body, design: .rounded))
         }
         .listStyle(.plain)
-        .navigationTitle(tag.name.isEmpty ? "Untagged" : tag.name)
+        .navigationTitle(
+            (tag.name.isEmpty ? "Untagged" : tag.name) + viewModel.tagsState.titleExtension
+        )
         .task {
             await viewModel.loadArticles(tagged: tag)
         }
@@ -33,6 +35,19 @@ struct ArticlesByTag: View {
         }
     }
 
+}
+
+private extension AsyncResult2 where Element == TagViewState2 {
+    
+    var titleExtension: String {
+        switch self {
+        case .success(let result):
+            return " (\(result.articles.count))"
+        default:
+            return ""
+        }
+    }
+    
 }
 
 struct CardStyle: ViewModifier {

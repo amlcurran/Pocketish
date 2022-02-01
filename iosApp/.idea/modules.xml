@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/iosApp.iml" filepath="$PROJECT_DIR$/.idea/iosApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/iosApp2.iml" filepath="$PROJECT_DIR$/.idea/iosApp2.iml" />
     </modules>
   </component>
 </project>

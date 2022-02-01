@@ -7,7 +7,7 @@ struct RoundedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-            .foregroundColor(Color.white)
+            .foregroundColor(Color.onAccent)
             .frame(maxWidth: .infinity)
             .background(RoundedRectangle(cornerRadius: 24).foregroundColor(.accentColor))
             .brightness(entered ? -0.2 : 0.0)

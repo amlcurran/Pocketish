@@ -72,6 +72,7 @@ struct PocketishApp: App {
                 if loggedIn {
                     NavigationView {
                         InitialView()
+//                        ArticlesByTag(tag: Tag.companion.untagged)
                     }
                 } else {
                     LoadingYourTags()
@@ -85,7 +86,8 @@ struct PocketishApp: App {
                 }
             }
             .animation(.default, value: loggedIn)
-            .accentColor(.orange)
+            .accentColor(Color("Color"))
+            .environment(\.openIn, .safari)
         }
         .onChange(of: scenePhase) { newValue in
             if newValue == .active {
@@ -96,4 +98,31 @@ struct PocketishApp: App {
         }
     }
     
+}
+
+extension Color {
+    
+    static var onAccent: Color {
+        Color(uiColor: UIColor(dynamicProvider: { traits in
+            if traits.userInterfaceStyle == .dark {
+                return .black
+            } else {
+                return .white
+            }
+        }))
+    }
+    
+}
+
+struct OpenInEnvironmentKey: EnvironmentKey {
+    typealias Value = OpenIn
+    
+    static let defaultValue: OpenIn = .safari
+}
+
+extension EnvironmentValues {
+    var openIn: OpenIn {
+        get { self[OpenInEnvironmentKey.self] }
+        set { self[OpenInEnvironmentKey.self] = newValue }
+    }
 }
