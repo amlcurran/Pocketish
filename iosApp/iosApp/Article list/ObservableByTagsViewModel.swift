@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import shared
 
 struct TagViewState2 {
-    let tag: Tag
+    let tag: TagResponse
     let articles: [ArticleResponse]
 }
 
@@ -33,13 +32,14 @@ class ObservableByTagsViewModel: ObservableObject {
     @Published var tagsState: AsyncResult2<TagViewState2> = .loading
 
     @MainActor
-    func loadArticles(tagged tag: Tag) async {
+    func loadArticles(tagged tag: TagResponse) async {
         do {
             var components = URLComponents(string: "https://getpocket.com/v3/get")!
             components.queryItems = [
                 URLQueryItem(name: "consumer_key", value: consumerKey),
                 URLQueryItem(name: "access_token", value: UserDefaults.standard.string(forKey: "access_token")),
-                URLQueryItem(name: "tag", value: tag.id),
+                URLQueryItem(name: "tag", value: tag.itemId),
+                URLQueryItem(name: "sort", value: "oldest"),
                 URLQueryItem(name: "detailType", value: "complete")
             ]
             let request = URLRequest(url: components.url!)
@@ -47,7 +47,7 @@ class ObservableByTagsViewModel: ObservableObject {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             let response = try decoder.decode(ApiListResponse.self, from: data)
-            tagsState = .success(TagViewState2(tag: tag, articles: Array(response.list.values)))
+            tagsState = .success(TagViewState2(tag: tag, articles: response.list.map { $0.value }))
         } catch {
             print(error)
             tagsState = .failure(error)
@@ -72,7 +72,8 @@ class ObservableByTagsViewModel: ObservableObject {
 [{ "action": "archive", "item_id": "\(id)" }]
 """)
             ]
-            let request = URLRequest(url: components.url!)
+            var request = URLRequest(url: components.url!)
+            request.httpMethod = "POST"
             let (data, _) = try await URLSession.shared.data(for: request, delegate: nil)
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -91,8 +92,24 @@ class ObservableByTagsViewModel: ObservableObject {
     }
 }
 
-struct TagResponse: Decodable {
+struct TagResponse: Equatable, Identifiable, Decodable {
     let itemId: String
+    
+    static var untagged: TagResponse {
+        TagResponse(itemId: "_untagged_")
+    }
+    
+    var name: String {
+        if itemId == TagResponse.untagged.itemId {
+            return "Untagged"
+        }
+        return itemId
+    }
+    
+    var id: String {
+        itemId
+    }
+    
 }
 
 struct ArticleResponse: Decodable, Identifiable {

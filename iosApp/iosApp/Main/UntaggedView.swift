@@ -18,7 +18,7 @@ struct UntaggedView: View {
             }
         } else {
             NavigationLink("Untagged") {
-                ArticlesByTag(tag: Tag.companion.untagged)
+                ArticlesByTag(tag: .untagged)
             }
         }
     }

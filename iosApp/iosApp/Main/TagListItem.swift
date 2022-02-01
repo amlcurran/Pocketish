@@ -7,12 +7,11 @@
 //
 
 import SwiftUI
-import shared
 
 struct TagListItem<Destination: View>: View {
 
-    let tag: Tag
-    @State var enteredTagDrop: Tag?
+    let tag: TagResponse
+    @State var enteredTagDrop: TagResponse?
     let onDropped: (String) -> Void
     let destination: () -> Destination
 

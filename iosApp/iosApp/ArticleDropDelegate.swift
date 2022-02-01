@@ -1,14 +1,13 @@
 import SwiftUI
-import shared
 
 class ArticleDropDelegate: DropDelegate {
 
     private let droppedArticle: (String) -> Void
-    private let tag: Tag
-    @Binding private var dropEntered: Tag?// (Bool) -> Void
+    private let tag: TagResponse
+    @Binding private var dropEntered: TagResponse?
     private let dragOverFeedback = UISelectionFeedbackGenerator()
 
-    init(tag: Tag, dropEntered: Binding<Tag?>, droppedArticle: @escaping (String) -> ()) {
+    init(tag: TagResponse, dropEntered: Binding<TagResponse?>, droppedArticle: @escaping (String) -> ()) {
         self.tag = tag
         self._dropEntered = dropEntered
         self.droppedArticle = droppedArticle

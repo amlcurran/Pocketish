@@ -64,8 +64,8 @@ class ObservableMainViewModel: ObservableObject {
         }
     }
 
-    func add(_ tag: Tag, toArticleWithId articleId: String, onFinished: @escaping () -> Void) {
-        model.addTagToArticle(tag: tag.id, articleId: articleId) { result, _ in
+    func add(_ tag: TagResponse, toArticleWithId articleId: String, onFinished: @escaping () -> Void) {
+        model.addTagToArticle(tag: tag.itemId, articleId: articleId) { result, _ in
             if result?.boolValue == true {
                 NotificationCenter.default.post(name: .articleGotTagged, object: nil, userInfo: [
                     "articleId": articleId
@@ -83,13 +83,13 @@ class ObservableMainViewModel: ObservableObject {
 
     func archive(_ id: String, onFinished: @escaping () -> Void) {
         model.archive(articleId: id) { _, _ in
-
+            onFinished()
         }
     }
 
     func addNewTag(named tagName: String, to articleId: String, onFinished: @escaping () -> Void) {
         model.addTagToArticle(tag: tagName, articleId: articleId) { result, error in
-            
+            onFinished()
         }
     }
 }

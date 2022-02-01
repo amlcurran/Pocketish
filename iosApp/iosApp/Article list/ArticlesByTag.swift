@@ -1,9 +1,8 @@
 import SwiftUI
-import shared
 
 struct ArticlesByTag: View {
 
-    let tag: Tag
+    let tag: TagResponse
     let articleTagged = NotificationCenter.default.publisher(for: Notification.Name.articleGotTagged)
     @StateObject var viewModel = ObservableByTagsViewModel()
 
@@ -25,7 +24,7 @@ struct ArticlesByTag: View {
         }
         .listStyle(.plain)
         .navigationTitle(
-            (tag.name.isEmpty ? "Untagged" : tag.name) + viewModel.tagsState.titleExtension
+            tag.name + viewModel.tagsState.titleExtension
         )
         .task {
             await viewModel.loadArticles(tagged: tag)
@@ -67,18 +66,4 @@ extension ViewModifier where Self == CardStyle {
         CardStyle()
     }
     
-}
-
-extension MainScreenViewModel {
-
-    static var standard: MainScreenViewModel {
-        let api = PocketApi()
-        let userStore = UserDefaultsStore()
-        return MainScreenViewModel(
-            pocketApi: api,
-            tagsRepository: TagsFromArticlesRepository(pocketApi: api, userStore: userStore),
-            userStore: userStore
-        )
-    }
-
 }

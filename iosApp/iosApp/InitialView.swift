@@ -10,6 +10,20 @@ import SwiftUI
 import shared
 import Combine
 
+extension MainScreenViewModel {
+
+    static var standard: MainScreenViewModel {
+        let api = PocketApi()
+        let userStore = UserDefaultsStore()
+        return MainScreenViewModel(
+            pocketApi: api,
+            tagsRepository: TagsFromArticlesRepository(pocketApi: api, userStore: userStore),
+            userStore: userStore
+        )
+    }
+
+}
+
 struct InitialView: View {
 
     @StateObject var viewModel = ObservableMainViewModel(homeViewModel: .standard)

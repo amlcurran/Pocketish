@@ -26,7 +26,7 @@ struct MainView: View {
                     loadingMoreUntagged: $viewModel.loadingMoreUntagged,
                     onLoadMore: viewModel.loadMoreUntagged
                 )
-                ForEach(state.tags) { (tag: Tag) in
+                ForEach(state.tags.map(\.asTag)) { tag in
                     TagListItem(tag: tag) { articleId in
                         viewModel.add(tag, toArticleWithId: articleId) {
                             selectedFeedback.notificationOccurred(.success)
@@ -71,6 +71,13 @@ struct MainView: View {
         }
     }
 
+}
+
+extension Tag {
+    
+    var asTag: TagResponse {
+        TagResponse(itemId: self.id)
+    }
 }
 
 struct MainView_Previews: PreviewProvider {
