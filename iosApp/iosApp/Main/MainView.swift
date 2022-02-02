@@ -6,9 +6,22 @@ enum OpenIn: Int {
     case app
 }
 
+struct MainViewState2: Equatable {
+    let latestUntagged: [ArticleResponse]
+    let tags: [TagResponse]
+}
+
+extension MainViewState {
+    
+    var asNewState: MainViewState2 {
+        MainViewState2(latestUntagged: latestUntagged.map(\.asArticle), tags: tags.map(\.asTag))
+    }
+    
+}
+
 struct MainView: View {
 
-    let state: MainViewState
+    let state: MainViewState2
     @State var showSheet: Sheet?
     @State private var search = ""
     @AppStorage("openIn") var openIn: OpenIn = .safari
@@ -26,7 +39,7 @@ struct MainView: View {
                     loadingMoreUntagged: $viewModel.loadingMoreUntagged,
                     onLoadMore: viewModel.loadMoreUntagged
                 )
-                ForEach(state.tags.map(\.asTag)) { tag in
+                ForEach(state.tags) { tag in
                     TagListItem(tag: tag) { articleId in
                         viewModel.add(tag, toArticleWithId: articleId) {
                             selectedFeedback.notificationOccurred(.success)
@@ -73,6 +86,29 @@ struct MainView: View {
 
 }
 
+import shared
+
+extension Article {
+    
+    var definitelyTitle: String {
+        if title.isEmpty {
+            return " "
+        } else {
+            return title
+        }
+    }
+    
+    var asArticle: ArticleResponse {
+        ArticleResponse(itemId: id,
+                        resolvedTitle: self.definitelyTitle,
+                        tags: self.tags?.mapValues { TagResponse(itemId: $0.itemId) },
+                        resolvedUrl: URL(string: self.url)!,
+                        excerpt: self.excerpt,
+                        images: images.mapValues { ArticleResponse.Image(src: $0.src) })
+    }
+    
+}
+
 extension Tag {
     
     var asTag: TagResponse {
@@ -84,13 +120,12 @@ struct MainView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationView {
-            MainView(state: MainViewState(
-                tags: [
-                    Tag(id: "foo", name: "Foo"),
-                    Tag(id: "bar", name: "Baz")
-                ],
+            MainView(state: MainViewState2(
                 latestUntagged: [
-                    Article(id: "abc", title: "An article", tags: nil, url: "https://foo.com", excerpt: "Blah Blah blah", images: [:])
+                    ArticleResponse(itemId: "abc", resolvedTitle: "An article", tags: nil, resolvedUrl: URL(string: "https://foo.com")!, excerpt: "Blah Blah blah", images: [:])
+                ], tags: [
+                    TagResponse(itemId: "foo"),
+                    TagResponse(itemId: "bar")
                 ])
             )
         }

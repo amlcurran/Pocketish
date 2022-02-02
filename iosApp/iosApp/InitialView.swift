@@ -29,7 +29,7 @@ struct InitialView: View {
     @StateObject var viewModel = ObservableMainViewModel(homeViewModel: .standard)
 
     var body: some View {
-        AsyncView(state: viewModel.state) { state in
+        AsyncView2(state: viewModel.state) { state in
             MainView(state: state)
         }
         .animation(.easeIn.speed(4), value: viewModel.state)

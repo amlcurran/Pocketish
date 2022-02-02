@@ -28,6 +28,20 @@ enum AsyncResult2<Element> {
     }
 }
 
+extension AsyncResult2: Equatable where Element: Equatable {
+    static func == (lhs: AsyncResult2<Element>, rhs: AsyncResult2<Element>) -> Bool {
+        switch (lhs, rhs) {
+        case (.success(let left), .success(let right)):
+            return left == right
+        case (.loading, .loading):
+            return true
+        default:
+            return false
+        }
+    }
+    
+}
+
 class ObservableByTagsViewModel: ObservableObject {
     @Published var tagsState: AsyncResult2<TagViewState2> = .loading
 
@@ -112,7 +126,7 @@ struct TagResponse: Equatable, Identifiable, Decodable {
     
 }
 
-struct ArticleResponse: Decodable, Identifiable {
+struct ArticleResponse: Equatable, Decodable, Identifiable {
     let itemId: String
     let resolvedTitle: String
     let tags: [String: TagResponse]?
@@ -120,7 +134,7 @@ struct ArticleResponse: Decodable, Identifiable {
     let excerpt: String
     let images: [String: Image]?
     
-    struct Image: Decodable {
+    struct Image: Equatable, Decodable {
         let src: String
     }
     

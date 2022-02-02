@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import shared
 
 extension Optional {
 
@@ -23,10 +22,10 @@ extension Optional {
 
 struct HorizontalArticles: View {
 
-    let articles: [Article]
+    let articles: [ArticleResponse]
     @Binding var loadingMore: Bool
     let onEndClicked: () -> Void
-    let onArticleClicked: (Article) -> Void
+    let onArticleClicked: (ArticleResponse) -> Void
 
     var body: some View {
         ScrollView(.horizontal) {

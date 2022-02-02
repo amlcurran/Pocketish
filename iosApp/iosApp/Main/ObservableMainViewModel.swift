@@ -2,14 +2,6 @@ import Foundation
 import shared
 import SwiftUI
 
-extension Tag: Identifiable {
-
-}
-
-extension Article: Identifiable {
-
-}
-
 extension Kotlinx_coroutines_coreMutableStateFlow {
 
     func collect<T>(_ collector: @escaping (T) -> Void) {
@@ -42,13 +34,20 @@ class Collector<T>: Kotlinx_coroutines_coreFlowCollector {
 class ObservableMainViewModel: ObservableObject {
     private let model: MainScreenViewModel
 
-    @Published var state: AsyncResult<MainViewState> = AsyncResultLoading(foo: KotlinUnit())
+    @Published var state: AsyncResult2<MainViewState2> = .loading
     @Published var loadingMoreUntagged: Bool = false
 
     init(homeViewModel: MainScreenViewModel) {
         self.model = homeViewModel
         homeViewModel.state.collect { (value: AsyncResult<MainViewState>) in
-            self.state = value
+            let foo = value.handle(onData: {
+                AsyncResult2.success($0!.asNewState)
+            }, onLoading: {
+                AsyncResult2<MainViewState2>.loading
+            }, onError: {
+                AsyncResult2<MainViewState2>.failure($0.asError())
+            }) as! AsyncResult2<MainViewState2>
+            self.state = foo
         }
     }
 

@@ -7,24 +7,23 @@
 //
 
 import SwiftUI
-import shared
 
 struct ArticleView: View {
 
-    let article: Article
+    let article: ArticleResponse
 
     var body: some View {
         VStack {
-            RemoteImage(url: article.mainImage()?.src)
+            RemoteImage(url: article.mainImage?.src)
                 .aspectRatio(contentMode: .fill)
                 .frame(height: 100)
                 .clipped()
-            Text(article.definitelyTitle)
+            Text(article.resolvedTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(1)
                 .padding(.foo([.leading, .trailing, .top]))
                 .textCase(.none)
-            Text(article.url)
+            Text(article.resolvedUrl.absoluteString)
                 .lineLimit(1)
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -33,16 +32,4 @@ struct ArticleView: View {
                 .textCase(.none)
         }
     }
-}
-
-extension Article {
-
-    var definitelyTitle: String {
-        if title.isEmpty {
-            return " "
-        } else {
-            return title
-        }
-    }
-
 }

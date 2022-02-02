@@ -1,9 +1,8 @@
 import SwiftUI
-import shared
 
 struct UntaggedView: View {
     
-    let latestUntagged: [Article]
+    let latestUntagged: [ArticleResponse]
     let compact: Bool
     @Binding var loadingMoreUntagged: Bool
     let onLoadMore: () -> Void
@@ -14,7 +13,7 @@ struct UntaggedView: View {
             HorizontalArticles(articles: latestUntagged,
                                loadingMore: $loadingMoreUntagged,
                                onEndClicked: onLoadMore) { article in
-                openURL(URL(string: article.url)!)
+                openURL(article.resolvedUrl)
             }
         } else {
             NavigationLink("Untagged") {
