@@ -34,8 +34,8 @@ struct HorizontalArticles: View {
                     ArticleView(article: article)
                         .frame(width: 200)
                         .modifier(.card)
-                        .onDrag { NSItemProvider(object: article.id as NSString) }
                         .onTapGesture { onArticleClicked(article) }
+                        .onDrag { NSItemProvider(object: article.id as NSString) }
                 }.animation(.easeInOut(duration: 0.2), value: articles)
                 ZStack {
                     Image(systemName: "chevron.forward.circle.fill")

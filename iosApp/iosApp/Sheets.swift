@@ -15,8 +15,8 @@ struct Sheet: Identifiable {
         }
     }
     
-    static func addNewTag(to article: String) -> Sheet {
-        Sheet(id: "newtag-" + article) { mainView in
+    static func addNewTag(to article: String?) -> Sheet {
+        Sheet(id: "newtag-" + (article ?? "no-article")) { mainView in
             AnyView(
                 NavigationView {
                     AddNewTagView { tagName in

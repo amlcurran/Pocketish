@@ -69,7 +69,7 @@ class ObservableMainViewModel: ObservableObject {
 //        }
     }
 
-    func addNewTag(named tagName: String, to articleId: String, onFinished: @escaping () -> Void) {
+    func addNewTag(named tagName: String, to articleId: String?, onFinished: @escaping () -> Void) {
         fatalError()
 //        model.addTagToArticle(tag: tagName, articleId: articleId) { result, error in
 //            onFinished()

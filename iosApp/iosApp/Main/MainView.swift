@@ -15,6 +15,7 @@ struct MainView: View {
     let state: MainViewState2
     let horizontalSize: UserInterfaceSizeClass?
     @State var showSheet: Sheet?
+    @State var enteredArchiveDrop: Bool = false
     @State private var search = ""
     @AppStorage("openIn") var openIn: OpenIn = .safari
     @StateObject var viewModel = ObservableMainViewModel()
@@ -27,7 +28,7 @@ struct MainView: View {
             List {
                 UntaggedView(
                     latestUntagged: state.latestUntagged,
-                    compact: horizontalSize == .compact,
+                    compact: horizontalSize != .regular,
                     loadingMoreUntagged: $viewModel.loadingMoreUntagged,
                     onLoadMore: viewModel.loadMoreUntagged
                 )
@@ -44,11 +45,6 @@ struct MainView: View {
                     }
                 }
             }
-            DropView(showSheet: $showSheet) { articleId in
-                viewModel.archive(articleId) {
-
-                }
-            }
         }
         .sheet(item: $showSheet) { foo in
             foo.content(self)
@@ -57,6 +53,13 @@ struct MainView: View {
         .toolbar {
             ToolbarItem {
                 Menu {
+                    Button(action: {
+                        Task {
+                            await viewModel.forceRefresh()
+                        }
+                    }) {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                    }
                     Picker(selection: $openIn, label: Label("Open in", systemImage: "arrow.up.right.square")) {
                         Text("Safari")
                             .tag(OpenIn.safari)
@@ -67,14 +70,41 @@ struct MainView: View {
                     Label("Menu", systemImage: "ellipsis.circle")
                 }
             }
-            ToolbarItem {
-                Button(action: {
-                    Task {
-                        await viewModel.forceRefresh()
-                    }
-                }) {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+            ToolbarItem(placement: .bottomBar) {
+                Button {
+                    
+                } label: {
+                    Label("Archive", systemImage: "archivebox")
+                        .tint(enteredArchiveDrop ? .white : .accentColor)
                 }
+                .onDrop(of: ["public.text"], delegate: ArticleDropDelegate2(dropEntered: $enteredArchiveDrop, droppedArticle: { articleId in
+                    viewModel.archive(articleId) {
+                        
+                    }
+                }))
+                .background {
+                    RoundedRectangle(cornerRadius: 4)
+                        .foregroundColor(.accentColor)
+                        .opacity(enteredArchiveDrop ? 1 : 0)
+                        .animation(.default.speed(4), value: enteredArchiveDrop)
+                }
+            }
+            ToolbarItem(placement: .bottomBar) {
+                Button {
+                    showSheet = .addNewTag(to: nil)
+                } label: {
+                    Label("New tag", systemImage: "plus.circle")
+                }
+                .onDrop(of: ["public.text"], delegate: ArticleDropDelegate2(dropEntered: $enteredNewDrop, droppedArticle: { articleId in
+                    showSheet = .addNewTag(to: articleId)
+                }))
+                .background {
+                    RoundedRectangle(cornerRadius: 4)
+                        .foregroundColor(.accentColor)
+                        .opacity(enteredNewDrop ? 1 : 0)
+                        .animation(.default.speed(4), value: enteredNewDrop)
+                }
+
             }
         }
     }
