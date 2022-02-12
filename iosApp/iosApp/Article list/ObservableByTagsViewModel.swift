@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OrderedCollections
 
 struct TagViewState2 {
     let tag: TagResponse
@@ -26,6 +27,17 @@ enum AsyncResult2<Element> {
             return nil
         }
     }
+    
+    func map<NewElement>(_ mapper: (Element) -> NewElement) -> AsyncResult2<NewElement> {
+        switch self {
+        case .success(let input):
+            return .success(mapper(input))
+        case .loading:
+            return .loading
+        case .failure(let error):
+            return .failure(error)
+        }
+    }
 }
 
 extension AsyncResult2: Equatable where Element: Equatable {
@@ -42,11 +54,23 @@ extension AsyncResult2: Equatable where Element: Equatable {
     
 }
 
+extension URLSession {
+    
+    func run<T: Decodable>(_ request: URLRequest, as type: T.Type) async throws -> T {
+        let (data, _) = try await URLSession.shared.data(for: request, delegate: nil)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(T.self, from: data)
+    }
+    
+}
+
 class ObservableByTagsViewModel: ObservableObject {
     @Published var tagsState: AsyncResult2<TagViewState2> = .loading
 
     @MainActor
-    func loadArticles(tagged tag: TagResponse) async {
+    @discardableResult
+    func loadArticles(tagged tag: TagResponse) async -> TagViewState2? {
         do {
             var components = URLComponents(string: "https://getpocket.com/v3/get")!
             components.queryItems = [
@@ -57,14 +81,14 @@ class ObservableByTagsViewModel: ObservableObject {
                 URLQueryItem(name: "detailType", value: "complete")
             ]
             let request = URLRequest(url: components.url!)
-            let (data, _) = try await URLSession.shared.data(for: request, delegate: nil)
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let response = try decoder.decode(ApiListResponse.self, from: data)
-            tagsState = .success(TagViewState2(tag: tag, articles: response.list.map { $0.value }))
+            let response = try await URLSession.shared.run(request, as: ApiListResponse.self)
+            let viewState = TagViewState2(tag: tag, articles: response.list.map { $0.value })
+            tagsState = .success(viewState)
+            return viewState
         } catch {
             print(error)
             tagsState = .failure(error)
+            return nil
         }
     }
     
@@ -106,7 +130,7 @@ class ObservableByTagsViewModel: ObservableObject {
     }
 }
 
-struct TagResponse: Equatable, Identifiable, Decodable {
+struct TagResponse: Equatable, Hashable, Identifiable, Decodable {
     let itemId: String
     
     static var untagged: TagResponse {

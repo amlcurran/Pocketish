@@ -1,9 +1,4 @@
 import SwiftUI
-import shared
-
-func greet() -> String {
-    return Greeting().greeting()
-}
 
 struct LoadingYourTags: View {
     var body: some View {

@@ -7,12 +7,11 @@
 //
 
 import SwiftUI
-import shared
 
 struct Sheet: Identifiable {
-    static func showArticle(_ article: Article) -> Sheet {
+    static func showArticle(_ article: ArticleResponse) -> Sheet {
         Sheet(id: "article-" + article.id) { _ in
-            AnyView(SafariView(url: URL(string: article.url)!))
+            AnyView(SafariView(url:article.resolvedUrl))
         }
     }
     

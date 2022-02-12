@@ -31,13 +31,12 @@
 		86AB5288262CA2C500F1062E /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AB5287262CA2C500F1062E /* Debouncer.swift */; };
 		86ADBE3D262C692900B50516 /* Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3C262C692900B50516 /* Sheets.swift */; };
 		86ADBE40262C766600B50516 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3F262C766600B50516 /* SearchBar.swift */; };
-		9F54D664277E75F100943AAD /* shared.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F54D663277E75F100943AAD /* shared.xcframework */; };
-		9F54D665277E75F100943AAD /* shared.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9F54D663277E75F100943AAD /* shared.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9F62AC43278CDA4E002D77CE /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC42278CDA4E002D77CE /* DropView.swift */; };
 		9F62AC452794CF67002D77CE /* UntaggedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC442794CF67002D77CE /* UntaggedView.swift */; };
 		9F62AC492794D0F6002D77CE /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC482794D0F6002D77CE /* ArticleListView.swift */; };
 		9F62AC4B2794D12B002D77CE /* ObservableByTagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC4A2794D12B002D77CE /* ObservableByTagsViewModel.swift */; };
 		9F99B72B27A9DD030022CB1E /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F99B72A27A9DD030022CB1E /* Secrets.swift */; };
+		9F99B72E27AB454D0022CB1E /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 9F99B72D27AB454D0022CB1E /* OrderedCollections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,20 +48,6 @@
 			remoteInfo = iosApp;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9F54D666277E75F100943AAD /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				9F54D665277E75F100943AAD /* shared.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		698530C85B4B94F8B3535304 /* Hidden.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hidden.swift; sourceTree = "<group>"; };
@@ -113,7 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F54D664277E75F100943AAD /* shared.xcframework in Frameworks */,
+				9F99B72E27AB454D0022CB1E /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,13 +241,15 @@
 				7555FF77242A565900829871 /* Sources */,
 				7555FF78242A565900829871 /* Frameworks */,
 				7555FF79242A565900829871 /* Resources */,
-				9F54D666277E75F100943AAD /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Pocketish;
+			packageProductDependencies = (
+				9F99B72D27AB454D0022CB1E /* OrderedCollections */,
+			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* Pocketish.app */;
 			productType = "com.apple.product-type.application";
@@ -313,6 +300,9 @@
 				Base,
 			);
 			mainGroup = 7555FF72242A565900829871;
+			packageReferences = (
+				9F99B72C27AB454D0022CB1E /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -540,9 +530,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.amlcurran.Pocketish;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -564,9 +554,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.amlcurran.Pocketish;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};
@@ -643,6 +633,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9F99B72C27AB454D0022CB1E /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9F99B72D27AB454D0022CB1E /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9F99B72C27AB454D0022CB1E /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7555FF73242A565900829871 /* Project object */;
 }

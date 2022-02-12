@@ -1,70 +1,28 @@
 import UIKit
 import SwiftUI
-import shared
-
-//class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISearchControllerDelegate {
-//
-//    var window: UIWindow?
-//    let mainRouter = MainRouter()
-//
-//    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-//
-//        UINavigationBar.appearance().largeTitleTextAttributes = [
-//            .font: UIFont(descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .largeTitle).withDesign(.rounded)!, size: 48)
-//        ]
-//        UINavigationBar.appearance().titleTextAttributes = [
-//            .font: UIFont(descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title1).withDesign(.rounded)!, size: 17)
-//        ]
-//        UIBarButtonItem.appearance().setTitleTextAttributes([
-//            .font: UIFont(descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title1).withDesign(.rounded)!, size: 17)
-//        ], for: .normal)
-//
-//        // Use a UIHostingController as window root view controller.
-//        if let windowScene = scene as? UIWindowScene {
-//            let window = UIWindow(windowScene: windowScene)
-//            window.rootViewController = UIHostingController(rootView: LoadingYourTags())
-//            self.window = window
-//            mainRouter.start { [weak self] (shouldContinue, error) in
-//                if let shouldContinue = shouldContinue, shouldContinue.boolValue {
-//                    self?.display()
-//                }
-//            }
-//            window.makeKeyAndVisible()
-//        }
-//    }
-//
-//    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-//
-//    }
-//
-//    private func display() {
-//        let viewController = UIHostingController(rootView: homeView())
-//        let searchController = UISearchController(searchResultsController: nil)
-//        searchController.delegate = self
-//        viewController.navigationItem.searchController = searchController
-//        viewController.navigationItem.largeTitleDisplayMode = .always
-//        let navigationController = UINavigationController(rootViewController: viewController)
-//        navigationController.navigationBar.prefersLargeTitles = true
-//        window?.rootViewController = navigationController
-//    }
-//
-//    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-//        for url in URLContexts where url.url.absoluteString == "pocketish:authorize" {
-//            mainRouter.continueLoggingIn { [weak self] _, _ in
-//                self?.display()
-//            }
-//        }
-//    }
-//
-//}
-
 
 @main
 struct PocketishApp: App {
     
     @Environment(\.scenePhase) private var scenePhase
     @State private var loggedIn = false
-    private let mainRouter = MainRouter()
+
+    func performAuthRequest() async throws {
+        var request = URLRequest(url: URL(string: "https://getpocket.com/v3/oauth/request")!)
+        request.httpMethod = "POST"
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        request.httpBody = try encoder.encode(RequestAuthBody(
+            consumerKey: consumerKey,
+            redirectUri: "pocketish:authorize"
+        ))
+        do {
+            let code = try await URLSession.shared.run(request, as: AuthResponse.self)
+            UserDefaults.standard.set(code, forKey: "code")
+        } catch {
+            print(error)
+        }
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -78,9 +36,9 @@ struct PocketishApp: App {
                     LoadingYourTags()
                         .onOpenURL { url in
                             if url.absoluteString == "pocketish:authorize" {
-                                mainRouter.continueLoggingIn { _, _ in
-                                    loggedIn = true
-                                }
+//                                mainRouter.continueLoggingIn { _, _ in
+//                                    loggedIn = true
+//                                }
                             }
                         }
                 }
@@ -91,13 +49,26 @@ struct PocketishApp: App {
         }
         .onChange(of: scenePhase) { newValue in
             if newValue == .active {
-                mainRouter.start { (shouldContinue, error) in
-                    loggedIn = shouldContinue?.boolValue ?? false
+                Task {
+                    if UserDefaults.standard.string(forKey: "access_token") == nil {
+                        try await performAuthRequest()
+                    } else {
+                        loggedIn = true
+                    }
                 }
             }
         }
     }
     
+}
+
+struct RequestAuthBody: Encodable {
+    let consumerKey: String
+    let redirectUri: String
+}
+
+struct AuthResponse: Decodable {
+    let code: String
 }
 
 extension Color {

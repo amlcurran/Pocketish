@@ -1,5 +1,4 @@
 import SwiftUI
-import shared
 
 enum OpenIn: Int {
     case safari
@@ -11,21 +10,13 @@ struct MainViewState2: Equatable {
     let tags: [TagResponse]
 }
 
-extension MainViewState {
-    
-    var asNewState: MainViewState2 {
-        MainViewState2(latestUntagged: latestUntagged.map(\.asArticle), tags: tags.map(\.asTag))
-    }
-    
-}
-
 struct MainView: View {
 
     let state: MainViewState2
     @State var showSheet: Sheet?
     @State private var search = ""
     @AppStorage("openIn") var openIn: OpenIn = .safari
-    @StateObject var viewModel = ObservableMainViewModel(homeViewModel: .standard)
+    @StateObject var viewModel = ObservableMainViewModel()
     @Environment(\.horizontalSizeClass) var horizontalSize: UserInterfaceSizeClass?
 
     let selectedFeedback = UINotificationFeedbackGenerator()
@@ -84,36 +75,6 @@ struct MainView: View {
         }
     }
 
-}
-
-import shared
-
-extension Article {
-    
-    var definitelyTitle: String {
-        if title.isEmpty {
-            return " "
-        } else {
-            return title
-        }
-    }
-    
-    var asArticle: ArticleResponse {
-        ArticleResponse(itemId: id,
-                        resolvedTitle: self.definitelyTitle,
-                        tags: self.tags?.mapValues { TagResponse(itemId: $0.itemId) },
-                        resolvedUrl: URL(string: self.url)!,
-                        excerpt: self.excerpt,
-                        images: images.mapValues { ArticleResponse.Image(src: $0.src) })
-    }
-    
-}
-
-extension Tag {
-    
-    var asTag: TagResponse {
-        TagResponse(itemId: self.id)
-    }
 }
 
 struct MainView_Previews: PreviewProvider {
