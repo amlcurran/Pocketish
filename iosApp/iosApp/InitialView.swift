@@ -12,10 +12,11 @@ import Combine
 struct InitialView: View {
 
     @StateObject var viewModel = ObservableMainViewModel()
+    let horizontalSize: UserInterfaceSizeClass?
 
     var body: some View {
         AsyncView2(state: viewModel.state) { state in
-            MainView(state: state)
+            MainView(state: state, horizontalSize: horizontalSize)
         }
         .animation(.easeIn.speed(4), value: viewModel.state)
         .navigationBarTitle("Tags")

@@ -5,32 +5,16 @@ import SwiftUI
 struct PocketishApp: App {
     
     @Environment(\.scenePhase) private var scenePhase
-    @State private var loggedIn = false
-
-    func performAuthRequest() async throws {
-        var request = URLRequest(url: URL(string: "https://getpocket.com/v3/oauth/request")!)
-        request.httpMethod = "POST"
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        request.httpBody = try encoder.encode(RequestAuthBody(
-            consumerKey: consumerKey,
-            redirectUri: "pocketish:authorize"
-        ))
-        do {
-            let code = try await URLSession.shared.run(request, as: AuthResponse.self)
-            UserDefaults.standard.set(code, forKey: "code")
-        } catch {
-            print(error)
-        }
-    }
+    @Environment(\.horizontalSizeClass) private var horizontalSize
+    @ObservedObject private var loginViewModel = LoginViewModel()
     
     var body: some Scene {
         WindowGroup {
             ZStack {
-                if loggedIn {
+                if loginViewModel.loggedIn {
                     NavigationView {
-                        InitialView()
-//                        ArticlesByTag(tag: Tag.companion.untagged)
+                        InitialView(horizontalSize: horizontalSize)
+                        ArticlesByTag(tag: .untagged)
                     }
                 } else {
                     LoadingYourTags()
@@ -43,18 +27,25 @@ struct PocketishApp: App {
                         }
                 }
             }
-            .animation(.default, value: loggedIn)
+            .background {
+                WindowView { window in
+#if targetEnvironment(macCatalyst)
+                    if let titlebar = window.windowScene?.titlebar {
+                        titlebar.titleVisibility = .hidden
+                        titlebar.toolbarStyle = .expanded
+//                        titlebar.toolbar = nil
+                    }
+#endif
+                }
+            }
+            .animation(.default, value: loginViewModel.loggedIn)
             .accentColor(Color("Color"))
             .environment(\.openIn, .safari)
         }
         .onChange(of: scenePhase) { newValue in
             if newValue == .active {
                 Task {
-                    if UserDefaults.standard.string(forKey: "access_token") == nil {
-                        try await performAuthRequest()
-                    } else {
-                        loggedIn = true
-                    }
+                    try await loginViewModel.login()
                 }
             }
         }
@@ -95,5 +86,41 @@ extension EnvironmentValues {
     var openIn: OpenIn {
         get { self[OpenInEnvironmentKey.self] }
         set { self[OpenInEnvironmentKey.self] = newValue }
+    }
+}
+
+struct WindowView: UIViewRepresentable {
+    
+    let window: (UIWindow) -> Void
+    
+    func makeUIView(context: Context) -> some UIView {
+        Foo(callback: window)
+    }
+    
+    func updateUIView(_ uiView: UIViewType, context: Context) {
+        
+    }
+    
+    
+}
+
+class Foo: UIView {
+    
+    let callback: (UIWindow) -> Void
+    
+    init(callback: @escaping (UIWindow) -> Void) {
+        self.callback = callback
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        if let newWindow = newWindow {
+            callback(newWindow)
+        }
     }
 }

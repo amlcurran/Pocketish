@@ -13,11 +13,12 @@ struct MainViewState2: Equatable {
 struct MainView: View {
 
     let state: MainViewState2
+    let horizontalSize: UserInterfaceSizeClass?
     @State var showSheet: Sheet?
     @State private var search = ""
     @AppStorage("openIn") var openIn: OpenIn = .safari
     @StateObject var viewModel = ObservableMainViewModel()
-    @Environment(\.horizontalSizeClass) var horizontalSize: UserInterfaceSizeClass?
+    @State var enteredNewDrop = false
 
     let selectedFeedback = UINotificationFeedbackGenerator()
 
@@ -87,7 +88,7 @@ struct MainView_Previews: PreviewProvider {
                 ], tags: [
                     TagResponse(itemId: "foo"),
                     TagResponse(itemId: "bar")
-                ])
+                ]), horizontalSize: .regular
             )
         }
     }

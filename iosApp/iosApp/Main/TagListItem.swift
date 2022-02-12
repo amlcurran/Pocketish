@@ -17,7 +17,7 @@ struct TagListItem<Destination: View>: View {
 
     var body: some View {
         NavigationLink(destination: destination()) {
-            Text(tag.name)
+            Label(tag.name, systemImage: "tag")
         }
         .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, dropEntered: $enteredTagDrop) { articleId in
             onDropped(articleId)
