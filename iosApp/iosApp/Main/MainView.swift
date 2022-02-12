@@ -39,6 +39,9 @@ struct MainView: View {
                     } destination: {
                         ArticlesByTag(tag: tag)
                     }
+                    .onLongPressGesture {
+                        showSheet = .addIcon(to: tag)
+                    }
                 }
             }
             DropView(showSheet: $showSheet) { articleId in

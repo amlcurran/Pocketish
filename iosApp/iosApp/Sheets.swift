@@ -30,6 +30,19 @@ struct Sheet: Identifiable {
         }
     }
     
+    static func addIcon(to tag: TagResponse) -> Sheet {
+        Sheet(id: "add-icon-to-" + tag.id) { mainView in
+            AnyView(
+                NavigationView {
+                    AddNewTagView { tagName in
+                        mainView.showSheet = nil
+                        NSUbiquitousKeyValueStore.default.set(tagName, forKey: "\(tag.id)-icon")
+                    }
+                }
+            )
+        }
+    }
+    
     let id: String
     let content: (MainView) -> AnyView
 }

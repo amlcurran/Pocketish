@@ -34,6 +34,7 @@ struct AddNewTagView_Preview: PreviewProvider {
             NavigationView {
                 AddNewTagView { _ in }
             }
+            .previewDevice("iPhone 13 mini")
         }
     }
     

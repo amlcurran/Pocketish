@@ -12,12 +12,16 @@ struct TagListItem<Destination: View>: View {
 
     let tag: TagResponse
     @State var enteredTagDrop: TagResponse?
+    @State var linkIsActive = false
     let onDropped: (String) -> Void
     let destination: () -> Destination
 
     var body: some View {
-        NavigationLink(destination: destination()) {
-            Label(tag.name, systemImage: "tag")
+        NavigationLink(destination: destination(), isActive: $linkIsActive) {
+            Label(tag.name, systemImage: NSUbiquitousKeyValueStore.default.string(forKey: "\(tag.id)-icon") ?? "tag")
+        }
+        .onTapGesture {
+            linkIsActive = true
         }
         .onDrop(of: ["public.text"], delegate: ArticleDropDelegate(tag: tag, dropEntered: $enteredTagDrop) { articleId in
             onDropped(articleId)

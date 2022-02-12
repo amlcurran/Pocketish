@@ -41,6 +41,9 @@ struct PocketishApp: App {
             .animation(.default, value: loginViewModel.loggedIn)
             .accentColor(Color("Color"))
             .environment(\.openIn, .safari)
+            .onReceive(NotificationCenter.default.publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: NSUbiquitousKeyValueStore.default)) { _ in
+                NSUbiquitousKeyValueStore.default.synchronize()
+            }
         }
         .onChange(of: scenePhase) { newValue in
             if newValue == .active {

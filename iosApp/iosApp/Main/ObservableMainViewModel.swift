@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import Combine
 
 class ObservableMainViewModel: ObservableObject {
     private let tagModel = ObservableByTagsViewModel()
@@ -9,9 +8,14 @@ class ObservableMainViewModel: ObservableObject {
     @Published var loadingMoreUntagged: Bool = false
 
     func appeared() async throws {
-       await foo(ignoringCache: false)
+        if case .success = state {
+            print("not reloading")
+        } else {
+            await foo(ignoringCache: false)
+        }
     }
     
+    @MainActor
     private func foo(ignoringCache: Bool) async {
         state = .loading
         let latestUntagged = await tagModel.loadArticles(tagged: .untagged)
@@ -28,7 +32,7 @@ class ObservableMainViewModel: ObservableObject {
             let tags = Set(data.list
                 .flatMap { Array(($0.value.tags ?? [:]).keys) })
             let mainViewState = MainViewState2(latestUntagged: latestUntagged?.articles ?? [],
-                                               tags: Array(tags.map(TagResponse.init)))
+                                               tags: Array(tags.map(TagResponse.init).sorted(by: \.id)))
             state = .success(mainViewState)
         } catch {
             state = .failure(error)
@@ -76,5 +80,15 @@ class ObservableMainViewModel: ObservableObject {
 extension Notification.Name {
     
     static let articleGotTagged = Notification.Name("ArticleWasTagged")
+    
+}
+
+extension Array {
+    
+    func sorted<Key: Comparable>(by comparator: KeyPath<Element, Key>) -> [Element] {
+        sorted { first, second in
+            first[keyPath: comparator] < second[keyPath: comparator]
+        }
+    }
     
 }
