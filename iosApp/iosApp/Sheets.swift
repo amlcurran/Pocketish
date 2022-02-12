@@ -24,6 +24,10 @@ struct Sheet: Identifiable {
                         mainView.viewModel.addNewTag(named: tagName, to: article) {
                             mainView.selectedFeedback.notificationOccurred(.success)
                         }
+                    } content: { _ in
+                        HStack {
+                            
+                        }
                     }
                 }
             )
@@ -37,7 +41,16 @@ struct Sheet: Identifiable {
                     AddNewTagView { tagName in
                         mainView.showSheet = nil
                         NSUbiquitousKeyValueStore.default.set(tagName, forKey: "\(tag.id)-icon")
+                        NotificationCenter.default.post(name: .didChangeIcon(of: tag), object: nil)
+                    } content: { typedText in
+                        VStack {
+                            Image(systemName: typedText)
+                        }
+                            .font(.system(size: 36))
+                            .frame(width: 40, height: 40)
                     }
+                    .navigationTitle("Icon for \(tag.name)")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
             )
         }
@@ -45,4 +58,12 @@ struct Sheet: Identifiable {
     
     let id: String
     let content: (MainView) -> AnyView
+}
+
+extension NSNotification.Name {
+    
+    static func didChangeIcon(of tag: TagResponse) -> NSNotification.Name {
+        NSNotification.Name(rawValue: "didChangeTagIcon\(tag.id)")
+    }
+    
 }

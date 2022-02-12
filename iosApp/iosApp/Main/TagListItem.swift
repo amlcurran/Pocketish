@@ -13,12 +13,14 @@ struct TagListItem<Destination: View>: View {
     let tag: TagResponse
     @State var enteredTagDrop: TagResponse?
     @State var linkIsActive = false
+    @State var secretCounter = 0
     let onDropped: (String) -> Void
     let destination: () -> Destination
 
     var body: some View {
         NavigationLink(destination: destination(), isActive: $linkIsActive) {
             Label(tag.name, systemImage: NSUbiquitousKeyValueStore.default.string(forKey: "\(tag.id)-icon") ?? "tag")
+                .animation(.default.speed(4), value: secretCounter)
         }
         .onTapGesture {
             linkIsActive = true
@@ -28,6 +30,9 @@ struct TagListItem<Destination: View>: View {
         })
         .background(Color.accentColor.opacity(enteredTagDrop == tag ? 0.2 : 0))
         .animation(.default, value: enteredTagDrop)
+        .onReceive(NotificationCenter.default.publisher(for: .didChangeIcon(of: tag))) { _ in
+            secretCounter += 1
+        }
     }
 
 }
