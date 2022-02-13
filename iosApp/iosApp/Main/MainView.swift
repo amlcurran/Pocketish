@@ -41,8 +41,11 @@ struct MainView: View {
                     } destination: {
                         ArticlesByTag(tag: tag)
                     }
-                    .onLongPressGesture {
-                        showSheet = .addIcon(to: tag)
+                    .contextMenu {
+                        Button("Edit icon") {
+                            showSheet = .addIcon(to: tag)
+                            
+                        }
                     }
                 }
                 .listStyle(.plain)
