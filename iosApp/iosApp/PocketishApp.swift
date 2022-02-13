@@ -5,7 +5,7 @@ import SwiftUI
 struct PocketishApp: App {
     
     @Environment(\.scenePhase) private var scenePhase
-    @Environment(\.horizontalSizeClass) private var horizontalSize
+    @Environment(\.horizontalSizeClass) private var horizontalSize: UserInterfaceSizeClass?
     @ObservedObject private var loginViewModel = LoginViewModel()
     
     var body: some Scene {
@@ -13,7 +13,7 @@ struct PocketishApp: App {
             ZStack {
                 if loginViewModel.loggedIn {
                     NavigationView {
-                        InitialView(horizontalSize: horizontalSize)
+                        InitialView(horizontalSize: .regular)
                         ArticlesByTag(tag: .untagged)
                     }
                 } else {

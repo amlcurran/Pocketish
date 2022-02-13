@@ -4,10 +4,10 @@ class ArticleDropDelegate: DropDelegate {
 
     private let droppedArticle: (String) -> Void
     private let tag: TagResponse
-    @Binding private var dropEntered: TagResponse?
+    @Binding private var dropEntered: Bool
     private let dragOverFeedback = UISelectionFeedbackGenerator()
 
-    init(tag: TagResponse, dropEntered: Binding<TagResponse?>, droppedArticle: @escaping (String) -> ()) {
+    init(tag: TagResponse, dropEntered: Binding<Bool>, droppedArticle: @escaping (String) -> ()) {
         self.tag = tag
         self._dropEntered = dropEntered
         self.droppedArticle = droppedArticle
@@ -15,15 +15,15 @@ class ArticleDropDelegate: DropDelegate {
 
     func dropEntered(info: DropInfo) {
         dragOverFeedback.selectionChanged()
-        dropEntered = tag
+        dropEntered = true
     }
 
     func dropExited(info: DropInfo) {
-        dropEntered = nil
+        dropEntered = false
     }
 
     func performDrop(info: DropInfo) -> Bool {
-        dropEntered = nil
+        dropEntered = false
         info.itemProviders(for: ["public.text"]).first?.loadItem(forTypeIdentifier: "public.text") { coding, error in
             if let data = coding as? Data, let string = String(data: data, encoding: .utf8) {
                 DispatchQueue.main.async {

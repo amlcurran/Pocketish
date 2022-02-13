@@ -4,7 +4,7 @@ struct ArticlesByTag: View {
 
     let tag: TagResponse
     let articleTagged = NotificationCenter.default.publisher(for: Notification.Name.articleGotTagged)
-    @StateObject var viewModel = ObservableByTagsViewModel()
+    @StateObject var viewModel = ArticlesByTagViewModel()
 
     var body: some View {
         AsyncView2(state: viewModel.tagsState) { (articles: TagViewState2) in
@@ -12,12 +12,13 @@ struct ArticlesByTag: View {
                 ForEach(articles.articles) { article in
                     ArticleItemView(article: article)
                         .swipeActions {
-                            Button("Archive") {
+                            Button(role: .destructive) {
                                 Task {
                                     await viewModel.archive(article.id)
                                 }
+                            } label: {
+                                Label("Archive", systemImage: "archivebox")
                             }
-                            .tint(.red)
                         }
                 }
             }.font(.system(.body, design: .rounded))

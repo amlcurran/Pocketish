@@ -65,7 +65,7 @@ extension URLSession {
     
 }
 
-class ObservableByTagsViewModel: ObservableObject {
+class ArticlesByTagViewModel: ObservableObject {
     @Published var tagsState: AsyncResult2<TagViewState2> = .loading
 
     @MainActor

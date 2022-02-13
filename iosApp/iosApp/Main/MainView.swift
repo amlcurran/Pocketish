@@ -18,7 +18,7 @@ struct MainView: View {
     @State var enteredArchiveDrop: Bool = false
     @State private var search = ""
     @AppStorage("openIn") var openIn: OpenIn = .safari
-    @StateObject var viewModel = ObservableMainViewModel()
+    @StateObject var viewModel = MainViewModel()
     @State var enteredNewDrop = false
 
     let selectedFeedback = UINotificationFeedbackGenerator()
@@ -51,7 +51,7 @@ struct MainView: View {
         }
         .searchable(text: $search, prompt: "Find an article")
         .toolbar {
-            ToolbarItem {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
                     Button(action: {
                         Task {
@@ -68,6 +68,7 @@ struct MainView: View {
                     }
                 } label: {
                     Label("Menu", systemImage: "ellipsis.circle")
+                        .labelStyle(.iconOnly)
                 }
             }
             ToolbarItem(placement: .bottomBar) {
@@ -83,10 +84,7 @@ struct MainView: View {
                     }
                 }))
                 .background {
-                    RoundedRectangle(cornerRadius: 4)
-                        .foregroundColor(.accentColor)
-                        .opacity(enteredArchiveDrop ? 1 : 0)
-                        .animation(.default.speed(4), value: enteredArchiveDrop)
+                    HoverBackground(entered: $enteredArchiveDrop)
                 }
             }
             ToolbarItem(placement: .bottomBar) {
@@ -99,16 +97,27 @@ struct MainView: View {
                     showSheet = .addNewTag(to: articleId)
                 }))
                 .background {
-                    RoundedRectangle(cornerRadius: 4)
-                        .foregroundColor(.accentColor)
-                        .opacity(enteredNewDrop ? 1 : 0)
-                        .animation(.default.speed(4), value: enteredNewDrop)
+                    HoverBackground(entered: $enteredArchiveDrop)
                 }
 
             }
         }
     }
 
+}
+
+struct HoverBackground: View {
+    
+    @Binding var entered: Bool
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: 4)
+            .foregroundColor(.accentColor)
+            .opacity(entered ? 1 : 0)
+            .scaleEffect(entered ? 1.0 : 0.6)
+            .animation(.default.speed(2), value: entered)
+    }
+    
 }
 
 struct MainView_Previews: PreviewProvider {

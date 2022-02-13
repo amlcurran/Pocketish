@@ -1,8 +1,8 @@
 import Foundation
 import SwiftUI
 
-class ObservableMainViewModel: ObservableObject {
-    private let tagModel = ObservableByTagsViewModel()
+class MainViewModel: ObservableObject {
+    private let tagModel = ArticlesByTagViewModel()
 
     @Published var state: AsyncResult2<MainViewState2> = .loading
     @Published var loadingMoreUntagged: Bool = false
@@ -28,7 +28,6 @@ class ObservableMainViewModel: ObservableObject {
         let request = URLRequest(url: components.url!)
         do {
             let data = try await URLSession.shared.run(request, as: ApiListResponse.self)
-            print(data.list)
             let tags = Set(data.list
                 .flatMap { Array(($0.value.tags ?? [:]).keys) })
             let mainViewState = MainViewState2(latestUntagged: latestUntagged?.articles ?? [],

@@ -11,7 +11,7 @@ import Combine
 
 struct InitialView: View {
 
-    @StateObject var viewModel = ObservableMainViewModel()
+    @StateObject var viewModel = MainViewModel()
     let horizontalSize: UserInterfaceSizeClass?
 
     var body: some View {
