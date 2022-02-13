@@ -48,9 +48,9 @@ struct MainView: View {
                         }
                     }
                 }
-                .listStyle(.plain)
                 .animation(.default, value: state.tags)
             }
+            .listStyle(.plain)
         }
         .sheet(item: $showSheet) { foo in
             foo.content(self)
