@@ -21,8 +21,6 @@ struct MainView: View {
     @StateObject var viewModel = MainViewModel()
     @State var enteredNewDrop = false
 
-    let selectedFeedback = UINotificationFeedbackGenerator()
-
     var body: some View {
         VStack {
             List {
@@ -34,8 +32,11 @@ struct MainView: View {
                 )
                 ForEach(state.tags) { tag in
                     TagListItem(tag: tag) { articleId in
-                        viewModel.add(tag, toArticleWithId: articleId) {
-                            selectedFeedback.notificationOccurred(.success)
+                        Task {
+                            await viewModel.add(tag, toArticleWithId: articleId) {
+                                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                NotificationCenter.default.post(name: .articleGotTagged, object: nil, userInfo: ["articleId": articleId])
+                            }
                         }
                     } destination: {
                         ArticlesByTag(tag: tag)
@@ -44,6 +45,7 @@ struct MainView: View {
                         showSheet = .addIcon(to: tag)
                     }
                 }
+                .listStyle(.plain)
             }
         }
         .sheet(item: $showSheet) { foo in
@@ -89,7 +91,7 @@ struct MainView: View {
             }
             ToolbarItem(placement: .bottomBar) {
                 Button {
-                    showSheet = .addNewTag(to: nil)
+//                    showSheet = .addNewTag(to: nil)
                 } label: {
                     Label("New tag", systemImage: "plus.circle")
                 }

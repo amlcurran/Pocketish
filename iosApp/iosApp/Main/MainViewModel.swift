@@ -11,12 +11,12 @@ class MainViewModel: ObservableObject {
         if case .success = state {
             print("not reloading")
         } else {
-            await foo(ignoringCache: false)
+            await loadArticles(ignoringCache: false)
         }
     }
     
     @MainActor
-    private func foo(ignoringCache: Bool) async {
+    private func loadArticles(ignoringCache: Bool) async {
         state = .loading
         let latestUntagged = await tagModel.loadArticles(tagged: .untagged)
         var components = URLComponents(string: "https://getpocket.com/v3/get")!
@@ -39,18 +39,32 @@ class MainViewModel: ObservableObject {
     }
 
     func forceRefresh(onlyUntagged: Bool = false) async {
-        await foo(ignoringCache: true)
+        await loadArticles(ignoringCache: true)
     }
 
-    func add(_ tag: TagResponse, toArticleWithId articleId: String, onFinished: @escaping () -> Void) {
-        fatalError()
-//        model.addTagToArticle(tag: tag.itemId, articleId: articleId) { result, _ in
-//            if result?.boolValue == true {
-//                NotificationCenter.default.post(name: .articleGotTagged, object: nil, userInfo: [
-//                    "articleId": articleId
-//                ])
-//            }
-//        }
+    @MainActor
+    func add(_ tag: TagResponse, toArticleWithId articleId: String, onFinished: @escaping () -> Void) async {
+        do {
+            var components = URLComponents(string: "https://getpocket.com/v3/send")!
+            components.queryItems = [
+                URLQueryItem(name: "consumer_key", value: consumerKey),
+                URLQueryItem(name: "access_token", value: UserDefaults.standard.string(forKey: "access_token")),
+                URLQueryItem(name: "actions", value: """
+[{ "action": "tags_add", "item_id": "\(articleId)", "tags": "\(tag.id)" }]
+""")
+            ]
+            var request = URLRequest(url: components.url!)
+            request.httpMethod = "POST"
+            let (data, _) = try await URLSession.shared.data(for: request, delegate: nil)
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let response = try decoder.decode(ActionResponse.self, from: data)
+            if response.actionResults.allSatisfy({ $0 }) {
+                onFinished()
+            }
+        } catch {
+            print(error)
+        }
     }
 
     func loadMoreUntagged() {
@@ -68,11 +82,29 @@ class MainViewModel: ObservableObject {
 //        }
     }
 
-    func addNewTag(named tagName: String, to articleId: String?, onFinished: @escaping () -> Void) {
-        fatalError()
-//        model.addTagToArticle(tag: tagName, articleId: articleId) { result, error in
-//            onFinished()
-//        }
+    func addNewTag(named tagName: String, to articleId: String) async -> Bool {
+        do {
+            var components = URLComponents(string: "https://getpocket.com/v3/send")!
+            components.queryItems = [
+                URLQueryItem(name: "consumer_key", value: consumerKey),
+                URLQueryItem(name: "access_token", value: UserDefaults.standard.string(forKey: "access_token")),
+                URLQueryItem(name: "actions", value: """
+[{ "action": "tags_add", "item_id": "\(articleId)", "tags": "\(tagName)" }]
+""")
+            ]
+            var request = URLRequest(url: components.url!)
+            request.httpMethod = "POST"
+            let (data, _) = try await URLSession.shared.data(for: request, delegate: nil)
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let response = try decoder.decode(ActionResponse.self, from: data)
+            if response.actionResults.allSatisfy({ $0 }) {
+                return true
+            }
+        } catch {
+            print(error)
+        }
+        return false
     }
 }
 

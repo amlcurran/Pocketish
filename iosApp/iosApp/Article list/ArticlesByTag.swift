@@ -22,6 +22,7 @@ struct ArticlesByTag: View {
                         }
                 }
             }.font(.system(.body, design: .rounded))
+                .animation(.default.speed(4), value: articles.articles)
         }
         .listStyle(.plain)
         .navigationTitle(

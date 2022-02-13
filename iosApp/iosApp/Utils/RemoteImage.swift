@@ -24,11 +24,15 @@ private class RemoteLoader: ObservableObject {
             URLSession.shared.dataTask(with: parsedURL) { data, response, error in
                 if let data = data, data.count > 0, let image = UIImage(data: data) {
                     DispatchQueue.main.async {
-                        self.state = .success(image)
+                        withAnimation {
+                            self.state = .success(image)
+                        }
                     }
                 } else {
                     DispatchQueue.main.async {
-                        self.state = .failure
+                        withAnimation {
+                            self.state = .failure
+                        }
                     }
                 }
             }.resume()
@@ -50,7 +54,8 @@ struct RemoteImage: View {
 
     var body: some View {
         foo()
-            .animation(.easeIn(duration: 0.15), value: loader.state)
+            .transition(.opacity)
+            .animation(.easeInOut(duration: 0.1), value: loader.state)
     }
 
     @ViewBuilder

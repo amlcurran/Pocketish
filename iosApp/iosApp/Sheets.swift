@@ -15,14 +15,17 @@ struct Sheet: Identifiable {
         }
     }
     
-    static func addNewTag(to article: String?) -> Sheet {
-        Sheet(id: "newtag-" + (article ?? "no-article")) { mainView in
+    static func addNewTag(to article: String) -> Sheet {
+        Sheet(id: "newtag-" + article) { mainView in
             AnyView(
                 NavigationView {
                     AddNewTagView { tagName in
                         mainView.showSheet = nil
-                        mainView.viewModel.addNewTag(named: tagName, to: article) {
-                            mainView.selectedFeedback.notificationOccurred(.success)
+                        Task {
+                            let result = await mainView.viewModel.addNewTag(named: tagName, to: article)
+                            if result {
+                                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+                            }
                         }
                     } content: { _ in
                         HStack {
