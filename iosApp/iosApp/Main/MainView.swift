@@ -46,11 +46,17 @@ struct MainView: View {
                     }
                 }
                 .listStyle(.plain)
+                .animation(.default, value: state.tags)
             }
         }
         .sheet(item: $showSheet) { foo in
             foo.content(self)
         }
+        .onReceive(NotificationCenter.default.publisher(for: .newTag, object: nil), perform: { output in
+            if let tagName = output.userInfo?["tagName"] as? String {
+                viewModel.addedTag(named: tagName)
+            }
+        })
         .searchable(text: $search, prompt: "Find an article")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -91,7 +97,7 @@ struct MainView: View {
             }
             ToolbarItem(placement: .bottomBar) {
                 Button {
-//                    showSheet = .addNewTag(to: nil)
+
                 } label: {
                     Label("New tag", systemImage: "plus.circle")
                 }

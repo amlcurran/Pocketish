@@ -81,6 +81,12 @@ class MainViewModel: ObservableObject {
 //            onFinished()
 //        }
     }
+    
+    func addedTag(named tagName: String) {
+        state = state.map { type in
+            MainViewState2(latestUntagged: type.latestUntagged, tags: (type.tags + [TagResponse(itemId: tagName)]).sorted(by: \.name))
+        }
+    }
 
     func addNewTag(named tagName: String, to articleId: String) async -> Bool {
         do {

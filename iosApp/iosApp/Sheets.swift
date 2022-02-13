@@ -24,7 +24,7 @@ struct Sheet: Identifiable {
                         Task {
                             let result = await mainView.viewModel.addNewTag(named: tagName, to: article)
                             if result {
-                                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                await addedNewTag(named: tagName)
                             }
                         }
                     } content: { _ in
@@ -63,10 +63,22 @@ struct Sheet: Identifiable {
     let content: (MainView) -> AnyView
 }
 
+@MainActor
+func addedNewTag(named tagName: String) {
+    UINotificationFeedbackGenerator().notificationOccurred(.success)
+    NotificationCenter.default.post(name: .newTag, object: nil, userInfo: [
+        "tagName": tagName
+    ])
+}
+
 extension NSNotification.Name {
     
     static func didChangeIcon(of tag: TagResponse) -> NSNotification.Name {
         NSNotification.Name(rawValue: "didChangeTagIcon\(tag.id)")
+    }
+    
+    static var newTag: NSNotification.Name {
+        NSNotification.Name(rawValue: "newTagNamed")
     }
     
 }

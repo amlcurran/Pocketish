@@ -32,7 +32,6 @@
 		86ADBE3D262C692900B50516 /* Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3C262C692900B50516 /* Sheets.swift */; };
 		86ADBE40262C766600B50516 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ADBE3F262C766600B50516 /* SearchBar.swift */; };
 		9F4492E327B84F190041F69A /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F4492E227B84F190041F69A /* LoginViewModel.swift */; };
-		9F62AC43278CDA4E002D77CE /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC42278CDA4E002D77CE /* DropView.swift */; };
 		9F62AC452794CF67002D77CE /* UntaggedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC442794CF67002D77CE /* UntaggedView.swift */; };
 		9F62AC492794D0F6002D77CE /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC482794D0F6002D77CE /* ArticleListView.swift */; };
 		9F62AC4B2794D12B002D77CE /* ArticlesByTagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F62AC4A2794D12B002D77CE /* ArticlesByTagViewModel.swift */; };
@@ -88,7 +87,6 @@
 		86ADBE3F262C766600B50516 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		9F4492E227B84F190041F69A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		9F54D663277E75F100943AAD /* shared.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = shared.xcframework; path = ../shared/build/XCFrameworks/debug/shared.xcframework; sourceTree = "<group>"; };
-		9F62AC42278CDA4E002D77CE /* DropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 		9F62AC442794CF67002D77CE /* UntaggedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntaggedView.swift; sourceTree = "<group>"; };
 		9F62AC482794D0F6002D77CE /* ArticleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
 		9F62AC4A2794D12B002D77CE /* ArticlesByTagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesByTagViewModel.swift; sourceTree = "<group>"; };
@@ -218,7 +216,6 @@
 				69853DD7F8B6E82E68B20FA9 /* MainView.swift */,
 				69853CF48C5734D1AD46F653 /* MainViewModel.swift */,
 				86A83411262CCCE60081C23F /* TagListItem.swift */,
-				9F62AC42278CDA4E002D77CE /* DropView.swift */,
 				9F62AC442794CF67002D77CE /* UntaggedView.swift */,
 			);
 			path = Main;
@@ -363,7 +360,6 @@
 				9F62AC452794CF67002D77CE /* UntaggedView.swift in Sources */,
 				69853A620FBD03E0A149AA3C /* RoundedButtonStyle.swift in Sources */,
 				698532268325DCF181A563D7 /* AddNewTagView.swift in Sources */,
-				9F62AC43278CDA4E002D77CE /* DropView.swift in Sources */,
 				86ADBE40262C766600B50516 /* SearchBar.swift in Sources */,
 				86ADBE3D262C692900B50516 /* Sheets.swift in Sources */,
 				698537D53F9BD13030216B09 /* AsyncView.swift in Sources */,
